@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", "Cairo", system-ui, sans-serif;
+  --font-serif: "Playfair Display", "Amiri", Georgia, Cambria, "Times New Roman", Times, serif;
+  --animate-border-beam: border-beam calc(var(--duration) * 1s) infinite linear;
+
+  /* ── Chello — palette éditoriale claire ──────────────────────────────────── */
+  --color-cream:      #faf8f4;
+  --color-cream-deep: #f1ece2;
+  --color-ink:        #18140f;
+  --color-ink-soft:    #4a443c;
+  --color-gold:        #b8915a;
+  --color-gold-light:  #d8b888;
+  --color-gold-deep:   #8f6c3e;
+}
+
+@keyframes border-beam {
+  100% { offset-distance: 100%; }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes fade-in-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down {
+  animation: fade-in-down 0.8s ease-out forwards;
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+.animation-delay-600 { animation-delay: 0.6s; }
+.animation-delay-800 { animation-delay: 0.8s; }
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes ripple {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%       { transform: translate(-50%, -50%) scale(0.9); }
+}
+.animate-ripple {
+  animation: ripple 2.4s ease calc(var(--i, 0) * 0.2s) infinite;
+}
+
+@keyframes orbit-spin    { from { transform: rotate(0deg);    } to { transform: rotate(360deg);  } }
+@keyframes orbit-counter { from { transform: rotate(0deg);    } to { transform: rotate(-360deg); } }
+
+@keyframes spin-slow {
+  from { transform: translateX(-50%) translateY(-50%) rotate(0deg);   }
+  to   { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── FlipRevealGrid — apparition CSS (remplace framer-motion) ───────────────── */
+@keyframes pm-card-in {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.pm-card-reveal {
+  animation: pm-card-in 0.22s ease both;
+}
+
+/* ── Cacher les flèches des inputs number ───────────────────────────────────── */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ── Reset for full-width e-commerce layout ─────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+  overscroll-behavior-x: none;
+  position: relative;
+}
+
+/* ── iOS : éviter le zoom auto au focus des champs (police >= 16px en mobile) ── */
+@media (max-width: 640px) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ── Smooth scroll ───────────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Premium typography ──────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  text-rendering: optimizeLegibility;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ── Global ease-out for all transitions ─────────────────────────────────────── */
+*, *::before, *::after {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ── Remove default focus outline, rely on Tailwind focus-visible ───────────── */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Custom scrollbar (webkit) ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1ece2;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6cdbc;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8915a;
+}
+
+/* ── Liens nav éditoriaux : soulignement fin au survol ───────────────────── */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.nav-underline:hover::after,
+.nav-underline[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* ── Code-barres fidélité : forcer LTR même en page RTL ─────────────────── */
+.ltr-barcode {
+  direction: ltr;
+}
+
+/* ── Galerie produit : apparition douce au changement d'image ───────────── */
+@keyframes gallery-fade {
+  from { opacity: 0; transform: scale(1.03); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.gallery-enter {
+  animation: gallery-fade 0.22s ease-out forwards;
+}

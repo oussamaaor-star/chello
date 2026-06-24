@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <rect width="400" height="500" fill="#f7f6f4"/>
+
+  <!-- Bottle silhouette -->
+  <g transform="translate(200, 210)">
+    <!-- Cap -->
+    <rect x="-18" y="-95" width="36" height="14" rx="4" fill="#d6d3d1" fill-opacity="0.5"/>
+    <!-- Neck -->
+    <rect x="-10" y="-81" width="20" height="22" rx="2" fill="#d6d3d1" fill-opacity="0.35"/>
+    <!-- Body -->
+    <rect x="-34" y="-59" width="68" height="90" rx="14" fill="#d6d3d1" fill-opacity="0.3"/>
+    <rect x="-34" y="-59" width="68" height="90" rx="14" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-opacity="0.25"/>
+    <!-- Label line -->
+    <rect x="-22" y="-30" width="44" height="28" rx="6" fill="#ffffff" fill-opacity="0.35"/>
+  </g>
+
+  <!-- Divider -->
+  <line x1="140" y1="350" x2="260" y2="350" stroke="#d6d3d1" stroke-width="1" stroke-opacity="0.6"/>
+
+  <!-- Brand -->
+  <text x="200" y="378"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="12"
+    fill="#78716c"
+    fill-opacity="0.6"
+    text-anchor="middle"
+    letter-spacing="3">
+    MARWAN
+  </text>
+</svg>

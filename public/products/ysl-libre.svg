@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a1a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a1a1a" stop-opacity="0.85"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fond -->
+  <rect width="400" height="500" fill="url(#grad)"/>
+
+  <!-- Cercles décoratifs -->
+  <circle cx="200" cy="195" r="95" fill="#d4af7a" fill-opacity="0.25"/>
+  <circle cx="200" cy="195" r="65" fill="#d4af7a" fill-opacity="0.25"/>
+  <circle cx="200" cy="195" r="35" fill="#d4af7a" fill-opacity="0.25"/>
+
+  <!-- Silhouette flacon -->
+  <rect x="185" y="95"  width="30" height="12" rx="4"  fill="#d4af7a" fill-opacity="0.45"/>
+  <rect x="178" y="107" width="44" height="6"  rx="2"  fill="#d4af7a" fill-opacity="0.35"/>
+  <rect x="164" y="113" width="72" height="105" rx="14" fill="#d4af7a" fill-opacity="0.18"/>
+  <rect x="164" y="113" width="72" height="105" rx="14" fill="none" stroke="#d4af7a" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <!-- Ligne décorative -->
+  <line x1="140" y1="330" x2="260" y2="330" stroke="#d4af7a" stroke-width="1" stroke-opacity="0.35"/>
+
+  <!-- Marque -->
+  <text x="200" y="310"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="20"
+    font-weight="bold"
+    fill="#d4af7a"
+    fill-opacity="0.85"
+    text-anchor="middle"
+    letter-spacing="3">
+    YSL
+  </text>
+
+  <!-- Nom produit (truncated to 2 lines via tspan) -->
+  <text
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="13"
+    fill="#d4af7a"
+    fill-opacity="0.65"
+    text-anchor="middle">
+    <tspan x="200" dy="350">Libre</tspan>
+  </text>
+
+  <!-- Badge qualité -->
+  <text x="200" y="455"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="9"
+    fill="#d4af7a"
+    fill-opacity="0.35"
+    text-anchor="middle"
+    letter-spacing="2">
+    NOTINO · PRESTIGE
+  </text>
+</svg>

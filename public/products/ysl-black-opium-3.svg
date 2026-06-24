@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <defs>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0a0a0a" stop-opacity="0.80"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fond -->
+  <rect width="400" height="500" fill="url(#grad3)"/>
+
+  <!-- Halo derrière la boîte -->
+  <ellipse cx="200" cy="230" rx="100" ry="80" fill="#d4af7a" fill-opacity="0.20"/>
+
+  <!-- Face avant de la boîte -->
+  <rect x="145" y="120" width="110" height="150" rx="4" fill="#d4af7a" fill-opacity="0.14"/>
+  <rect x="145" y="120" width="110" height="150" rx="4" fill="none" stroke="#d4af7a" stroke-width="1.5" stroke-opacity="0.35"/>
+
+  <!-- Face supérieure (perspective) -->
+  <polygon points="145,120 200,100 310,100 255,120" fill="#d4af7a" fill-opacity="0.20"/>
+  <polygon points="145,120 200,100 310,100 255,120" fill="none" stroke="#d4af7a" stroke-width="1" stroke-opacity="0.30"/>
+
+  <!-- Face latérale droite (perspective) -->
+  <polygon points="255,120 310,100 310,250 255,270" fill="#d4af7a" fill-opacity="0.12"/>
+  <polygon points="255,120 310,100 310,250 255,270" fill="none" stroke="#d4af7a" stroke-width="1" stroke-opacity="0.25"/>
+
+  <!-- Texte sur la boîte — marque -->
+  <text x="200" y="192"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="16" font-weight="bold"
+    fill="#d4af7a" fill-opacity="0.70"
+    text-anchor="middle" letter-spacing="2">
+    YSL
+  </text>
+
+  <!-- Texte sur la boîte — nom -->
+  <text font-family="Georgia, 'Times New Roman', serif"
+    font-size="10" fill="#d4af7a" fill-opacity="0.50" text-anchor="middle">
+    <tspan x="200" dy="212">Black Opium</tspan>
+  </text>
+
+  <!-- Ligne décorative -->
+  <line x1="140" y1="330" x2="260" y2="330" stroke="#d4af7a" stroke-width="1" stroke-opacity="0.30"/>
+
+  <!-- Marque sous la boîte -->
+  <text x="200" y="310"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="20" font-weight="bold"
+    fill="#d4af7a" fill-opacity="0.85"
+    text-anchor="middle" letter-spacing="3">
+    YSL
+  </text>
+
+  <!-- Nom produit -->
+  <text font-family="Georgia, 'Times New Roman', serif"
+    font-size="13" fill="#d4af7a" fill-opacity="0.65" text-anchor="middle">
+    <tspan x="200" dy="350">Black Opium</tspan>
+  </text>
+
+  <!-- Vue label -->
+  <text x="200" y="415"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="8" fill="#d4af7a" fill-opacity="0.30"
+    text-anchor="middle" letter-spacing="2">
+    COFFRET · EMBALLAGE
+  </text>
+
+  <!-- Badge -->
+  <text x="200" y="455"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="9" fill="#d4af7a" fill-opacity="0.35"
+    text-anchor="middle" letter-spacing="2">
+    NOTINO · PRESTIGE
+  </text>
+</svg>

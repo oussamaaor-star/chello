@@ -1,0 +1,30 @@
+User-agent: *
+
+# Pages publiques — indexation autorisée
+Allow: /$
+Allow: /catalogue
+Allow: /categorie/
+Allow: /produit/
+Allow: /recherche
+Allow: /blog
+Allow: /blog/
+Allow: /marques
+Allow: /faq
+Allow: /contact
+Allow: /mentions-legales
+Allow: /cgv
+Allow: /politique-confidentialite
+Allow: /livraison-retours
+
+# Pages privées / transactionnelles — bloquées
+Disallow: /admin
+Disallow: /checkout
+Disallow: /confirmation-commande
+Disallow: /compte
+Disallow: /connexion
+Disallow: /inscription
+Disallow: /mot-de-passe-oublie
+Disallow: /reset-password
+Disallow: /favoris
+
+Sitemap: https://chello-nine.vercel.app/sitemap.xml

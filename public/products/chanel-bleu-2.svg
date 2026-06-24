@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8f0f8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#e8f0f8" stop-opacity="0.82"/>
+    </linearGradient>
+    <linearGradient id="refl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#1a3a5c" stop-opacity="0.18"/>
+      <stop offset="50%"  stop-color="#1a3a5c" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#1a3a5c" stop-opacity="0.00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fond -->
+  <rect width="400" height="500" fill="url(#grad2)"/>
+
+  <!-- Ellipse décorative de fond -->
+  <ellipse cx="210" cy="210" rx="105" ry="90" fill="#1a3a5c" fill-opacity="0.10"/>
+  <ellipse cx="210" cy="210" rx="70"  ry="60" fill="#1a3a5c" fill-opacity="0.10"/>
+
+  <!-- Flacon incliné (rotation ~15°) -->
+  <g transform="rotate(-12, 200, 200)">
+    <!-- Bouchon -->
+    <rect x="186" y="88" width="28" height="14" rx="5" fill="#1a3a5c" fill-opacity="0.50"/>
+    <!-- Col -->
+    <rect x="180" y="102" width="40" height="7"  rx="2" fill="#1a3a5c" fill-opacity="0.38"/>
+    <!-- Corps -->
+    <rect x="162" y="109" width="76" height="112" rx="16" fill="#1a3a5c" fill-opacity="0.16"/>
+    <rect x="162" y="109" width="76" height="112" rx="16" fill="none" stroke="#1a3a5c" stroke-width="1.5" stroke-opacity="0.32"/>
+    <!-- Reflet sur le côté gauche du flacon -->
+    <rect x="162" y="109" width="22" height="112" rx="16" fill="url(#refl)"/>
+  </g>
+
+  <!-- Ligne décorative -->
+  <line x1="140" y1="330" x2="260" y2="330" stroke="#1a3a5c" stroke-width="1" stroke-opacity="0.20"/>
+
+  <!-- Marque -->
+  <text x="200" y="310"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="20" font-weight="bold"
+    fill="#1a3a5c" fill-opacity="0.85"
+    text-anchor="middle" letter-spacing="3">
+    Chanel
+  </text>
+
+  <!-- Nom produit -->
+  <text font-family="Georgia, 'Times New Roman', serif"
+    font-size="13" fill="#1a3a5c" fill-opacity="0.65" text-anchor="middle">
+    <tspan x="200" dy="350">Bleu de Chanel</tspan>
+  </text>
+
+  <!-- Vue label -->
+  <text x="200" y="415"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="8" fill="#1a3a5c" fill-opacity="0.30"
+    text-anchor="middle" letter-spacing="2">
+    VUE DE CÔTÉ
+  </text>
+
+  <!-- Badge -->
+  <text x="200" y="455"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="9" fill="#1a3a5c" fill-opacity="0.35"
+    text-anchor="middle" letter-spacing="2">
+    NOTINO · PRESTIGE
+  </text>
+</svg>

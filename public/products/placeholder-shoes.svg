@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f1ece2"/>
+      <stop offset="100%" stop-color="#faf8f4"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" fill="url(#g)"/>
+  <rect x="40" y="40" width="520" height="720" fill="none" stroke="#b8915a" stroke-width="1" opacity="0.35"/>
+  <g transform="translate(300,400)" stroke="#b8915a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-110,40 C-110,-10 -80,-90 -40,-90 C-20,-90 -10,-70 10,-60 C50,-45 110,-40 110,10 C110,40 90,40 60,40 Z"/>
+    <line x1="-60" y1="40" x2="60" y2="40"/>
+  </g>
+  <text x="300" y="560" font-family="Georgia, serif" font-style="italic" font-size="36" fill="#b8915a" text-anchor="middle">Chello</text>
+</svg>

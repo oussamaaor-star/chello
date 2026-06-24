@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "dresses",
+    "label": "ملابس جاهزة",
+    "labelEn": "Ready-to-wear",
+    "subcategories": ["تيورات", "أطقم", "فساتين"]
+  },
+  {
+    "slug": "abayas",
+    "label": "عبايات",
+    "labelEn": "Abayas",
+    "subcategories": ["عبايات يومية", "عبايات مناسبات"]
+  },
+  {
+    "slug": "bags",
+    "label": "شنط",
+    "labelEn": "Bags",
+    "subcategories": ["شنط يد", "إكسسوارات"]
+  },
+  {
+    "slug": "shoes",
+    "label": "أحذية",
+    "labelEn": "Shoes",
+    "subcategories": ["كعب", "صنادل"]
+  },
+  {
+    "slug": "perfumes",
+    "label": "عطورات",
+    "labelEn": "Perfumes",
+    "subcategories": ["عطور نسائية"]
+  }
+]
