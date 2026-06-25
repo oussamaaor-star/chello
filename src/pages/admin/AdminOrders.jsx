@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Gift } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { addLoyaltyVisitByPhone } from '../../utils/loyalty';
 
 const STATUSES = ['pending', 'confirmed', 'delivered', 'cancelled'];
 const STATUS_LABELS = { pending: 'En attente', confirmed: 'Confirmée', delivered: 'Livrée', cancelled: 'Annulée' };
@@ -15,15 +17,39 @@ export default function AdminOrders() {
     });
   }, []);
 
-  const updateStatus = async (id, status) => {
-    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
-    await supabase.from('orders').update({ status }).eq('id', id);
+  const [loyaltyToast, setLoyaltyToast] = useState(null);
+
+  const updateStatus = async (id, newStatus) => {
+    const order = orders.find((o) => o.id === id);
+    const wasDelivered = order?.status === 'delivered';
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o)));
+    await supabase.from('orders').update({ status: newStatus }).eq('id', id);
+
+    if (newStatus === 'delivered' && !wasDelivered && order?.phone) {
+      const result = await addLoyaltyVisitByPhone(order.phone);
+      if (result) {
+        setLoyaltyToast(result);
+        setTimeout(() => setLoyaltyToast(null), 5000);
+      }
+    }
   };
 
   if (loading) return <p className="text-gray-500">Chargement...</p>;
 
   return (
     <div>
+      {loyaltyToast && (
+        <div className="fixed top-4 right-4 z-50 bg-white border border-gold/30 shadow-xl rounded-2xl p-4 max-w-xs">
+          <div className="flex items-center gap-2 mb-1">
+            <Gift className="w-4 h-4 text-gold" />
+            <p className="text-sm font-bold text-ink">Fidélité +1</p>
+          </div>
+          <p className="text-xs text-ink-soft">
+            {loyaltyToast.name} — {loyaltyToast.stamps}/8 tampons
+            {loyaltyToast.rewardReady && ' 🎁 Récompense !'}
+          </p>
+        </div>
+      )}
       <h1 className="text-xl font-bold text-gray-900 mb-6">Commandes ({orders.length})</h1>
 
       {orders.length === 0 ? (

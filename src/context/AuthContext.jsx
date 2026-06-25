@@ -68,10 +68,18 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { success: false, error: error.message };
     setUser(normalizeUser(data.user));
-    // Charger le profil (et le rôle) avant de retourner le succès,
-    // sinon AdminLayout reçoit role=null et redirige vers "/" après login.
-    if (data.user) await loadProfile(data.user.id);
-    return { success: true };
+    let userRole = null;
+    if (data.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .maybeSingle();
+      setAvatarUrl(profile?.avatar_url ?? null);
+      userRole = profile?.role ?? null;
+      setRole(userRole);
+    }
+    return { success: true, role: userRole };
   };
 
   const register = async (name, email, password) => {

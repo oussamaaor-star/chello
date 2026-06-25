@@ -13,7 +13,7 @@ import { supabase } from '../lib/supabase';
 
 export default function Login() {
   useSEO(SEO_PRESETS.login);
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, role } = useAuth();
   const navigate  = useNavigate();
   const location  = useLocation();
   const from      = location.state?.from?.pathname || '/compte/profil';
@@ -58,7 +58,12 @@ export default function Login() {
     setIsLoading(true);
     const result = await login(form.email.trim(), form.password);
     setIsLoading(false);
-    if (result.success) navigate(from, { replace: true });
+    if (result.success) {
+      const dest = result.role === 'admin' ? '/admin'
+                 : result.role === 'cashier' ? '/caisse'
+                 : from;
+      navigate(dest, { replace: true });
+    }
     else {
       setGlobalError(result.error ? translateAuthError(t, result.error) : t('loginGlobalErr'));
       setNeedsConfirm(/email not confirmed/i.test(result.error || ''));

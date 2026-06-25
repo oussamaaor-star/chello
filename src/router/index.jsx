@@ -64,6 +64,14 @@ const AdminReviews   = lazy(() => import('../pages/admin/AdminReviews'));
 const AdminLoyalty   = lazy(() => import('../pages/admin/AdminLoyalty'));
 const AdminAlerts    = lazy(() => import('../pages/admin/AdminAlerts'));
 
+// Cashier
+const CashierLayout    = lazy(() => import('../pages/cashier/CashierLayout'));
+const CashierDashboard = lazy(() => import('../pages/cashier/CashierDashboard'));
+const CashierOrders    = lazy(() => import('../pages/cashier/CashierOrders'));
+const CashierPOS       = lazy(() => import('../pages/cashier/CashierPOS'));
+const CashierLoyalty   = lazy(() => import('../pages/cashier/CashierLoyalty'));
+const CashierStock     = lazy(() => import('../pages/cashier/CashierStock'));
+
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
 export function AppRoutes() {
@@ -128,6 +136,15 @@ export function AppRoutes() {
           <Route path="reviews"  element={<AdminReviews />} />
           <Route path="loyalty"  element={<AdminLoyalty />} />
           <Route path="alerts"   element={<AdminAlerts />} />
+        </Route>
+
+        {/* Cashier */}
+        <Route path="/caisse" element={<CashierLayout />}>
+          <Route index            element={<CashierDashboard />} />
+          <Route path="commandes" element={<CashierOrders />} />
+          <Route path="vente"     element={<CashierPOS />} />
+          <Route path="fidelite"  element={<CashierLoyalty />} />
+          <Route path="stock"     element={<CashierStock />} />
         </Route>
 
         {/* Fallback 404 — doit être en dernier */}
