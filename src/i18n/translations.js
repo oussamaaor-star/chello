@@ -1181,6 +1181,26 @@ export const translations = {
 
     // ── About SEO ─────────────────────────────────────────────────────────────
     aboutSeoDesc:           'قصة Chello: أزياء نسائية أنيقة في سلطنة عُمان. عبايات، ملابس جاهزة، شنط، أحذية وعطورات. الدفع عند الاستلام.',
+
+    // ── Size Guide ────────────────────────────────────────────────────────────
+    sizeGuideTitle:       'دليل المقاسات',
+    sizeGuideLink:        'دليل المقاسات',
+    sizeGuideClothing:    'الملابس والعبايات',
+    sizeGuideShoes:       'الأحذية',
+    sizeGuideTip:         'نصيحة: إذا كنتِ بين مقاسين، اختاري المقاس الأكبر.',
+    sizeGuideCm:          'سم',
+    sizeGuideBust:        'محيط الصدر',
+    sizeGuideWaist:       'محيط الخصر',
+    sizeGuideHips:        'محيط الأرداف',
+    sizeGuideLength:      'الطول',
+    sizeGuideEU:          'أوروبي',
+    sizeGuideUK:          'بريطاني',
+    sizeGuideUS:          'أمريكي',
+    sizeGuideFoot:        'طول القدم (سم)',
+    sizeGuideHowToMeasure: 'كيف تأخذين قياساتك؟',
+    sizeGuideBustTip:     'قيسي حول أعرض جزء من الصدر',
+    sizeGuideWaistTip:    'قيسي حول أضيق جزء من الخصر',
+    sizeGuideHipsTip:     'قيسي حول أعرض جزء من الأرداف',
   },
 
   en: {
@@ -1522,5 +1542,25 @@ export const translations = {
     paymentCardDesc: 'Secure payment via credit card.',
     paymentSecureNote: 'Test payment — no data is sent or stored.',
     paymentVerify: 'Review my order',
+
+    // ── Size Guide ────────────────────────────────────────────────────────────
+    sizeGuideTitle:       'Size Guide',
+    sizeGuideLink:        'Size Guide',
+    sizeGuideClothing:    'Clothing & Abayas',
+    sizeGuideShoes:       'Shoes',
+    sizeGuideTip:         'Tip: If you\'re between sizes, go for the larger one.',
+    sizeGuideCm:          'cm',
+    sizeGuideBust:        'Bust',
+    sizeGuideWaist:       'Waist',
+    sizeGuideHips:        'Hips',
+    sizeGuideLength:      'Length',
+    sizeGuideEU:          'EU',
+    sizeGuideUK:          'UK',
+    sizeGuideUS:          'US',
+    sizeGuideFoot:        'Foot length (cm)',
+    sizeGuideHowToMeasure: 'How to measure?',
+    sizeGuideBustTip:     'Measure around the fullest part of your bust',
+    sizeGuideWaistTip:    'Measure around the narrowest part of your waist',
+    sizeGuideHipsTip:     'Measure around the widest part of your hips',
   },
 };

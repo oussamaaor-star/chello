@@ -33,7 +33,7 @@ export default function NotFound() {
         </p>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-20 h-20 rounded-full bg-cream-deep flex items-center justify-center">
-            <Search className="w-8 h-8 text-gold-deep" strokeWidth={1.5} />
+            <Search className="w-8 h-8 text-silver-deep" strokeWidth={1.5} />
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function NotFound() {
             <Link
               key={to}
               to={to}
-              className="flex items-center justify-center px-3 py-2.5 bg-cream-deep rounded-xl text-xs font-semibold text-ink-soft hover:text-gold-deep transition-all"
+              className="flex items-center justify-center px-3 py-2.5 bg-cream-deep rounded-xl text-xs font-semibold text-ink-soft hover:text-silver-deep transition-all"
             >
               {label}
             </Link>

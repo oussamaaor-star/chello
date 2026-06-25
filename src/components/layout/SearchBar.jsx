@@ -141,7 +141,7 @@ export function SearchBar({ onClose, autoFocus = false }) {
             className="w-full h-[48px] rounded-full bg-cream-deep text-[16px] text-ink
                        placeholder-ink-soft/50 ps-12 pe-14 outline-none
                        border border-ink/10 transition-all duration-200
-                       focus:border-gold/60 focus:ring-2 focus:ring-gold/15"
+                       focus:border-silver/60 focus:ring-2 focus:ring-silver/15"
           />
 
           {/* Search icon — left */}

@@ -97,7 +97,7 @@ export function ExitIntentPopup() {
         </button>
 
         {/* Header gradient */}
-        <div className="bg-gradient-to-br from-gold-deep via-gold to-gold-deep px-6 pt-8 pb-7 text-center">
+        <div className="bg-gradient-to-br from-silver-deep via-silver to-silver-deep px-6 pt-8 pb-7 text-center">
           <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 shadow-lg">
             <ShoppingBag className="w-8 h-8 text-white" />
           </div>
@@ -116,7 +116,7 @@ export function ExitIntentPopup() {
             <>
               <p className="text-ink-soft text-sm text-center">
                 {t('exitSousTotal')}{' '}
-                <span className="text-gold font-bold">
+                <span className="text-silver font-bold">
                   {items.length} {t('cartArticles')}
                 </span>{' '}
                 (<span dir="ltr">{totalPrice} DH</span>)
@@ -125,7 +125,7 @@ export function ExitIntentPopup() {
               {/* Barre livraison gratuite */}
               <div className="p-3.5 bg-cream-deep rounded-2xl border border-ink/10">
                 <div className="flex items-center gap-2.5 mb-2">
-                  <Truck className="w-4 h-4 text-gold flex-shrink-0" />
+                  <Truck className="w-4 h-4 text-silver flex-shrink-0" />
                   <p className="text-xs font-semibold text-ink">
                     {remaining === 0
                       ? t('exitLivGratuite')
@@ -135,7 +135,7 @@ export function ExitIntentPopup() {
                 {remaining > 0 && (
                   <div className="h-1.5 bg-ink/10 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gold rounded-full transition-all"
+                      className="h-full bg-silver rounded-full transition-all"
                       style={{ width: `${Math.min(100, (totalPrice / 100) * 100)}%` }}
                     />
                   </div>
@@ -144,7 +144,7 @@ export function ExitIntentPopup() {
             </>
           ) : (
             <div className="flex items-start gap-3 p-3.5 bg-cream-deep rounded-2xl border border-ink/10">
-              <Gift className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
+              <Gift className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
               <p className="text-xs text-ink-soft leading-relaxed">
                 {t('exitPerks3')} 🇲🇦. {t('exitPerks1')}.
               </p>

@@ -24,7 +24,7 @@ export default function OrderTracking() {
 
   const STATUS_STEPS = [
     { key: 'pending',   label: lang === 'ar' ? 'قيد الانتظار' : 'Pending',   icon: Clock,       color: 'bg-ink-soft/40' },
-    { key: 'confirmed', label: lang === 'ar' ? 'مؤكد' : 'Confirmed',         icon: CheckCircle, color: 'bg-gold' },
+    { key: 'confirmed', label: lang === 'ar' ? 'مؤكد' : 'Confirmed',         icon: CheckCircle, color: 'bg-silver' },
     { key: 'delivered', label: lang === 'ar' ? 'تم التوصيل' : 'Delivered',   icon: Truck,       color: 'bg-emerald-600' },
   ];
 
@@ -85,7 +85,7 @@ export default function OrderTracking() {
             <div key={step.key} className="flex gap-4">
               <div className="flex flex-col items-center">
                 <div className={`relative w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-500 ${
-                  isCurrent ? `${step.color} ring-4 ring-gold/25` : isDone ? step.color : 'bg-cream-deep'
+                  isCurrent ? `${step.color} ring-4 ring-silver/25` : isDone ? step.color : 'bg-cream-deep'
                 }`}>
                   {isCurrent && <span className={`absolute inset-0 rounded-full animate-ping opacity-25 ${step.color}`} />}
                   <Icon className={`w-4 h-4 relative z-10 ${isFuture ? 'text-ink-soft/40' : 'text-cream'}`} />
@@ -136,7 +136,7 @@ export default function OrderTracking() {
                       value={reference}
                       onChange={(e) => setReference(e.target.value)}
                       placeholder="ex: A1B2C3D4"
-                      className="w-full pl-12 pr-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-gold transition-all uppercase"
+                      className="w-full pl-12 pr-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-silver transition-all uppercase"
                     />
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function OrderTracking() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="96877671234"
-                      className="w-full pl-12 pr-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-gold transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-silver transition-all"
                     />
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export default function OrderTracking() {
             <div className="bg-cream-deep rounded-3xl p-6 sm:p-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gold-deep mb-1">{lang === 'ar' ? 'الطلب' : 'Order'}</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-silver-deep mb-1">{lang === 'ar' ? 'الطلب' : 'Order'}</p>
                   <h2 className="text-2xl font-serif italic text-ink tracking-wide">#{shortRef(order.id)}</h2>
                 </div>
                 <div className="sm:text-right">

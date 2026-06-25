@@ -5,10 +5,10 @@ import { Truck, Clock, MapPin, Shield, Banknote, XCircle } from 'lucide-react';
 
 function InfoCard({ icon: Icon, title, children }) {
   return (
-    <div className="bg-cream border border-gold-deep/10 rounded-xl p-5">
+    <div className="bg-cream border border-silver-deep/10 rounded-xl p-5">
       <div className="flex items-center gap-2.5 mb-3">
         <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center flex-shrink-0">
-          <Icon className="w-4 h-4 text-gold-deep" />
+          <Icon className="w-4 h-4 text-silver-deep" />
         </div>
         <p className="font-semibold text-ink text-sm">{title}</p>
       </div>
@@ -76,8 +76,8 @@ export default function LivraisonRetours() {
             { zone: 'مسقط والسيب', delai: '1-2 أيام عمل', tarif: '1.000 ر.ع. (مجاني من 10.000 ر.ع.)' },
             { zone: 'باقي مناطق عُمان', delai: '2-4 أيام عمل', tarif: '2.000 ر.ع.' },
           ].map(({ zone, delai, tarif }) => (
-            <div key={zone} className="flex items-start gap-3 p-3.5 bg-cream border border-gold-deep/10 rounded-xl">
-              <MapPin className="w-4 h-4 text-gold-deep flex-shrink-0 mt-0.5" />
+            <div key={zone} className="flex items-start gap-3 p-3.5 bg-cream border border-silver-deep/10 rounded-xl">
+              <MapPin className="w-4 h-4 text-silver-deep flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-ink text-sm">{zone}</p>
                 <p className="text-xs text-ink-soft mt-0.5">{delai} — {tarif}</p>
@@ -118,15 +118,15 @@ export default function LivraisonRetours() {
 
       <LegalSection title="6. الضمانات">
         <div className="grid sm:grid-cols-2 gap-3 mt-2">
-          <div className="flex items-start gap-3 p-3.5 bg-cream border border-gold-deep/10 rounded-xl">
-            <Shield className="w-4 h-4 text-gold-deep flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 p-3.5 bg-cream border border-silver-deep/10 rounded-xl">
+            <Shield className="w-4 h-4 text-silver-deep flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-ink text-sm">جودة مضمونة</p>
               <p className="text-xs text-ink-soft mt-0.5">جميع منتجاتنا أصلية ومختارة بعناية.</p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-3.5 bg-cream border border-gold-deep/10 rounded-xl">
-            <Banknote className="w-4 h-4 text-gold-deep flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 p-3.5 bg-cream border border-silver-deep/10 rounded-xl">
+            <Banknote className="w-4 h-4 text-silver-deep flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-ink text-sm">دفع آمن</p>
               <p className="text-xs text-ink-soft mt-0.5">تدفع نقداً فقط عند الاستلام — بدون مخاطر.</p>

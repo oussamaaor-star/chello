@@ -33,7 +33,7 @@ export default function LoyaltyCard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-ink">
-        <div className="w-8 h-8 rounded-full border-2 border-gold/20 border-t-gold animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-silver/20 border-t-silver animate-spin" />
       </div>
     );
   }
@@ -51,9 +51,9 @@ export default function LoyaltyCard() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-16 bg-ink">
-      <div className="w-full max-w-md bg-gradient-to-br from-[#241f18] to-ink border border-gold/25 rounded-3xl p-6 sm:p-8">
+      <div className="w-full max-w-md bg-gradient-to-br from-[#241f18] to-ink border border-silver/25 rounded-3xl p-6 sm:p-8">
         <div className="text-center mb-6">
-          <p className="font-serif italic text-2xl text-gold-light mb-1">Chello</p>
+          <p className="font-serif italic text-2xl text-silver-light mb-1">Chello</p>
           <p className="text-xs text-cream/40 tracking-widest uppercase">Women's Fashion</p>
         </div>
 
@@ -64,12 +64,12 @@ export default function LoyaltyCard() {
 
         <LoyaltyStamps count={visits} />
 
-        <p className="text-center text-gold-light font-medium mt-6 mb-6">
+        <p className="text-center text-silver-light font-medium mt-6 mb-6">
           {t('loyaltyVisitsOf').replace('{count}', visits)}
         </p>
 
         {rewardReady && (
-          <div className="flex items-center gap-2 justify-center bg-gold/10 border border-gold/40 rounded-xl py-3 px-4 mb-6 text-gold-light text-sm">
+          <div className="flex items-center gap-2 justify-center bg-silver/10 border border-silver/40 rounded-xl py-3 px-4 mb-6 text-silver-light text-sm">
             <Gift size={16} />
             {t('loyaltyRewardReady')}
           </div>

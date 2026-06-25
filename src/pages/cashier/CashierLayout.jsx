@@ -46,7 +46,7 @@ function CashierNavLink({ to, label, icon: Icon, end, badge, onClick }) {
       className={({ isActive }) =>
         `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
           isActive
-            ? 'bg-gold/15 text-gold-light font-semibold'
+            ? 'bg-silver/15 text-silver-light font-semibold'
             : 'text-cream/60 hover:bg-cream/8 hover:text-cream'
         }`
       }
@@ -54,7 +54,7 @@ function CashierNavLink({ to, label, icon: Icon, end, badge, onClick }) {
       <Icon className="w-4 h-4 flex-shrink-0" />
       <span className="flex-1">{label}</span>
       {badge > 0 && (
-        <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-gold text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
+        <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-silver text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
           {badge > 99 ? '99+' : badge}
         </span>
       )}
@@ -110,12 +110,12 @@ export default function CashierLayout() {
       <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 bg-ink min-h-screen sticky top-0 h-screen">
         <div className="px-6 py-5 border-b border-cream/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-gold rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-7 h-7 bg-silver rounded-lg flex items-center justify-center flex-shrink-0">
               <Store className="w-4 h-4 text-cream" />
             </div>
             <div>
               <p className="text-cream font-bold text-sm leading-none">Chello</p>
-              <p className="text-gold text-[10px] font-semibold uppercase tracking-widest mt-0.5">Caisse</p>
+              <p className="text-silver text-[10px] font-semibold uppercase tracking-widest mt-0.5">Caisse</p>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function CashierLayout() {
           </div>
           <NavLink
             to="/"
-            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-gold hover:bg-gold/10 transition-colors mb-1"
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-silver hover:bg-silver/10 transition-colors mb-1"
           >
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
             Voir le site
@@ -157,7 +157,7 @@ export default function CashierLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="bg-cream border-b border-ink/10 px-4 sm:px-6 h-14 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="w-6 h-6 bg-gold rounded-md flex items-center justify-center">
+            <div className="w-6 h-6 bg-silver rounded-md flex items-center justify-center">
               <Store className="w-3.5 h-3.5 text-cream" />
             </div>
             <span className="text-sm font-bold text-ink">Caisse</span>
@@ -166,7 +166,7 @@ export default function CashierLayout() {
           <nav className="hidden lg:flex items-center gap-2 text-xs text-ink-soft">
             <span className="font-medium text-ink">Caisse</span>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-gold-deep font-semibold">Chello</span>
+            <span className="text-silver-deep font-semibold">Chello</span>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -174,7 +174,7 @@ export default function CashierLayout() {
               <NavLink
                 to="/caisse/commandes"
                 onClick={clearBadge}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-gold text-cream rounded-full text-xs font-bold animate-pulse"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-silver text-cream rounded-full text-xs font-bold animate-pulse"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
                 {newOrders} nouvelle{newOrders > 1 ? 's' : ''}
@@ -184,7 +184,7 @@ export default function CashierLayout() {
               Caissier
             </span>
             <div className="w-8 h-8 bg-ink rounded-full flex items-center justify-center">
-              <span className="text-gold-light text-xs font-bold">
+              <span className="text-silver-light text-xs font-bold">
                 {user?.name?.[0]?.toUpperCase() ?? 'C'}
               </span>
             </div>
@@ -209,7 +209,7 @@ export default function CashierLayout() {
                 <Icon className="w-3.5 h-3.5" />
                 {label}
                 {notif && newOrders > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-gold text-cream text-[9px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-silver text-cream text-[9px] font-bold rounded-full flex items-center justify-center">
                     {newOrders > 99 ? '99+' : newOrders}
                   </span>
                 )}

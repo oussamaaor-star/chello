@@ -20,7 +20,7 @@ export function ProductGrid({ products = [], loading = false, onReset, preferred
     return (
       <div className="flex flex-col items-center justify-center py-24 px-4 text-center border border-dashed border-ink/15 rounded-3xl">
         <div className="w-16 h-16 rounded-full bg-cream-deep flex items-center justify-center mb-5">
-          <ShoppingBag className="w-7 h-7 text-gold-deep opacity-70" />
+          <ShoppingBag className="w-7 h-7 text-silver-deep opacity-70" />
         </div>
         <h3 className="text-xl font-serif italic text-ink mb-2">{t('emptyProductsTitle')}</h3>
         <p className="text-ink-soft/70 mb-7 max-w-sm text-sm leading-relaxed">

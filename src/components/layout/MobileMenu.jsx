@@ -67,7 +67,7 @@ export function MobileMenu({ isOpen, onClose }) {
         {/* User greeting */}
         {isAuthenticated && (
           <div className="px-5 py-3.5 bg-cream-deep border-b border-ink/10">
-            <p className="text-[10px] text-gold-deep uppercase tracking-widest font-bold mb-0.5">{t('navBienvenue')}</p>
+            <p className="text-[10px] text-silver-deep uppercase tracking-widest font-bold mb-0.5">{t('navBienvenue')}</p>
             <p className="text-sm font-semibold text-ink">{user?.name}</p>
           </div>
         )}

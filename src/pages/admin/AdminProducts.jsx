@@ -73,15 +73,15 @@ export default function AdminProducts() {
 
       {showForm && (
         <form onSubmit={handleCreate} className="bg-white rounded-2xl border border-ink/10 p-5 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input required placeholder="Nom du produit" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/40" />
-          <select value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/40">
+          <input required placeholder="Nom du produit" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-silver/40" />
+          <select value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-silver/40">
             {categoriesData.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
-          <input placeholder="Prix (OMR)" type="number" step="0.01" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/40" />
-          <input placeholder="Tailles (séparées par virgule, ex: S,M,L)" value={form.sizes} onChange={(e) => setForm((f) => ({ ...f, sizes: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/40" />
-          <input placeholder="URLs images (séparées par virgule)" value={form.images} onChange={(e) => setForm((f) => ({ ...f, images: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-gold/40" />
-          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-gold/40" rows={2} />
-          <button type="submit" disabled={saving} className="bg-gold text-cream font-semibold rounded-xl px-4 py-2 sm:col-span-2 disabled:opacity-50 hover:bg-gold-deep transition-colors">
+          <input placeholder="Prix (OMR)" type="number" step="0.01" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-silver/40" />
+          <input placeholder="Tailles (séparées par virgule, ex: S,M,L)" value={form.sizes} onChange={(e) => setForm((f) => ({ ...f, sizes: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-silver/40" />
+          <input placeholder="URLs images (séparées par virgule)" value={form.images} onChange={(e) => setForm((f) => ({ ...f, images: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-silver/40" />
+          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} className="border border-ink/15 rounded-xl px-3 py-2 sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-silver/40" rows={2} />
+          <button type="submit" disabled={saving} className="bg-silver text-cream font-semibold rounded-xl px-4 py-2 sm:col-span-2 disabled:opacity-50 hover:bg-silver-deep transition-colors">
             {saving ? 'Enregistrement...' : 'Créer le produit'}
           </button>
         </form>
@@ -112,7 +112,7 @@ export default function AdminProducts() {
                   <input
                     type="number" step="0.01" defaultValue={p.price ?? ''}
                     onBlur={(e) => updateField(p.id, 'price', e.target.value ? Number(e.target.value) : null)}
-                    className="w-24 border border-ink/15 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gold/40"
+                    className="w-24 border border-ink/15 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-silver/40"
                     placeholder="—"
                   />
                 </td>

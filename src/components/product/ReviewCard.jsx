@@ -22,7 +22,7 @@ export function ReviewCard({ review }) {
                 <Star
                   key={i}
                   className={`w-3 h-3 ${
-                    i < rating ? 'fill-gold text-gold' : 'text-ink-soft/60'
+                    i < rating ? 'fill-silver text-silver' : 'text-ink-soft/60'
                   }`}
                 />
               ))}

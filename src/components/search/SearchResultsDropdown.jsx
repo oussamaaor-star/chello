@@ -76,7 +76,7 @@ export function SearchResultsDropdown({
           </p>
           <button
             onClick={() => navigate_({ href: '/catalogue' })}
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gold-deep hover:text-ink transition-colors"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-silver-deep hover:text-ink transition-colors"
           >
             {t('searchDropBrowse')}
             <ArrowRight className="w-3.5 h-3.5" />
@@ -114,7 +114,7 @@ export function SearchResultsDropdown({
                       </p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-sm font-semibold text-gold-deep">
+                      <span className="text-sm font-semibold text-silver-deep">
                         {price != null ? `${Number(price).toFixed(2)} ${SHOP_CONFIG.currency}` : ''}
                       </span>
                       <ChevronRight className="w-4 h-4 text-ink-soft/40 rtl:rotate-180" />
@@ -142,8 +142,8 @@ export function SearchResultsDropdown({
                         focused ? 'bg-cream-deep' : 'hover:bg-cream-deep'
                       }`}
                     >
-                      <div className="w-9 h-9 flex-shrink-0 rounded-full bg-cream-deep border border-gold/25 flex items-center justify-center">
-                        <Tag className="w-4 h-4 text-gold-deep" />
+                      <div className="w-9 h-9 flex-shrink-0 rounded-full bg-cream-deep border border-silver/25 flex items-center justify-center">
+                        <Tag className="w-4 h-4 text-silver-deep" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-ink">{cat.label}</p>

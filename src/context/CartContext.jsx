@@ -7,10 +7,10 @@ export function CartProvider({ children }) {
   // Utilise notre hook personnalisé pour la persistance dans localStorage
   const [items, setItems] = useLocalStorage('pm-cart-items', []);
 
-  const addToCart = (product, selectedSize = null, qty = 1) => {
+  const addToCart = (product, selectedSize = null, qty = 1, selectedColor = null) => {
     setItems((prevItems) => {
       const existingItemIndex = prevItems.findIndex(
-        (item) => item.product.id === product.id && item.selectedSize === selectedSize
+        (item) => item.product.id === product.id && item.selectedSize === selectedSize && (item.selectedColor ?? null) === selectedColor
       );
 
       if (existingItemIndex >= 0) {
@@ -21,28 +21,27 @@ export function CartProvider({ children }) {
         );
       }
 
-      return [...prevItems, { product, quantity: Math.min(qty, 10), selectedSize }];
+      return [...prevItems, { product, quantity: Math.min(qty, 10), selectedSize, selectedColor }];
     });
   };
 
-  const removeFromCart = (productId, selectedSize) => {
+  const removeFromCart = (productId, selectedSize, selectedColor = null) => {
     setItems((prevItems) =>
       prevItems.filter(
-        (item) => !(item.product.id === productId && item.selectedSize === selectedSize)
+        (item) => !(item.product.id === productId && item.selectedSize === selectedSize && (item.selectedColor ?? null) === selectedColor)
       )
     );
   };
 
-  const updateQuantity = (productId, quantity, selectedSize) => {
-    // Si la quantité passe à 0 ou moins, on retire l'article
+  const updateQuantity = (productId, quantity, selectedSize, selectedColor = null) => {
     if (quantity <= 0) {
-      removeFromCart(productId, selectedSize);
+      removeFromCart(productId, selectedSize, selectedColor);
       return;
     }
 
     setItems((prevItems) =>
       prevItems.map((item) => {
-        if (item.product.id === productId && item.selectedSize === selectedSize) {
+        if (item.product.id === productId && item.selectedSize === selectedSize && (item.selectedColor ?? null) === selectedColor) {
           return { ...item, quantity: Math.min(quantity, 10) };
         }
         return item;

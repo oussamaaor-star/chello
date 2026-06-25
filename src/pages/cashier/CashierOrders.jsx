@@ -74,9 +74,9 @@ export default function CashierOrders() {
     <div className="space-y-6">
       {/* Loyalty toast */}
       {loyaltyToast && (
-        <div className="fixed top-4 right-4 z-50 bg-white border border-gold/30 shadow-xl rounded-2xl p-4 max-w-xs animate-[slideIn_0.3s_ease-out]">
+        <div className="fixed top-4 right-4 z-50 bg-white border border-silver/30 shadow-xl rounded-2xl p-4 max-w-xs animate-[slideIn_0.3s_ease-out]">
           <div className="flex items-center gap-2 mb-1">
-            <Gift className="w-4 h-4 text-gold" />
+            <Gift className="w-4 h-4 text-silver" />
             <p className="text-sm font-bold text-ink">Fidélité +1</p>
           </div>
           <p className="text-xs text-ink-soft">
@@ -105,13 +105,13 @@ export default function CashierOrders() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Chercher par ref, nom ou téléphone..."
-            className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 bg-white"
+            className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 bg-white"
           />
         </div>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border border-ink/15 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gold/40"
+          className="border border-ink/15 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-silver/40"
         >
           <option value="all">Tous les statuts</option>
           {STATUSES.map((s) => (
@@ -143,7 +143,7 @@ export default function CashierOrders() {
                 <select
                   value={order.status}
                   onChange={(e) => updateStatus(order.id, e.target.value)}
-                  className="border border-ink/15 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gold/40"
+                  className="border border-ink/15 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-silver/40"
                 >
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>{STATUS_CFG[s].label}</option>

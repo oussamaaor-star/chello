@@ -10,8 +10,8 @@ export function Badge({
   const variants = {
     default:   'bg-ink/5 text-ink-soft',
     promo:     'bg-red-500 text-white',
-    new:       'bg-gold/15 text-gold-deep border border-gold/30',
-    bestseller:'bg-gold text-cream',
+    new:       'bg-silver/15 text-silver-deep border border-silver/30',
+    bestseller:'bg-silver text-cream',
     lowstock:  'bg-orange-500/15 text-orange-600 border border-orange-500/30',
   };
 

@@ -8,17 +8,17 @@ const PLACEHOLDER = '/products/placeholder-dresses.svg';
 export function CartItem({ item }) {
   const { updateQuantity, removeFromCart } = useCart();
   const { t } = useLanguage();
-  const { product, quantity, selectedSize } = item;
+  const { product, quantity, selectedSize, selectedColor } = item;
 
   const unitPrice = product.price ?? 0;
   const lineTotal = unitPrice * quantity;
 
-  const handleRemove   = () => removeFromCart(product.id, selectedSize);
+  const handleRemove   = () => removeFromCart(product.id, selectedSize, selectedColor);
   const handleDecrease = () => {
     if (quantity <= 1) handleRemove();
-    else updateQuantity(product.id, quantity - 1, selectedSize);
+    else updateQuantity(product.id, quantity - 1, selectedSize, selectedColor);
   };
-  const handleIncrease = () => updateQuantity(product.id, quantity + 1, selectedSize);
+  const handleIncrease = () => updateQuantity(product.id, quantity + 1, selectedSize, selectedColor);
 
   return (
     <div className="flex gap-3 py-3 border-b border-ink/10 last:border-0">
@@ -41,8 +41,10 @@ export function CartItem({ item }) {
             <p className="text-xs font-medium text-ink leading-snug line-clamp-1">
               {product.name}
             </p>
-            {selectedSize && (
-              <p className="text-[10px] text-ink-soft/70 mt-0.5">{selectedSize}</p>
+            {(selectedSize || selectedColor) && (
+              <p className="text-[10px] text-ink-soft/70 mt-0.5">
+                {[selectedSize, selectedColor].filter(Boolean).join(' · ')}
+              </p>
             )}
           </div>
           <button

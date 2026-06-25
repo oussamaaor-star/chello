@@ -50,14 +50,18 @@ function fire(eventName, props = {}) {
 export function usePageTracking() {
   const location = useLocation();
 
-  // Injection unique du script au montage
   useEffect(() => {
     initPlausible();
   }, []);
 
-  // Pageview à chaque changement de pathname
   useEffect(() => {
     fire('pageview');
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view', {
+        page_path: location.pathname + location.search,
+        page_title: document.title,
+      });
+    }
   }, [location.pathname]);
 }
 

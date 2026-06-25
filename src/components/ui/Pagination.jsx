@@ -19,7 +19,7 @@ export function Pagination({ currentPage, totalPages, onChange }) {
         onClick={() => onChange(currentPage - 1)}
         disabled={currentPage === 1}
         aria-label={t('ariaPrevPage')}
-        className="w-11 h-11 flex items-center justify-center rounded-xl border border-ink/10 bg-cream-deep text-ink-soft hover:bg-ink/5 hover:border-gold/50 hover:text-gold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="w-11 h-11 flex items-center justify-center rounded-xl border border-ink/10 bg-cream-deep text-ink-soft hover:bg-ink/5 hover:border-silver/50 hover:text-silver disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -38,8 +38,8 @@ export function Pagination({ currentPage, totalPages, onChange }) {
             onClick={() => onChange(page)}
             className={`w-11 h-11 flex items-center justify-center rounded-xl text-sm font-bold transition-all ${
               currentPage === page
-                ? 'bg-gold text-cream shadow-[0_0_16px_rgba(184,145,90,0.35)]'
-                : 'bg-cream-deep border border-ink/10 text-ink-soft hover:bg-ink/5 hover:border-gold/50 hover:text-gold'
+                ? 'bg-silver text-cream shadow-[0_0_16px_rgba(158,158,158,0.35)]'
+                : 'bg-cream-deep border border-ink/10 text-ink-soft hover:bg-ink/5 hover:border-silver/50 hover:text-silver'
             }`}
           >
             {page}
@@ -51,7 +51,7 @@ export function Pagination({ currentPage, totalPages, onChange }) {
         onClick={() => onChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         aria-label={t('ariaNextPage')}
-        className="w-11 h-11 flex items-center justify-center rounded-xl border border-ink/10 bg-cream-deep text-ink-soft hover:bg-ink/5 hover:border-gold/50 hover:text-gold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="w-11 h-11 flex items-center justify-center rounded-xl border border-ink/10 bg-cream-deep text-ink-soft hover:bg-ink/5 hover:border-silver/50 hover:text-silver disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         <ChevronRight className="w-4 h-4" />
       </button>

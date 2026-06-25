@@ -15,10 +15,10 @@ export function Button({
     primary:
       'bg-gradient-to-b from-ink to-ink text-cream hover:from-ink-soft hover:to-ink focus-visible:ring-ink focus-visible:ring-offset-1 border border-ink/30 shadow-md shadow-ink/10',
     secondary:
-      'bg-cream text-ink border border-ink/10 hover:bg-cream-deep hover:border-ink/20 focus-visible:ring-gold focus-visible:ring-offset-1 shadow-sm',
+      'bg-cream text-ink border border-ink/10 hover:bg-cream-deep hover:border-ink/20 focus-visible:ring-silver focus-visible:ring-offset-1 shadow-sm',
     ghost:
-      'bg-transparent text-ink-soft hover:bg-cream-deep hover:text-ink focus-visible:ring-gold focus-visible:ring-offset-1',
-    icon: 'bg-transparent text-ink-soft hover:text-ink hover:bg-cream-deep focus-visible:ring-gold focus-visible:ring-offset-1 rounded-full',
+      'bg-transparent text-ink-soft hover:bg-cream-deep hover:text-ink focus-visible:ring-silver focus-visible:ring-offset-1',
+    icon: 'bg-transparent text-ink-soft hover:text-ink hover:bg-cream-deep focus-visible:ring-silver focus-visible:ring-offset-1 rounded-full',
   };
 
   const sizes = {

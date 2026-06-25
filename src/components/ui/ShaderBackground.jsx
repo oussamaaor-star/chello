@@ -56,7 +56,7 @@ void main(void) {
     uv+=.1*cos(i*vec2(.1+.01*i,.8)+i*i+T*.5+.1*uv.x);
     vec2 p=uv;
     float d=length(p);
-    /* amber/gold tones: warm orange-gold palette */
+    /* amber/silver tones: warm orange-silver palette */
     col+=.00125/d*(cos(sin(i)*vec3(1.2,0.8,0.2))+1.);
     float b=noise(i+p+bg*1.731);
     col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));

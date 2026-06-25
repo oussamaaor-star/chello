@@ -62,8 +62,8 @@ export function Footer() {
             { Icon: MessageCircle, title: t('footerReassSupT'),  sub: t('footerReassSupSub')  },
           ].map(({ Icon, title, sub }) => (
             <div key={title} className="flex items-center gap-3">
-              <span className="flex-shrink-0 w-10 h-10 rounded-full border border-gold/40 flex items-center justify-center">
-                <Icon className="w-4 h-4 text-gold-light" />
+              <span className="flex-shrink-0 w-10 h-10 rounded-full border border-silver/40 flex items-center justify-center">
+                <Icon className="w-4 h-4 text-silver-light" />
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-cream leading-tight">{title}</p>
@@ -91,7 +91,7 @@ export function Footer() {
                 <WhatsAppIcon />
               </a>
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-                className="w-9 h-9 flex items-center justify-center rounded-full border border-cream/15 text-cream/60 hover:border-gold hover:text-gold-light transition-all duration-200">
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-cream/15 text-cream/60 hover:border-silver hover:text-silver-light transition-all duration-200">
                 <InstagramIcon />
               </a>
             </div>
@@ -152,7 +152,7 @@ export function Footer() {
             </h3>
             <p className="text-xs sm:text-sm text-cream/50 mb-3 sm:mb-5 leading-relaxed">
               {t('footerNlDesc')}
-              <span className="block mt-1 text-gold-light font-medium">{t('footerNlDiscount')}</span>
+              <span className="block mt-1 text-silver-light font-medium">{t('footerNlDiscount')}</span>
             </p>
             <Link to="/#newsletter"
               className="inline-flex items-center gap-2 px-4 py-2.5 border border-cream/30 hover:border-cream text-cream text-xs sm:text-sm font-medium uppercase tracking-wide rounded-full transition-colors">

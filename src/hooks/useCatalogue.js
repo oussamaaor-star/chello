@@ -25,6 +25,7 @@ export function normalizeDbProduct(row) {
     price: row.price != null ? Number(row.price) : null,
     images: row.images ?? [],
     sizes: Array.isArray(row.sizes) ? row.sizes : [],
+    colors: Array.isArray(row.colors) ? row.colors : [],
     featured: row.featured ?? false,
     isNew: row.is_new ?? false,
     tags: row.is_bestseller ? ['bestseller'] : [],

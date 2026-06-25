@@ -73,7 +73,7 @@ export default function Blog() {
 
         {/* En-tête */}
         <div className="text-center mb-10">
-          <p className="text-gold font-bold uppercase tracking-widest text-xs mb-3 flex items-center justify-center gap-2">
+          <p className="text-silver font-bold uppercase tracking-widest text-xs mb-3 flex items-center justify-center gap-2">
             <BookOpen className="w-4 h-4" /> {t('blogEyebrow')}
           </p>
           <h1 className="text-4xl sm:text-5xl font-serif text-ink mb-4">{t('blogTitle')}</h1>
@@ -90,7 +90,7 @@ export default function Blog() {
               onClick={() => setActiveCategory(value)}
               className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
                 activeCategory === value
-                  ? 'bg-gold text-cream'
+                  ? 'bg-silver text-cream'
                   : 'bg-cream-deep text-ink-soft hover:bg-ink/5 hover:text-ink'
               }`}
             >
@@ -121,20 +121,20 @@ export default function Blog() {
               <div className="absolute inset-0 p-6 sm:p-12 flex flex-col justify-end">
                 <div className="max-w-3xl">
                   <div className="flex flex-wrap items-center gap-4 mb-4">
-                    <span className="px-3 py-1 bg-gold/20 text-gold-light text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-md">
+                    <span className="px-3 py-1 bg-silver/20 text-silver-light text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-md">
                       {heroArticle.category}
                     </span>
                     <span className="text-cream/70 text-xs flex items-center gap-1.5 font-medium">
                       <Clock className="w-3.5 h-3.5" /> {heroArticle.readTime}
                     </span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-cream mb-4 sm:mb-6 group-hover:text-gold-light transition-colors">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-cream mb-4 sm:mb-6 group-hover:text-silver-light transition-colors">
                     {heroArticle.title}
                   </h2>
                   <p className="hidden sm:block text-cream/70 text-lg mb-6 max-w-2xl">
                     {heroArticle.excerpt}
                   </p>
-                  <div className="inline-flex items-center gap-2 text-cream font-bold text-sm uppercase tracking-wider group-hover:text-gold transition-colors">
+                  <div className="inline-flex items-center gap-2 text-cream font-bold text-sm uppercase tracking-wider group-hover:text-silver transition-colors">
                     {t('blogLireArticle')} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -159,7 +159,7 @@ export default function Blog() {
                       onError={(e) => handleCoverError(e, article.id ?? article.slug)}
                     />
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-ink/70 text-gold-light text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-md">
+                      <span className="px-3 py-1 bg-ink/70 text-silver-light text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-md">
                         {article.category}
                       </span>
                     </div>
@@ -170,13 +170,13 @@ export default function Blog() {
                       <span>&bull;</span>
                       <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {article.readTime}</span>
                     </div>
-                    <h3 className="text-xl font-serif text-ink mb-3 group-hover:text-gold transition-colors leading-snug">
+                    <h3 className="text-xl font-serif text-ink mb-3 group-hover:text-silver transition-colors leading-snug">
                       {article.title}
                     </h3>
                     <p className="text-ink-soft text-sm mb-6 flex-1 line-clamp-3">
                       {article.excerpt}
                     </p>
-                    <div className="flex items-center gap-2 text-gold font-bold text-xs uppercase tracking-widest mt-auto">
+                    <div className="flex items-center gap-2 text-silver font-bold text-xs uppercase tracking-widest mt-auto">
                       {t('blogLire')} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </div>
                   </div>

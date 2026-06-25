@@ -27,7 +27,7 @@ function Field({ label, id, icon: Icon, error, ...props }) {
             focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all
             ${error
               ? 'border-red-500 bg-red-50 focus:ring-red-500/30 focus:border-red-500'
-              : 'border-ink/10 bg-cream focus:ring-gold/30 focus:border-gold hover:border-ink/20'
+              : 'border-ink/10 bg-cream focus:ring-silver/30 focus:border-silver hover:border-ink/20'
             }`}
           {...props}
         />
@@ -97,7 +97,7 @@ function AvatarSection() {
 
   return (
     <div className="bg-cream-deep rounded-2xl border border-ink/10 shadow-sm p-6">
-      <h3 className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-5">
+      <h3 className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-5">
         {t('profilePhotoLabel')}
       </h3>
 
@@ -107,7 +107,7 @@ function AvatarSection() {
           <button
             type="button"
             onClick={() => !isBusy && fileInputRef.current?.click()}
-            className="group relative w-24 h-24 rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+            className="group relative w-24 h-24 rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-silver focus:ring-offset-2"
             aria-label={t('profileModifierPhoto')}
             disabled={isBusy}
           >
@@ -120,7 +120,7 @@ function AvatarSection() {
               />
             ) : (
               <div className="w-full h-full bg-cream-deep flex items-center justify-center">
-                <span className="text-2xl font-bold text-gold select-none">{initials}</span>
+                <span className="text-2xl font-bold text-silver select-none">{initials}</span>
               </div>
             )}
 
@@ -281,7 +281,7 @@ export default function Profile() {
 
       {/* ── Formulaire infos personnelles ── */}
       <div className="bg-cream-deep rounded-2xl border border-ink/10 shadow-sm p-6">
-        <h3 className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-5">
+        <h3 className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-5">
           {t('profileInfosPerso')}
         </h3>
 
@@ -349,7 +349,7 @@ export default function Profile() {
 
       {/* ── Sécurité ── */}
       <div className="bg-cream-deep rounded-2xl border border-ink/10 shadow-sm p-6">
-        <h3 className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-4">
+        <h3 className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-4">
           {t('profileSecurite')}
         </h3>
         <div className="flex items-center justify-between">

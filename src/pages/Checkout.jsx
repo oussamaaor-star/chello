@@ -84,7 +84,7 @@ export default function Checkout() {
             <textarea name="notes" value={form.notes} onChange={handleChange} placeholder={lang === 'ar' ? 'ملاحظات (اختياري)' : 'Notes (optional)'} rows={3} className={inputClass} />
 
             <div className="border border-ink/15 rounded-xl px-4 py-3 text-ink">
-              {lang === 'ar' ? 'طريقة الدفع' : 'Payment method'}: <span className="text-gold-deep font-medium">{lang === 'ar' ? 'الدفع عند الاستلام' : 'Cash on delivery'}</span>
+              {lang === 'ar' ? 'طريقة الدفع' : 'Payment method'}: <span className="text-silver-deep font-medium">{lang === 'ar' ? 'الدفع عند الاستلام' : 'Cash on delivery'}</span>
             </div>
 
             {error && <p className="text-red-600 text-sm">{error}</p>}

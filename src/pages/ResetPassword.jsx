@@ -85,8 +85,8 @@ export default function ResetPassword() {
     return (
       <AuthLayout>
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gold/10 mb-5">
-            <KeyRound className="w-8 h-8 text-gold" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-silver/10 mb-5">
+            <KeyRound className="w-8 h-8 text-silver" />
           </div>
           <h1 className="text-2xl font-serif italic text-ink mb-2">{t('resetInvalidTitle')}</h1>
           <p className="text-sm text-ink-soft leading-relaxed max-w-sm mx-auto mb-7">
@@ -118,7 +118,7 @@ export default function ResetPassword() {
           </p>
           <Link
             to="/connexion"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-gold transition-colors underline underline-offset-2"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-silver transition-colors underline underline-offset-2"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('loginSubmit')}

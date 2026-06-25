@@ -13,7 +13,7 @@ export default function PolitiqueConfidentialite() {
   return (
     <LegalLayout title="سياسة الخصوصية" updatedAt="يونيو 2026">
 
-      <p className="text-sm text-ink-soft mb-8 p-4 bg-cream border border-gold-deep/10 rounded-xl leading-relaxed">
+      <p className="text-sm text-ink-soft mb-8 p-4 bg-cream border border-silver-deep/10 rounded-xl leading-relaxed">
         في متجر Chello، حماية بياناتك الشخصية أولوية. توضح هذه السياسة كيف نجمع
         ونستخدم ونحمي معلوماتك.
       </p>
@@ -49,8 +49,8 @@ export default function PolitiqueConfidentialite() {
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="bg-cream">
-                <th className="text-right p-3 border border-gold-deep/10 font-semibold text-ink">الغرض</th>
-                <th className="text-right p-3 border border-gold-deep/10 font-semibold text-ink">الأساس القانوني</th>
+                <th className="text-right p-3 border border-silver-deep/10 font-semibold text-ink">الغرض</th>
+                <th className="text-right p-3 border border-silver-deep/10 font-semibold text-ink">الأساس القانوني</th>
               </tr>
             </thead>
             <tbody>
@@ -63,8 +63,8 @@ export default function PolitiqueConfidentialite() {
                 ['مكافحة الاحتيال', 'مصلحة مشروعة'],
               ].map(([fin, base]) => (
                 <tr key={fin} className="even:bg-cream/50">
-                  <td className="p-3 border border-gold-deep/10 text-ink-soft">{fin}</td>
-                  <td className="p-3 border border-gold-deep/10 text-ink-soft">{base}</td>
+                  <td className="p-3 border border-silver-deep/10 text-ink-soft">{fin}</td>
+                  <td className="p-3 border border-silver-deep/10 text-ink-soft">{base}</td>
                 </tr>
               ))}
             </tbody>
@@ -89,8 +89,8 @@ export default function PolitiqueConfidentialite() {
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="bg-cream">
-                <th className="text-right p-3 border border-gold-deep/10 font-semibold text-ink">فئة البيانات</th>
-                <th className="text-right p-3 border border-gold-deep/10 font-semibold text-ink">مدة الاحتفاظ</th>
+                <th className="text-right p-3 border border-silver-deep/10 font-semibold text-ink">فئة البيانات</th>
+                <th className="text-right p-3 border border-silver-deep/10 font-semibold text-ink">مدة الاحتفاظ</th>
               </tr>
             </thead>
             <tbody>
@@ -101,8 +101,8 @@ export default function PolitiqueConfidentialite() {
                 ['ملفات تعريف الارتباط التحليلية', '13 شهراً كحد أقصى'],
               ].map(([cat, dur]) => (
                 <tr key={cat} className="even:bg-cream/50">
-                  <td className="p-3 border border-gold-deep/10 text-ink-soft">{cat}</td>
-                  <td className="p-3 border border-gold-deep/10 text-ink-soft">{dur}</td>
+                  <td className="p-3 border border-silver-deep/10 text-ink-soft">{cat}</td>
+                  <td className="p-3 border border-silver-deep/10 text-ink-soft">{dur}</td>
                 </tr>
               ))}
             </tbody>
@@ -119,7 +119,7 @@ export default function PolitiqueConfidentialite() {
             { r: 'حق الحذف', d: 'طلب حذف بياناتك.' },
             { r: 'حق الاعتراض', d: 'الاعتراض على بعض المعالجات.' },
           ].map(({ r, d }) => (
-            <div key={r} className="bg-cream rounded-xl p-3.5 border border-gold-deep/10">
+            <div key={r} className="bg-cream rounded-xl p-3.5 border border-silver-deep/10">
               <p className="font-semibold text-ink text-sm">{r}</p>
               <p className="text-ink-soft text-xs mt-0.5">{d}</p>
             </div>

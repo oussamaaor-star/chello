@@ -87,7 +87,7 @@ function InfoCard({ icon: Icon, title, children }) {
         <div className="w-7 h-7 rounded-lg bg-cream flex items-center justify-center flex-shrink-0">
           <Icon className="w-3.5 h-3.5 text-ink-soft" />
         </div>
-        <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep">{title}</p>
+        <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep">{title}</p>
       </div>
       {children}
     </div>
@@ -105,7 +105,7 @@ export default function OrderDetail() {
   const STATUS = {
     pending:    { label: t('orderStatusEnAttente'),  bg: 'bg-cream-deep',     text: 'text-ink-soft',      border: 'border-ink/10',       icon: Clock       },
     confirmed:  { label: t('orderStatusConfirmee'),  bg: 'bg-blue-50',        text: 'text-blue-600',      border: 'border-blue-200',     icon: CheckCircle },
-    processing: { label: t('orderStatusEnCours'),    bg: 'bg-gold/10',        text: 'text-gold-deep',     border: 'border-gold/20',      icon: Clock       },
+    processing: { label: t('orderStatusEnCours'),    bg: 'bg-silver/10',        text: 'text-silver-deep',     border: 'border-silver/20',      icon: Clock       },
     shipped:    { label: t('orderStatusEnLivraison'),bg: 'bg-indigo-50',      text: 'text-indigo-600',    border: 'border-indigo-200',   icon: Truck       },
     delivered:  { label: t('orderStatusLivree'),     bg: 'bg-emerald-50',     text: 'text-emerald-600',   border: 'border-emerald-200',  icon: CheckCircle },
     cancelled:  { label: t('orderStatusAnnulee'),    bg: 'bg-red-50',         text: 'text-red-500',       border: 'border-red-200',      icon: X           },
@@ -116,7 +116,7 @@ export default function OrderDetail() {
     paid:           { label: t('payStatusPaye'),      color: 'text-emerald-600'  },
     simulated_paid: { label: t('payStatusSimule'),    color: 'text-blue-600'    },
     failed:         { label: t('payStatusEchoue'),    color: 'text-red-500'     },
-    refunded:       { label: t('payStatusRembourse'), color: 'text-gold'        },
+    refunded:       { label: t('payStatusRembourse'), color: 'text-silver'        },
   };
 
   const TRACKER_STEPS = [
@@ -406,7 +406,7 @@ export default function OrderDetail() {
               {/* Méthode */}
               <div className="flex items-center gap-2">
                 {order.delivery_method === 'express' ? (
-                  <Zap className="w-4 h-4 text-gold flex-shrink-0" />
+                  <Zap className="w-4 h-4 text-silver flex-shrink-0" />
                 ) : (
                   <Truck className="w-4 h-4 text-ink-soft flex-shrink-0" />
                 )}
@@ -473,7 +473,7 @@ export default function OrderDetail() {
                       href={CARRIER_CONFIG[order.carrier].url(order.tracking_number)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-soft/60 hover:text-gold-deep transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-soft/60 hover:text-silver-deep transition-colors"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       {t('orderDetailSuivreColis')}

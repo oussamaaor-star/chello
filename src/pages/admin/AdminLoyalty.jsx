@@ -64,7 +64,7 @@ export default function AdminLoyalty() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Scanner le code-barres ou taper le numéro WhatsApp"
-            className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold/40"
+            className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-silver/40"
           />
         </div>
         <button type="submit" disabled={searching} className="bg-ink text-cream rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-ink/90 transition-colors">
@@ -82,7 +82,7 @@ export default function AdminLoyalty() {
               <p className="text-sm text-ink-soft">{found.whatsapp}</p>
             </div>
             {rewardReady(found.visits_count) && (
-              <span className="flex items-center gap-1.5 bg-gold/10 text-gold-deep rounded-full px-3 py-1.5 text-sm font-medium">
+              <span className="flex items-center gap-1.5 bg-silver/10 text-silver-deep rounded-full px-3 py-1.5 text-sm font-medium">
                 <Gift size={14} /> Récompense disponible
               </span>
             )}
@@ -90,11 +90,11 @@ export default function AdminLoyalty() {
           <div className="flex items-center gap-4">
             <div className="flex gap-1.5">
               {Array.from({ length: 8 }, (_, i) => (
-                <div key={i} className={`w-6 h-6 rounded-full ${i < currentCycle(found.visits_count) ? 'bg-gold' : 'bg-cream-deep'}`} />
+                <div key={i} className={`w-6 h-6 rounded-full ${i < currentCycle(found.visits_count) ? 'bg-silver' : 'bg-cream-deep'}`} />
               ))}
             </div>
             <span className="text-sm text-ink-soft">{currentCycle(found.visits_count)} / 8</span>
-            <button onClick={() => addVisit(found)} className="flex items-center gap-1.5 bg-gold text-cream rounded-xl px-4 py-2 text-sm font-medium ml-auto hover:bg-gold-deep transition-colors">
+            <button onClick={() => addVisit(found)} className="flex items-center gap-1.5 bg-silver text-cream rounded-xl px-4 py-2 text-sm font-medium ml-auto hover:bg-silver-deep transition-colors">
               <Plus size={14} /> Ajouter une visite
             </button>
           </div>
@@ -119,7 +119,7 @@ export default function AdminLoyalty() {
                 <td className="px-4 py-3 text-ink-soft">{m.whatsapp}</td>
                 <td className="px-4 py-3 text-ink">{currentCycle(m.visits_count)} / 8 {rewardReady(m.visits_count) && '🎁'}</td>
                 <td className="px-4 py-3">
-                  <button onClick={() => addVisit(m)} className="text-gold-deep hover:underline text-sm">+1 visite</button>
+                  <button onClick={() => addVisit(m)} className="text-silver-deep hover:underline text-sm">+1 visite</button>
                 </td>
               </tr>
             ))}

@@ -25,14 +25,14 @@ export function CookieBanner() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 justify-between">
         <p className="text-cream/80 text-xs sm:text-sm leading-relaxed flex-1">
           {t('cookieText')}{' '}
-          <Link to="/politique-confidentialite" className="text-gold-light underline hover:text-gold">
+          <Link to="/politique-confidentialite" className="text-silver-light underline hover:text-silver">
             {t('cookiePolitique')}
           </Link>.
         </p>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={accept}
-            className="px-4 py-2 bg-gold hover:bg-gold-light text-cream text-xs font-bold rounded-xl transition-colors"
+            className="px-4 py-2 bg-silver hover:bg-silver-light text-cream text-xs font-bold rounded-xl transition-colors"
           >
             {t('cookieAccept')}
           </button>

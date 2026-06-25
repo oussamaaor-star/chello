@@ -141,7 +141,7 @@ export default function AdminPromos() {
                 onChange={(e) => setForm((p) => ({ ...p, code: e.target.value.toUpperCase() }))}
                 placeholder="EX: CHELLO10"
                 maxLength={20}
-                className="w-full px-4 py-2.5 rounded-xl border border-ink/10 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gold/40 transition-all"
+                className="w-full px-4 py-2.5 rounded-xl border border-ink/10 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
               />
             </div>
             <div>
@@ -152,7 +152,7 @@ export default function AdminPromos() {
                 value={form.discount_percent}
                 onChange={(e) => setForm((p) => ({ ...p, discount_percent: e.target.value }))}
                 placeholder="10"
-                className="w-full px-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-all"
+                className="w-full px-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
               />
             </div>
             <div>
@@ -161,7 +161,7 @@ export default function AdminPromos() {
                 type="date"
                 value={form.expires_at}
                 onChange={(e) => setForm((p) => ({ ...p, expires_at: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-all"
+                className="w-full px-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
               />
             </div>
           </div>

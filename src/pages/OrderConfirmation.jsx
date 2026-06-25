@@ -43,9 +43,9 @@ export default function OrderConfirmation() {
       <div className="py-12 sm:py-20 bg-cream-deep">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-ink mb-6">
-            <CheckCircle className="w-9 h-9 text-gold-light" strokeWidth={1.5} />
+            <CheckCircle className="w-9 h-9 text-silver-light" strokeWidth={1.5} />
           </div>
-          <p className="text-gold-deep text-xs font-bold uppercase tracking-widest mb-3">
+          <p className="text-silver-deep text-xs font-bold uppercase tracking-widest mb-3">
             {lang === 'ar' ? 'تم بنجاح' : 'Success'}
           </p>
           <h1 className="text-3xl sm:text-4xl font-serif italic text-ink mb-4 leading-tight">

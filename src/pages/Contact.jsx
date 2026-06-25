@@ -16,7 +16,7 @@ function Field({ label, id, icon: Icon, error, multiline, ...props }) {
     focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all
     ${error
       ? 'border-red-500 bg-red-50 focus:ring-red-500/30 focus:border-red-500'
-      : 'border-ink/10 bg-cream focus:ring-gold/30 focus:border-gold hover:border-ink/20'}`;
+      : 'border-ink/10 bg-cream focus:ring-silver/30 focus:border-silver hover:border-ink/20'}`;
 
   return (
     <div>
@@ -43,8 +43,8 @@ function Field({ label, id, icon: Icon, error, multiline, ...props }) {
 function InfoCard({ icon: Icon, title, children }) {
   return (
     <div className="flex items-start gap-4 p-5 bg-cream-deep rounded-2xl border border-ink/10">
-      <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
-        <Icon className="w-5 h-5 text-gold" />
+      <div className="w-10 h-10 rounded-xl bg-silver/10 flex items-center justify-center flex-shrink-0">
+        <Icon className="w-5 h-5 text-silver" />
       </div>
       <div className="min-w-0">
         <p className="text-sm font-semibold text-ink mb-1">{title}</p>
@@ -125,7 +125,7 @@ export default function Contact() {
           <nav className="flex items-center gap-1.5 text-xs text-ink-soft uppercase tracking-widest mb-5">
             <Link to="/" className="hover:text-ink transition-colors">{t('breadcrumbAccueil')}</Link>
             <ChevronRight className="w-3 h-3 opacity-50" />
-            <span className="text-gold">{t('contactTitle')}</span>
+            <span className="text-silver">{t('contactTitle')}</span>
           </nav>
           <h1 className="text-3xl sm:text-4xl font-serif italic text-ink mb-3 leading-tight">
             {t('contactTitle')}
@@ -140,7 +140,7 @@ export default function Contact() {
               <a
                 href={`mailto:contact@chello.om`}
                 title="contact@chello.om"
-                className="hover:text-gold transition-colors"
+                className="hover:text-silver transition-colors"
               >
                 contact@chello.om
               </a>
@@ -276,7 +276,7 @@ export default function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep">WhatsApp</p>
+                  <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep">WhatsApp</p>
                   <p className="text-sm font-semibold text-ink mt-0.5">+{SHOP_CONFIG.wa_number}</p>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function Contact() {
                 <div className="w-8 h-8 rounded-lg bg-cream flex items-center justify-center">
                   <Clock className="w-4 h-4 text-ink-soft" />
                 </div>
-                <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep">{t('contactHoraires')}</p>
+                <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep">{t('contactHoraires')}</p>
               </div>
               <div className="space-y-2 text-sm">
                 {[
@@ -311,13 +311,13 @@ export default function Contact() {
             {/* Lien FAQ */}
             <Link
               to="/faq"
-              className="flex items-center justify-between p-5 bg-gold/10 border border-gold/20 rounded-2xl hover:bg-gold/15 transition-colors group"
+              className="flex items-center justify-between p-5 bg-silver/10 border border-silver/20 rounded-2xl hover:bg-silver/15 transition-colors group"
             >
               <div>
-                <p className="text-sm font-semibold text-gold-deep">{t('faqContactBtn')}</p>
-                <p className="text-xs text-gold mt-0.5">{t('faqContact')}</p>
+                <p className="text-sm font-semibold text-silver-deep">{t('faqContactBtn')}</p>
+                <p className="text-xs text-silver mt-0.5">{t('faqContact')}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-gold group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-silver group-hover:translate-x-0.5 transition-transform" />
             </Link>
 
           </div>

@@ -61,7 +61,7 @@ export default function RegisterLoyalty() {
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-16 bg-ink">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Gem className="mx-auto text-gold-light mb-4" size={28} strokeWidth={1.5} />
+          <Gem className="mx-auto text-silver-light mb-4" size={28} strokeWidth={1.5} />
           <h1 className="font-serif italic text-3xl text-cream mb-2">{t('loyaltyRegisterTitle')}</h1>
           <p className="text-cream/50">{t('loyaltyRegisterSubtitle')}</p>
         </div>
@@ -75,7 +75,7 @@ export default function RegisterLoyalty() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder={t('loyaltyFullNamePlaceholder')}
-                className="w-full bg-cream-deep border border-ink/10 rounded-xl py-3 ps-10 pe-4 text-ink placeholder-ink-soft/40 focus:border-gold outline-none"
+                className="w-full bg-cream-deep border border-ink/10 rounded-xl py-3 ps-10 pe-4 text-ink placeholder-ink-soft/40 focus:border-silver outline-none"
               />
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function RegisterLoyalty() {
               <select
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
-                className="bg-cream-deep border border-ink/10 rounded-xl px-2 text-ink focus:border-gold outline-none"
+                className="bg-cream-deep border border-ink/10 rounded-xl px-2 text-ink focus:border-silver outline-none"
               >
                 <option value="+968">OM +968</option>
                 <option value="+971">AE +971</option>
@@ -101,7 +101,7 @@ export default function RegisterLoyalty() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
                   placeholder={t('loyaltyWhatsappPlaceholder')}
-                  className="w-full bg-cream-deep border border-ink/10 rounded-xl py-3 ps-10 pe-4 text-ink placeholder-ink-soft/40 focus:border-gold outline-none"
+                  className="w-full bg-cream-deep border border-ink/10 rounded-xl py-3 ps-10 pe-4 text-ink placeholder-ink-soft/40 focus:border-silver outline-none"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function RegisterLoyalty() {
 
         <p className="text-center text-sm text-cream/50 mt-6">
           {t('loyaltyAlreadyMember')}{' '}
-          <Link to="/fidelite/retrouver" className="text-gold-light hover:underline">{t('loyaltyFindCard')}</Link>
+          <Link to="/fidelite/retrouver" className="text-silver-light hover:underline">{t('loyaltyFindCard')}</Link>
         </p>
       </div>
     </div>

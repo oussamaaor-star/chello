@@ -22,13 +22,13 @@ export function CartSummary() {
       {/* Free-shipping progress bar */}
       {!isFreeShipping && totalPrice > 0 && (
         <div>
-          <p className="text-[10px] font-bold text-gold-deep uppercase tracking-widest mb-1 flex items-center gap-1.5">
+          <p className="text-[10px] font-bold text-silver-deep uppercase tracking-widest mb-1 flex items-center gap-1.5">
             <Sparkles className="w-3 h-3" />
             {t('cartProgressBar', { n: remaining.toFixed(0) })}
           </p>
           <div className="h-1 w-full bg-cream-deep rounded-full overflow-hidden">
             <div
-              className="h-full bg-gold rounded-full transition-all duration-700 ease-out"
+              className="h-full bg-silver rounded-full transition-all duration-700 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>

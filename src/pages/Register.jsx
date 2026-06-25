@@ -28,7 +28,7 @@ function PasswordStrength({ password, labels }) {
   const levels = [
     { label: labels[0], color: 'bg-red-500',    width: 'w-1/4' },
     { label: labels[1], color: 'bg-orange-400', width: 'w-2/4' },
-    { label: labels[2], color: 'bg-gold',       width: 'w-3/4' },
+    { label: labels[2], color: 'bg-silver',       width: 'w-3/4' },
     { label: labels[3], color: 'bg-emerald-500', width: 'w-full' },
   ];
   const level = levels[score - 1] ?? levels[0];
@@ -156,10 +156,10 @@ export default function Register() {
     <AuthLayout>
       {/* Titre */}
       <div className="mb-5">
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.4)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.4)" duration={0.35}>
           <h1 className="text-2xl font-serif italic text-ink mb-1">{t('registerTitle')}</h1>
         </BoxReveal>
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.3)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.3)" duration={0.35}>
           <p className="text-sm text-ink-soft">
             {t('registerSubtitle')}
           </p>
@@ -177,7 +177,7 @@ export default function Register() {
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3">
 
         {/* Nom */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.35)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="name" className="block text-sm font-medium text-ink">{t('registerNom')}</label>
             <AnimatedInput
@@ -192,7 +192,7 @@ export default function Register() {
         </BoxReveal>
 
         {/* Email */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.35)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="block text-sm font-medium text-ink">{t('registerEmail')}</label>
             <AnimatedInput
@@ -207,7 +207,7 @@ export default function Register() {
         </BoxReveal>
 
         {/* Mot de passe */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.35)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <div>
             <PasswordField
               label={t('registerPassword')}
@@ -222,7 +222,7 @@ export default function Register() {
         </BoxReveal>
 
         {/* Confirmation */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.35)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <PasswordField
             label={t('registerConfirm')}
             id="confirm" name="confirm"
@@ -242,7 +242,7 @@ export default function Register() {
                   ? 'bg-ink border-ink'
                   : errors.terms
                   ? 'border-red-500'
-                  : 'border-ink/30 group-hover:border-gold'
+                  : 'border-ink/30 group-hover:border-silver'
               }`}
               onClick={() => {
                 setAccepted((v) => !v);
@@ -257,7 +257,7 @@ export default function Register() {
             </div>
             <span className="text-sm text-ink-soft select-none leading-snug">
               {t('registerCgu')}{' '}
-              <Link to="/cgv" target="_blank" rel="noopener noreferrer" className="text-gold font-medium underline underline-offset-2 hover:text-gold-deep transition-colors">
+              <Link to="/cgv" target="_blank" rel="noopener noreferrer" className="text-silver font-medium underline underline-offset-2 hover:text-silver-deep transition-colors">
                 {t('registerCguLink')}
               </Link>
             </span>
@@ -266,7 +266,7 @@ export default function Register() {
         </div>
 
         {/* Bouton */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.4)" duration={0.35} overflow="visible">
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.4)" duration={0.35} overflow="visible">
           <button
             type="submit"
             disabled={isLoading}
@@ -292,10 +292,10 @@ export default function Register() {
         <div className="flex-1 h-px bg-ink/10" />
       </div>
 
-      <BoxReveal width="100%" boxColor="rgba(184,145,90,0.3)" duration={0.35} overflow="visible">
+      <BoxReveal width="100%" boxColor="rgba(158,158,158,0.3)" duration={0.35} overflow="visible">
         <p className="text-sm text-center text-ink-soft">
           {t('registerDejaCompte')}{' '}
-          <Link to="/connexion" className="font-semibold text-gold hover:text-gold-deep transition-colors underline underline-offset-2">
+          <Link to="/connexion" className="font-semibold text-silver hover:text-silver-deep transition-colors underline underline-offset-2">
             {t('registerConnecter')}
           </Link>
         </p>

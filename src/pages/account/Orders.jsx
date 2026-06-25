@@ -13,7 +13,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 const STATUS = {
   pending:    { labelKey: 'orderStatusEnAttente',  color: 'bg-cream-deep text-ink-soft',       icon: Clock        },
   confirmed:  { labelKey: 'orderStatusConfirmee',  color: 'bg-blue-50 text-blue-600',          icon: CheckCircle  },
-  processing: { labelKey: 'orderStatusEnCours',    color: 'bg-gold/10 text-gold-deep',         icon: Clock        },
+  processing: { labelKey: 'orderStatusEnCours',    color: 'bg-silver/10 text-silver-deep',         icon: Clock        },
   shipped:    { labelKey: 'orderStatusEnLivraison',color: 'bg-indigo-50 text-indigo-600',      icon: Truck        },
   delivered:  { labelKey: 'orderStatusLivree',     color: 'bg-emerald-50 text-emerald-600',    icon: CheckCircle  },
   cancelled:  { labelKey: 'orderStatusAnnulee',    color: 'bg-red-50 text-red-500',            icon: X            },

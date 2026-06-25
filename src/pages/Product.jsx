@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { MessageCircle, ArrowRight } from 'lucide-react';
+import { MessageCircle, ArrowRight, Ruler } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSEO } from '../hooks/useSEO';
 import { buildTitle } from '../utils/seo';
@@ -10,6 +10,8 @@ import { useCart } from '../hooks/useCart';
 import { useCartDrawer } from '../hooks/useCartDrawer';
 import { SHOP_CONFIG } from '../utils/config';
 import { ProductCard } from '../components/product/ProductCard';
+import { ProductTabs } from '../components/product/ProductTabs';
+import { SizeGuideModal } from '../components/product/SizeGuideModal';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { fadeUp, stagger, EASE } from '../lib/motion';
 
@@ -37,7 +39,9 @@ export default function Product() {
   });
 
   const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
   if (!product) {
     return (
@@ -51,7 +55,7 @@ export default function Product() {
   const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const handleAddToCart = () => {
-    addToCart(product, selectedSize);
+    addToCart(product, selectedSize, 1, selectedColor);
     open();
   };
 
@@ -97,7 +101,7 @@ export default function Product() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
           >
-            <p className="text-gold-deep text-[11px] font-semibold tracking-[0.3em] uppercase mb-4">
+            <p className="text-silver-deep text-[11px] font-semibold tracking-[0.3em] uppercase mb-4">
               {product.isNew ? (lang === 'ar' ? 'جديد' : 'New') : 'Chello'}
             </p>
             <h1 className="font-serif italic text-2xl sm:text-3xl text-ink mb-3">{product.name}</h1>
@@ -109,7 +113,16 @@ export default function Product() {
 
             {product.sizes?.length > 0 && (
               <div className="mb-8">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft/70 mb-3">{lang === 'ar' ? 'المقاس' : 'Size'}</p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft/70">{lang === 'ar' ? 'المقاس' : 'Size'}</p>
+                  <button
+                    onClick={() => setSizeGuideOpen(true)}
+                    className="flex items-center gap-1.5 text-[11px] font-medium text-silver-deep hover:text-ink transition-colors"
+                  >
+                    <Ruler className="w-3.5 h-3.5" />
+                    {t('sizeGuideLink')}
+                  </button>
+                </div>
                 <div className="flex gap-2.5">
                   {product.sizes.map((size) => (
                     <button
@@ -120,6 +133,29 @@ export default function Product() {
                       }`}
                     >
                       {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {product.colors?.length > 0 && (
+              <div className="mb-8">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft/70 mb-3">{lang === 'ar' ? 'اللون' : 'Color'}{selectedColor ? ` — ${selectedColor}` : ''}</p>
+                <div className="flex gap-2.5">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color.name}
+                      onClick={() => setSelectedColor(color.name)}
+                      title={color.name}
+                      className={`w-10 h-10 rounded-full border-2 transition-all duration-300 active:scale-95 ${
+                        selectedColor === color.name ? 'border-ink scale-110' : 'border-ink/15 hover:border-ink/40'
+                      }`}
+                    >
+                      <span
+                        className="block w-full h-full rounded-full"
+                        style={{ backgroundColor: color.hex }}
+                      />
                     </button>
                   ))}
                 </div>
@@ -155,12 +191,17 @@ export default function Product() {
           </motion.div>
         </div>
 
+        {/* Product tabs (Description, About/Notes, Reviews) */}
+        <section className="mt-16">
+          <ProductTabs product={product} />
+        </section>
+
         {/* Related products */}
         {related.length > 0 && (
           <section className="mt-28">
             <ScrollReveal className="flex items-center justify-between mb-12">
               <div>
-                <p className="text-gold-deep text-[11px] font-semibold tracking-[0.3em] uppercase mb-3">
+                <p className="text-silver-deep text-[11px] font-semibold tracking-[0.3em] uppercase mb-3">
                   {lang === 'ar' ? 'اختاري المزيد' : 'Keep Exploring'}
                 </p>
                 <h2 className="font-serif italic text-2xl sm:text-3xl text-ink">{lang === 'ar' ? 'منتجات مشابهة' : 'You May Also Like'}</h2>
@@ -186,6 +227,7 @@ export default function Product() {
           </section>
         )}
       </div>
+      <SizeGuideModal open={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} />
     </div>
   );
 }

@@ -19,8 +19,8 @@ export default function MentionsLegales() {
           <strong>Chello (تشيللو)</strong> — متجر أزياء نسائية.
         </p>
         <p>
-          <strong className="text-gold-deep">الموقع:</strong> العريمي بوليفارد، الطابق الأول، شارع المطاعم، السيب، مسقط، عُمان<br />
-          <strong className="text-gold-deep">واتساب:</strong> +968 96777671
+          <strong className="text-silver-deep">الموقع:</strong> العريمي بوليفارد، الطابق الأول، شارع المطاعم، السيب، مسقط، عُمان<br />
+          <strong className="text-silver-deep">واتساب:</strong> +968 96777671
         </p>
       </LegalSection>
 
@@ -49,7 +49,7 @@ export default function MentionsLegales() {
       <LegalSection title="4. البيانات الشخصية">
         <p>
           معالجة البيانات الشخصية للمستخدمين موصوفة في{' '}
-          <a href="/politique-confidentialite" className="text-gold-deep underline hover:text-ink transition-colors">
+          <a href="/politique-confidentialite" className="text-silver-deep underline hover:text-ink transition-colors">
             سياسة الخصوصية
           </a>
           . لديك حق الوصول والتصحيح والحذف لبياناتك.

@@ -76,20 +76,20 @@ export default function AccountLayout() {
               {t('breadcrumbAccueil')}
             </Link>
             <ChevronRight className="w-3 h-3 opacity-50" />
-            <span className="text-gold">{t('navMonCompte')}</span>
+            <span className="text-silver">{t('navMonCompte')}</span>
           </nav>
 
           <div className="flex items-center gap-4">
             {/* Avatar */}
-            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-silver/10 border border-silver/20 flex items-center justify-center flex-shrink-0">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={t('profilePhotoLabel')} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-xl font-bold text-gold select-none">{initials}</span>
+                <span className="text-xl font-bold text-silver select-none">{initials}</span>
               )}
             </div>
             <div>
-              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-0.5">{t('navBienvenue')}</p>
+              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-0.5">{t('navBienvenue')}</p>
               <h1 className="text-xl font-serif italic text-ink leading-tight">
                 {user?.name ?? t('navBienvenue')}
               </h1>

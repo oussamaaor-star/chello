@@ -3,9 +3,9 @@ import { Star, Quote } from 'lucide-react';
 import { BorderBeam } from './BorderBeam';
 
 const AMBER_SHADES = [
-  'from-gold/20 via-cream-deep to-cream border-gold/30',
-  'from-gold-deep/15 via-cream-deep to-cream border-gold-deep/20',
-  'from-gold-light/20 via-cream-deep to-cream border-gold-light/25',
+  'from-silver/20 via-cream-deep to-cream border-silver/30',
+  'from-silver-deep/15 via-cream-deep to-cream border-silver-deep/20',
+  'from-silver-light/20 via-cream-deep to-cream border-silver-light/25',
 ];
 
 function ReviewAvatar({ name, index }) {
@@ -13,7 +13,7 @@ function ReviewAvatar({ name, index }) {
   return (
     <div className={`w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center
                      bg-gradient-to-br ${shade} border shadow-inner`}>
-      <span className="text-gold font-serif font-bold text-base leading-none select-none">
+      <span className="text-silver font-serif font-bold text-base leading-none select-none">
         {name.charAt(0).toUpperCase()}
       </span>
     </div>
@@ -77,7 +77,7 @@ function ReviewCard({
                    ${interactionType === 'drag' ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'}`}
     >
       <div className="relative p-5 sm:p-6">
-        <Quote className="absolute top-4 right-5 w-8 h-8 text-gold/10 rotate-180" />
+        <Quote className="absolute top-4 right-5 w-8 h-8 text-silver/10 rotate-180" />
 
         <div className="flex items-center gap-3 mb-4">
           <ReviewAvatar name={review.name} index={index} />
@@ -94,7 +94,7 @@ function ReviewCard({
               <Star
                 key={i}
                 className={`w-3.5 h-3.5 ${
-                  i < (review.rating ?? 5) ? 'text-gold fill-gold' : 'text-ink/15'
+                  i < (review.rating ?? 5) ? 'text-silver fill-silver' : 'text-ink/15'
                 }`}
               />
             ))}
@@ -107,8 +107,8 @@ function ReviewCard({
 
         {review.product && (
           <div className="flex items-center gap-2 pt-3 border-t border-ink/10">
-            <span className="text-gold-deep/50 text-[10px] select-none">◆</span>
-            <p className="text-[11px] text-gold-deep/70 font-medium truncate">{review.product}</p>
+            <span className="text-silver-deep/50 text-[10px] select-none">◆</span>
+            <p className="text-[11px] text-silver-deep/70 font-medium truncate">{review.product}</p>
           </div>
         )}
 

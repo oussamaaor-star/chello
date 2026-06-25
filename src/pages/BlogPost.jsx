@@ -107,7 +107,7 @@ export default function BlogPost() {
           </Link>
 
           <div className="flex flex-wrap justify-center items-center gap-4 mb-6">
-            <span className="px-3 py-1 bg-gold text-cream text-[10px] font-bold uppercase tracking-widest rounded-full">
+            <span className="px-3 py-1 bg-silver text-cream text-[10px] font-bold uppercase tracking-widest rounded-full">
               {article.category}
             </span>
             <span className="text-cream/70 text-xs flex items-center gap-1.5 font-medium">
@@ -150,7 +150,7 @@ export default function BlogPost() {
                   alert(t('blogLienCopie'));
                 }
               }}
-              className="flex items-center gap-2 text-ink-soft hover:text-gold transition-colors text-sm font-bold uppercase tracking-wider"
+              className="flex items-center gap-2 text-ink-soft hover:text-silver transition-colors text-sm font-bold uppercase tracking-wider"
             >
               <Share2 className="w-4 h-4" /> {t('blogPartager')}
             </button>
@@ -175,14 +175,14 @@ export default function BlogPost() {
               <div className="bg-ink border border-ink/15 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div>
                   <h4 className="text-cream font-bold mb-1 flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-gold" />
+                    <Tag className="w-4 h-4 text-silver" />
                     {t('blogPratiquer')}
                   </h4>
                   <p className="text-cream/60 text-sm">{t('blogPratiquerDesc')}</p>
                 </div>
                 <Link
                   to={relatedCategoryTo}
-                  className="w-full sm:w-auto px-6 py-3 bg-gold hover:bg-gold-deep text-cream font-bold rounded-xl transition-all text-center text-sm"
+                  className="w-full sm:w-auto px-6 py-3 bg-silver hover:bg-silver-deep text-cream font-bold rounded-xl transition-all text-center text-sm"
                 >
                   {t('blogVoirSel')}
                 </Link>
@@ -197,7 +197,7 @@ export default function BlogPost() {
       {relatedArticles.length > 0 && (
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pb-10">
           <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="w-5 h-5 text-gold" />
+            <BookOpen className="w-5 h-5 text-silver" />
             <h2 className="text-lg font-serif text-ink">{t('blogSimil')}</h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
@@ -205,7 +205,7 @@ export default function BlogPost() {
               <Link
                 key={related.id}
                 to={`/blog/${related.slug}`}
-                className="group flex flex-col bg-cream-deep border border-ink/10 rounded-2xl overflow-hidden hover:border-gold/30 transition-all"
+                className="group flex flex-col bg-cream-deep border border-ink/10 rounded-2xl overflow-hidden hover:border-silver/30 transition-all"
               >
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
@@ -218,8 +218,8 @@ export default function BlogPost() {
                   />
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
-                  <span className="text-gold text-[10px] font-bold uppercase tracking-wider mb-2">{related.category}</span>
-                  <h3 className="text-sm font-semibold text-ink group-hover:text-gold transition-colors leading-snug flex-1">
+                  <span className="text-silver text-[10px] font-bold uppercase tracking-wider mb-2">{related.category}</span>
+                  <h3 className="text-sm font-semibold text-ink group-hover:text-silver transition-colors leading-snug flex-1">
                     {related.title}
                   </h3>
                   <div className="flex items-center gap-1.5 text-ink-soft/70 text-xs mt-3">

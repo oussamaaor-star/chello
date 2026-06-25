@@ -192,12 +192,12 @@ export default function CashierPOS() {
             <p className="text-2xl font-bold text-ink mb-6">{formatCurrency(saleResult.total)}</p>
 
             {saleResult.loyalty ? (
-              <div className={`rounded-2xl p-5 mb-6 ${saleResult.loyalty.rewardReady ? 'bg-gold/10 border-2 border-gold' : 'bg-cream-deep border border-ink/10'}`}>
+              <div className={`rounded-2xl p-5 mb-6 ${saleResult.loyalty.rewardReady ? 'bg-silver/10 border-2 border-silver' : 'bg-cream-deep border border-ink/10'}`}>
                 <div className="flex items-center justify-center gap-2 mb-3">
                   {saleResult.loyalty.rewardReady ? (
-                    <Sparkles className="w-5 h-5 text-gold" />
+                    <Sparkles className="w-5 h-5 text-silver" />
                   ) : (
-                    <Gift className="w-5 h-5 text-gold" />
+                    <Gift className="w-5 h-5 text-silver" />
                   )}
                   <p className="text-sm font-bold text-ink">
                     {saleResult.loyalty.rewardReady
@@ -212,7 +212,7 @@ export default function CashierPOS() {
                       key={i}
                       className={`w-7 h-7 rounded-full border-2 transition-colors ${
                         i < saleResult.loyalty.stamps
-                          ? 'bg-gold border-gold'
+                          ? 'bg-silver border-silver'
                           : 'bg-white border-ink/15'
                       }`}
                     />
@@ -227,7 +227,7 @@ export default function CashierPOS() {
                 </p>
 
                 {saleResult.loyalty.rewardReady && (
-                  <p className="text-sm font-semibold text-gold-deep mt-2">
+                  <p className="text-sm font-semibold text-silver-deep mt-2">
                     Informez la cliente de sa récompense !
                   </p>
                 )}
@@ -261,7 +261,7 @@ export default function CashierPOS() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Chercher un produit..."
-              className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 bg-white"
+              className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 bg-white"
             />
           </div>
 
@@ -277,7 +277,7 @@ export default function CashierPOS() {
                 <button
                   key={p.id}
                   onClick={() => addToCart(p)}
-                  className="bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden text-left hover:border-gold/30 hover:shadow-md transition-all group"
+                  className="bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden text-left hover:border-silver/30 hover:shadow-md transition-all group"
                 >
                   <div className="aspect-square bg-cream-deep overflow-hidden">
                     <img
@@ -290,10 +290,10 @@ export default function CashierPOS() {
                   <div className="p-3">
                     <p className="text-xs font-semibold text-ink leading-snug line-clamp-2 mb-1">{p.name}</p>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold text-gold-deep">
+                      <p className="text-sm font-bold text-silver-deep">
                         {p.price != null ? formatCurrency(p.price) : 'Sur demande'}
                       </p>
-                      <Plus className="w-4 h-4 text-ink-soft group-hover:text-gold transition-colors" />
+                      <Plus className="w-4 h-4 text-ink-soft group-hover:text-silver transition-colors" />
                     </div>
                   </div>
                 </button>
@@ -306,7 +306,7 @@ export default function CashierPOS() {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-2xl border border-ink/10 shadow-sm sticky top-20">
             <div className="px-5 py-4 border-b border-ink/5 flex items-center gap-2">
-              <ShoppingCart className="w-4 h-4 text-gold" />
+              <ShoppingCart className="w-4 h-4 text-silver" />
               <h2 className="text-sm font-bold uppercase tracking-widest text-ink-soft">Panier ({cart.length})</h2>
             </div>
 
@@ -324,7 +324,7 @@ export default function CashierPOS() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-ink leading-snug line-clamp-2">{item.name}</p>
-                        <p className="text-xs text-gold-deep font-bold mt-0.5">{formatCurrency(item.price)}</p>
+                        <p className="text-xs text-silver-deep font-bold mt-0.5">{formatCurrency(item.price)}</p>
                         {item.selectedSize && (
                           <select
                             value={item.selectedSize}
@@ -370,7 +370,7 @@ export default function CashierPOS() {
                     value={customerPhone}
                     onChange={handlePhoneChange}
                     placeholder="Numéro de téléphone du client"
-                    className="w-full border border-ink/10 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40"
+                    className="w-full border border-ink/10 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
                   />
                   {loyaltySearching && (
                     <Loader2 size={14} className="absolute top-1/2 -translate-y-1/2 right-3 text-ink-soft animate-spin" />
@@ -379,14 +379,14 @@ export default function CashierPOS() {
 
                 {/* Loyalty member found */}
                 {loyaltyMember && (
-                  <div className="bg-gold/5 border border-gold/20 rounded-xl p-3">
+                  <div className="bg-silver/5 border border-silver/20 rounded-xl p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Gift className="w-4 h-4 text-gold" />
+                        <Gift className="w-4 h-4 text-silver" />
                         <span className="text-xs font-bold text-ink">{loyaltyMember.full_name}</span>
                       </div>
                       {isRewardReady(loyaltyMember.visits_count) && (
-                        <span className="text-[10px] font-bold text-gold-deep bg-gold/10 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-bold text-silver-deep bg-silver/10 px-2 py-0.5 rounded-full">
                           🎁 Récompense !
                         </span>
                       )}
@@ -398,7 +398,7 @@ export default function CashierPOS() {
                             key={i}
                             className={`w-5 h-5 rounded-full border-2 ${
                               i < currentCycle(loyaltyMember.visits_count)
-                                ? 'bg-gold border-gold'
+                                ? 'bg-silver border-silver'
                                 : 'bg-white border-ink/15'
                             }`}
                           />
@@ -428,7 +428,7 @@ export default function CashierPOS() {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="Nom du client (optionnel)"
-                    className="w-full border border-ink/10 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40"
+                    className="w-full border border-ink/10 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
                   />
                 </div>
               </div>

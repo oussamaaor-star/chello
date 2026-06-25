@@ -81,7 +81,7 @@ export default function FAQ() {
       id: 'retours',
       icon: RotateCcw,
       label: t('faqRetCat'),
-      color: 'bg-gold/10 text-gold',
+      color: 'bg-silver/10 text-silver',
       items: [
         { q: t('faqRetQ1'), a: t('faqRetA1') },
         { q: t('faqRetQ2'), a: t('faqRetA2') },
@@ -156,7 +156,7 @@ export default function FAQ() {
           <nav className="flex items-center gap-1.5 text-xs text-ink-soft uppercase tracking-widest mb-5">
             <Link to="/" className="hover:text-ink transition-colors">{t('breadcrumbAccueil')}</Link>
             <ChevronRight className="w-3 h-3 opacity-50" />
-            <span className="text-gold">{t('faqBreadcrumb')}</span>
+            <span className="text-silver">{t('faqBreadcrumb')}</span>
           </nav>
           <h1 className="text-3xl sm:text-4xl font-serif italic text-ink mb-3 leading-tight">
             {t('faqTitle')}

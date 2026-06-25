@@ -70,7 +70,7 @@ export default function CashierLoyalty() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Scanner le code, nom ou numéro WhatsApp..."
-            className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 bg-white"
+            className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 bg-white"
           />
         </div>
         <button
@@ -100,7 +100,7 @@ export default function CashierLoyalty() {
               )}
             </div>
             {isRewardReady(found.visits_count) && (
-              <span className="flex items-center gap-1.5 bg-gold/10 text-gold-deep rounded-full px-3 py-1.5 text-sm font-medium border border-gold/20">
+              <span className="flex items-center gap-1.5 bg-silver/10 text-silver-deep rounded-full px-3 py-1.5 text-sm font-medium border border-silver/20">
                 <Gift size={14} /> Récompense !
               </span>
             )}
@@ -113,7 +113,7 @@ export default function CashierLoyalty() {
                   key={i}
                   className={`w-7 h-7 rounded-full border-2 transition-colors ${
                     i < currentCycle(found.visits_count)
-                      ? 'bg-gold border-gold'
+                      ? 'bg-silver border-silver'
                       : 'bg-cream-deep border-ink/10'
                   }`}
                 />
@@ -122,7 +122,7 @@ export default function CashierLoyalty() {
             <span className="text-sm text-ink-soft font-medium">{currentCycle(found.visits_count)} / 8</span>
             <button
               onClick={() => handleAddVisit(found)}
-              className="flex items-center gap-1.5 bg-gold text-cream rounded-xl px-5 py-2.5 text-sm font-bold ml-auto hover:bg-gold-deep transition-colors"
+              className="flex items-center gap-1.5 bg-silver text-cream rounded-xl px-5 py-2.5 text-sm font-bold ml-auto hover:bg-silver-deep transition-colors"
             >
               <Plus size={14} /> Tamponner
             </button>
@@ -162,13 +162,13 @@ export default function CashierLoyalty() {
                     <td className="px-5 py-3">
                       <span className="text-ink font-medium">{currentCycle(m.visits_count)}/8</span>
                       {isRewardReady(m.visits_count) && (
-                        <span className="ml-2 text-gold text-xs">🎁</span>
+                        <span className="ml-2 text-silver text-xs">🎁</span>
                       )}
                     </td>
                     <td className="px-5 py-3 text-right">
                       <button
                         onClick={() => handleAddVisit(m)}
-                        className="text-xs font-semibold text-gold-deep hover:text-gold transition-colors"
+                        className="text-xs font-semibold text-silver-deep hover:text-silver transition-colors"
                       >
                         +1 visite
                       </button>

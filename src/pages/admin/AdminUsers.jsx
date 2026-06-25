@@ -124,7 +124,7 @@ export default function AdminUsers() {
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Rechercher par nom ou email…"
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-all"
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
         />
       </div>
 
@@ -167,7 +167,7 @@ export default function AdminUsers() {
                   </td>
                   <td className="px-4 py-3.5">
                     {u.role === 'admin' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gold/10 text-gold-deep rounded-full text-[10px] font-semibold">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-silver/10 text-silver-deep rounded-full text-[10px] font-semibold">
                         <ShieldCheck className="w-3 h-3" />Admin
                       </span>
                     ) : (
@@ -184,7 +184,7 @@ export default function AdminUsers() {
                         title={u.role === 'admin' ? 'Rétrograder en utilisateur' : 'Promouvoir en admin'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 ${
                           u.role === 'admin'
-                            ? 'text-gold-deep bg-gold/10 hover:bg-gold/20'
+                            ? 'text-silver-deep bg-silver/10 hover:bg-silver/20'
                             : 'text-ink-soft bg-cream-deep hover:bg-cream-deep/80'
                         }`}
                       >

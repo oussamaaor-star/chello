@@ -91,7 +91,7 @@ export class RouteErrorBoundary extends Component {
               <button
                 type="button"
                 onClick={this.handleReload}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold text-cream rounded-xl text-sm font-semibold hover:bg-gold-deep transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-silver text-cream rounded-xl text-sm font-semibold hover:bg-silver-deep transition-colors"
               >
                 {tr('errBoundaryReload')}
               </button>

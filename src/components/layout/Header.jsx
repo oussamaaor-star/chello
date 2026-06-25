@@ -55,7 +55,7 @@ export function Header() {
                 <button
                   onClick={toggleLang}
                   aria-label={t('headerChangerLangue')}
-                  className="hidden sm:flex lg:hidden w-9 h-9 items-center justify-center rounded-full border border-ink/15 text-ink-soft hover:border-gold hover:text-gold-deep transition-colors text-xs font-bold tracking-wide"
+                  className="hidden sm:flex lg:hidden w-9 h-9 items-center justify-center rounded-full border border-ink/15 text-ink-soft hover:border-silver hover:text-silver-deep transition-colors text-xs font-bold tracking-wide"
                 >
                   {t('langBtn')}
                 </button>
@@ -64,7 +64,7 @@ export function Header() {
               {/* Logo — absolu centré sur xs/sm, dans le flux flex sur md+ */}
               <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:flex-shrink-0 lg:flex-shrink-0">
                 <NavLink to="/" aria-label={t('headerLogoLabel')} className="flex items-center gap-3 group">
-                  <span className="font-serif italic text-2xl lg:text-3xl text-ink tracking-wide group-hover:text-gold-deep transition-colors duration-300">
+                  <span className="font-serif italic text-2xl lg:text-3xl text-ink tracking-wide group-hover:text-silver-deep transition-colors duration-300">
                     Chello
                   </span>
                 </NavLink>
@@ -80,7 +80,7 @@ export function Header() {
                 <button
                   onClick={toggleLang}
                   aria-label={t('headerChangerLangue')}
-                  className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full border border-ink/15 text-ink-soft hover:border-gold hover:text-gold-deep transition-colors text-xs font-bold tracking-wide"
+                  className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full border border-ink/15 text-ink-soft hover:border-silver hover:text-silver-deep transition-colors text-xs font-bold tracking-wide"
                 >
                   {t('langBtn')}
                 </button>

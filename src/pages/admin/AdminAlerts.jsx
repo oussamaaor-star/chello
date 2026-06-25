@@ -92,7 +92,7 @@ export default function AdminAlerts() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-serif text-ink flex items-center gap-2.5">
-            <Bell className="w-6 h-6 text-gold" />
+            <Bell className="w-6 h-6 text-silver" />
             Alertes Stock
           </h1>
           <p className="text-sm text-ink-soft mt-1">
@@ -113,7 +113,7 @@ export default function AdminAlerts() {
       <div className="bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden">
         {loading && !isRefreshing ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-gold animate-spin mb-4" />
+            <Loader2 className="w-8 h-8 text-silver animate-spin mb-4" />
             <p className="text-sm text-ink-soft">Chargement des alertes...</p>
           </div>
         ) : alerts.length === 0 ? (
@@ -189,7 +189,7 @@ export default function AdminAlerts() {
                             href={`/produit/${alert.products.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 text-ink-soft hover:text-gold-deep hover:bg-gold/10 rounded-lg transition-colors"
+                            className="p-2 text-ink-soft hover:text-silver-deep hover:bg-silver/10 rounded-lg transition-colors"
                             title="Voir le produit"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -226,8 +226,8 @@ export default function AdminAlerts() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-ink/10 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-gold" />
+            <div className="w-10 h-10 rounded-xl bg-silver/10 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-silver" />
             </div>
             <p className="text-xs font-bold uppercase tracking-widest text-ink-soft">Total Alertes</p>
           </div>

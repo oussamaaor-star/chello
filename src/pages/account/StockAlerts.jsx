@@ -61,7 +61,7 @@ export default function StockAlerts() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-gold animate-spin mb-4" />
+        <Loader2 className="w-8 h-8 text-silver animate-spin mb-4" />
         <p className="text-sm text-ink-soft font-medium">{t('alertsChargement')}</p>
       </div>
     );
@@ -71,7 +71,7 @@ export default function StockAlerts() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-serif italic text-ink flex items-center gap-2.5">
-          <Bell className="w-5 h-5 text-gold" />
+          <Bell className="w-5 h-5 text-silver" />
           {t('alertsTitle')}
         </h2>
         <span className="text-[10px] uppercase tracking-widest text-ink-soft font-bold">
@@ -115,7 +115,7 @@ export default function StockAlerts() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] text-gold-deep uppercase tracking-widest font-bold mb-0.5">
+                  <p className="text-[10px] text-silver-deep uppercase tracking-widest font-bold mb-0.5">
                     {alert.products?.brand}
                   </p>
                   <h3 className="text-sm font-semibold text-ink truncate">
@@ -160,13 +160,13 @@ export default function StockAlerts() {
       )}
 
       {/* Info card */}
-      <div className="bg-gold/10 border border-gold/20 rounded-2xl p-5 flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
-          <CheckCircle className="w-5 h-5 text-gold" />
+      <div className="bg-silver/10 border border-silver/20 rounded-2xl p-5 flex items-start gap-4">
+        <div className="w-10 h-10 rounded-xl bg-silver/10 flex items-center justify-center flex-shrink-0">
+          <CheckCircle className="w-5 h-5 text-silver" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-gold-deep mb-1">{t('alertsComment')}</p>
-          <p className="text-xs text-gold/80 leading-relaxed">
+          <p className="text-sm font-semibold text-silver-deep mb-1">{t('alertsComment')}</p>
+          <p className="text-xs text-silver/80 leading-relaxed">
             {t('alertsCommentDesc')}
           </p>
         </div>

@@ -13,7 +13,7 @@ export default function CGV() {
   return (
     <LegalLayout title="الشروط والأحكام العامة للبيع" updatedAt="يونيو 2026">
 
-      <p className="text-sm text-ink-soft mb-8 p-4 bg-cream border border-gold-deep/10 rounded-xl leading-relaxed">
+      <p className="text-sm text-ink-soft mb-8 p-4 bg-cream border border-silver-deep/10 rounded-xl leading-relaxed">
         تحكم هذه الشروط والأحكام العامة للبيع جميع المعاملات التي تتم على موقع{' '}
         <strong>chello-nine.vercel.app</strong> بين متجر Chello وعملائه.
         أي طلب يعني القبول الكامل لهذه الشروط.

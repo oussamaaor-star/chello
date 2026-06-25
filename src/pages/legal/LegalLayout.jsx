@@ -4,7 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 /**
  * Layout partagé pour toutes les pages légales.
- * Thème clair cream/ink/gold cohérent avec l'identité Chello.
+ * Thème clair cream/ink/silver cohérent avec l'identité Chello.
  */
 export function LegalLayout({ title, updatedAt, children }) {
   const { t } = useLanguage();
@@ -12,12 +12,12 @@ export function LegalLayout({ title, updatedAt, children }) {
     <div className="bg-cream min-h-screen">
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-cream via-white to-cream py-12 sm:py-16 border-b border-gold-deep/10">
+      <div className="bg-gradient-to-br from-cream via-white to-cream py-12 sm:py-16 border-b border-silver-deep/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <nav className="flex items-center gap-1.5 text-xs text-ink-soft uppercase tracking-widest mb-5">
             <Link to="/" className="hover:text-ink transition-colors">{t('breadcrumbAccueil')}</Link>
             <ChevronRight className="w-3 h-3 opacity-50" />
-            <span className="text-gold-deep">{title}</span>
+            <span className="text-silver-deep">{title}</span>
           </nav>
           <h1 className="text-3xl sm:text-4xl font-serif italic text-ink leading-tight">{title}</h1>
           {updatedAt && (
@@ -28,7 +28,7 @@ export function LegalLayout({ title, updatedAt, children }) {
 
       {/* Contenu */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="bg-white rounded-2xl border border-gold-deep/10 p-8 sm:p-12 shadow-sm">
+        <div className="bg-white rounded-2xl border border-silver-deep/10 p-8 sm:p-12 shadow-sm">
           {children}
         </div>
       </div>
@@ -43,7 +43,7 @@ export function LegalLayout({ title, updatedAt, children }) {
 export function LegalSection({ title, children }) {
   return (
     <section className="mb-10">
-      <h2 className="text-lg font-bold text-ink mb-4 pb-2 border-b border-gold-deep/20">
+      <h2 className="text-lg font-bold text-ink mb-4 pb-2 border-b border-silver-deep/20">
         {title}
       </h2>
       <div className="space-y-3 text-sm text-ink-soft leading-relaxed">

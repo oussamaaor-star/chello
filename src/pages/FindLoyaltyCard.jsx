@@ -44,7 +44,7 @@ export default function FindLoyaltyCard() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder={t('loyaltyWhatsappPlaceholder')}
-              className="w-full bg-cream-deep border border-ink/10 rounded-xl py-3 ps-10 pe-4 text-ink placeholder-ink-soft/40 focus:border-gold outline-none"
+              className="w-full bg-cream-deep border border-ink/10 rounded-xl py-3 ps-10 pe-4 text-ink placeholder-ink-soft/40 focus:border-silver outline-none"
             />
           </div>
           {error && <p className="text-red-600 text-sm">{error}</p>}

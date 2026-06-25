@@ -50,6 +50,15 @@
     }
     </script>
 
+    <!-- Google Analytics GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
     <style>
       /* Fond clair + loader affichés avant le montage de React (évite le flash sombre) */
       html, body { background-color: #faf8f4; }

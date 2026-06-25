@@ -60,7 +60,7 @@ function CityPicker({ value, onChange, error }) {
           placeholder="مسقط"
           autoComplete="off"
           className={`w-full pl-10 pr-9 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${
-            error ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-gold/30 hover:border-ink/20'
+            error ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-silver/30 hover:border-ink/20'
           }`}
         />
         <ChevronDown className={`absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft pointer-events-none transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -134,7 +134,7 @@ function FormField({ label, error, ...props }) {
   return (
     <div>
       <label className="block text-sm font-medium text-ink mb-1.5">{label}</label>
-      <input className={`w-full px-4 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${error ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-gold/30 hover:border-ink/20'}`} {...props} />
+      <input className={`w-full px-4 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${error ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-silver/30 hover:border-ink/20'}`} {...props} />
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
@@ -249,7 +249,7 @@ function AddressModal({ initial, onSave, onClose }) {
               onChange={handlePhoneChange}
               maxLength={10}
               autoComplete="tel"
-              className={`w-full px-4 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${errors.phone ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-gold/30 hover:border-ink/20'}`}
+              className={`w-full px-4 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${errors.phone ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-silver/30 hover:border-ink/20'}`}
             />
             {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
           </div>
@@ -281,7 +281,7 @@ function AddressCard({ address, onEdit, onDelete }) {
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-cream border border-ink/10 flex items-center justify-center">
-            <Icon className="w-3.5 h-3.5 text-gold" />
+            <Icon className="w-3.5 h-3.5 text-silver" />
           </div>
           <p className="text-sm font-semibold text-ink">
             {address.label || (address.type === 'work' ? t('addressBureau') : t('addressDomicile'))}
@@ -393,7 +393,7 @@ export default function Addresses() {
             {addresses.map((address) => (
               <AddressCard key={address.id} address={address} onEdit={openEdit} onDelete={handleDelete} />
             ))}
-            <button onClick={openAdd} className="bg-cream-deep rounded-2xl border-2 border-dashed border-ink/15 p-5 flex flex-col items-center justify-center gap-2 text-ink-soft hover:border-gold/50 hover:text-ink transition-colors min-h-[160px]">
+            <button onClick={openAdd} className="bg-cream-deep rounded-2xl border-2 border-dashed border-ink/15 p-5 flex flex-col items-center justify-center gap-2 text-ink-soft hover:border-silver/50 hover:text-ink transition-colors min-h-[160px]">
               <Plus className="w-6 h-6" />
               <span className="text-sm font-medium">{t('addressNouvelleAdr')}</span>
             </button>

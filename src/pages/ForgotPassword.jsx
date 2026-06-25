@@ -28,7 +28,7 @@ function TextField({ label, id, icon: Icon, error, ...props }) {
             focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all
             ${error
               ? 'border-red-500/60 bg-red-50 focus:ring-red-500/40 focus:border-red-500'
-              : 'border-ink/10 bg-cream focus:ring-gold/30 focus:border-gold hover:border-ink/20'
+              : 'border-ink/10 bg-cream focus:ring-silver/30 focus:border-silver hover:border-ink/20'
             }`}
           {...props}
         />
@@ -101,7 +101,7 @@ export default function ForgotPassword() {
           </p>
           <Link
             to="/connexion"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-gold transition-colors underline underline-offset-2"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-silver transition-colors underline underline-offset-2"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('forgotRetour')}
@@ -165,7 +165,7 @@ export default function ForgotPassword() {
           <p className="text-sm text-center text-ink-soft">
             <Link
               to="/connexion"
-              className="inline-flex items-center gap-1.5 font-semibold text-ink hover:text-gold transition-colors underline underline-offset-2"
+              className="inline-flex items-center gap-1.5 font-semibold text-ink hover:text-silver transition-colors underline underline-offset-2"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               {t('forgotRetour')}

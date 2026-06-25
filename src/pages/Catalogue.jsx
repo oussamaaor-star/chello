@@ -35,7 +35,7 @@ export default function Catalogue() {
           transition={{ duration: 0.7, ease: EASE }}
           className="text-center mb-10"
         >
-          <p className="text-gold-deep text-[11px] font-semibold tracking-[0.3em] uppercase mb-4">
+          <p className="text-silver-deep text-[11px] font-semibold tracking-[0.3em] uppercase mb-4">
             {lang === 'ar' ? 'تشكيلتنا' : 'Our Collection'}
           </p>
           <h1 className="font-serif italic text-3xl sm:text-4xl text-ink">

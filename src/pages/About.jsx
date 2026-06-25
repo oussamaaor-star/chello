@@ -31,21 +31,21 @@ export default function About() {
 
       {/* ── Hero ── */}
       <div className="relative overflow-hidden bg-cream-deep py-16 md:py-24">
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-64 h-64 rounded-full bg-gold/8 blur-3xl pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-silver/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-64 h-64 rounded-full bg-silver/8 blur-3xl pointer-events-none" />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-ink-soft uppercase tracking-wider">
-            <Link to="/" className="hover:text-gold transition-colors">{t('breadcrumbAccueil')}</Link>
+            <Link to="/" className="hover:text-silver transition-colors">{t('breadcrumbAccueil')}</Link>
             <ChevronRight className="w-3 h-3 opacity-50" />
-            <span className="text-gold">{t('footerAPropos')}</span>
+            <span className="text-silver">{t('footerAPropos')}</span>
           </div>
 
-          <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mt-8 mb-4">{t('aboutTitle')}</p>
+          <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mt-8 mb-4">{t('aboutTitle')}</p>
           <h1 className="text-4xl lg:text-5xl font-serif italic text-ink mb-6 leading-tight">
             Chello,<br />
-            <span className="text-gold">{t('aboutMission')}</span>
+            <span className="text-silver">{t('aboutMission')}</span>
           </h1>
           <p className="text-ink-soft text-lg leading-relaxed max-w-2xl">
             {t('aboutSubtitle')}
@@ -65,10 +65,10 @@ export default function About() {
             {TIMELINE.map((step) => (
               <div key={step.year} className="flex gap-6 sm:gap-10 items-start">
                 <div className="flex-shrink-0 w-12 sm:w-20 text-right">
-                  <span className="text-gold font-bold text-sm sm:text-base">{step.year}</span>
+                  <span className="text-silver font-bold text-sm sm:text-base">{step.year}</span>
                 </div>
                 <div className="relative flex-shrink-0 w-3 h-3 mt-1 hidden sm:block">
-                  <div className="w-3 h-3 rounded-full bg-gold ring-4 ring-cream" />
+                  <div className="w-3 h-3 rounded-full bg-silver ring-4 ring-cream" />
                 </div>
                 <div className="flex-1 pb-2">
                   <h3 className="text-ink font-semibold mb-2">{t(step.titleKey)}</h3>
@@ -87,8 +87,8 @@ export default function About() {
           <div className="grid sm:grid-cols-2 gap-6">
             {VALUES.map(({ icon: Icon, titleKey, textKey }) => (
               <div key={titleKey} className="flex gap-4 p-6 bg-cream rounded-2xl border border-ink/10">
-                <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Icon className="w-5 h-5 text-gold" />
+                <div className="w-10 h-10 rounded-xl bg-silver/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Icon className="w-5 h-5 text-silver" />
                 </div>
                 <div>
                   <h3 className="text-ink font-semibold mb-1.5">{t(titleKey)}</h3>

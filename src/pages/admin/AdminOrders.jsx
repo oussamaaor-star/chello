@@ -39,9 +39,9 @@ export default function AdminOrders() {
   return (
     <div>
       {loyaltyToast && (
-        <div className="fixed top-4 right-4 z-50 bg-white border border-gold/30 shadow-xl rounded-2xl p-4 max-w-xs">
+        <div className="fixed top-4 right-4 z-50 bg-white border border-silver/30 shadow-xl rounded-2xl p-4 max-w-xs">
           <div className="flex items-center gap-2 mb-1">
-            <Gift className="w-4 h-4 text-gold" />
+            <Gift className="w-4 h-4 text-silver" />
             <p className="text-sm font-bold text-ink">Fidélité +1</p>
           </div>
           <p className="text-xs text-ink-soft">

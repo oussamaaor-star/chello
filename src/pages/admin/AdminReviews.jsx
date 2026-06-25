@@ -176,7 +176,7 @@ export default function AdminReviews() {
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Rechercher dans les commentaires…"
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-gold/40 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
           />
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function AdminReviews() {
                 <div key={r.id} className="p-5 hover:bg-cream-deep/50 transition-colors">
                   <div className="flex items-start gap-4">
                     {/* Avatar */}
-                    <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center flex-shrink-0 text-gold-light text-sm font-bold">
+                    <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center flex-shrink-0 text-silver-light text-sm font-bold">
                       {(r.display_name ?? '?')[0].toUpperCase()}
                     </div>
 

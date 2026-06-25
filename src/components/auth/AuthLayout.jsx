@@ -9,7 +9,7 @@ export const AnimatedInput = memo(function AnimatedInput({ className = '', type,
   const [visible, setVisible] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const bg = useMotionTemplate`radial-gradient(${visible ? '110px' : '0px'} circle at ${mouseX}px ${mouseY}px, rgba(184,145,90,0.25), transparent 80%)`;
+  const bg = useMotionTemplate`radial-gradient(${visible ? '110px' : '0px'} circle at ${mouseX}px ${mouseY}px, rgba(158,158,158,0.25), transparent 80%)`;
 
   function handleMouseMove({ currentTarget, clientX, clientY }) {
     const { left, top } = currentTarget.getBoundingClientRect();
@@ -29,7 +29,7 @@ export const AnimatedInput = memo(function AnimatedInput({ className = '', type,
         type={type}
         className={`flex h-12 w-full rounded-xl border border-ink/10 bg-cream px-4 py-2 text-[16px]
           text-ink placeholder-ink-soft/50 transition duration-300
-          focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 ${className}`}
+          focus:outline-none focus:border-silver focus:ring-2 focus:ring-silver/30 ${className}`}
         {...props}
       />
     </motion.div>
@@ -39,7 +39,7 @@ export const AnimatedInput = memo(function AnimatedInput({ className = '', type,
 // ─── BoxReveal ────────────────────────────────────────────────────────────────
 
 export const BoxReveal = memo(function BoxReveal({
-  children, width = 'fit-content', boxColor = 'rgba(184,145,90,0.5)',
+  children, width = 'fit-content', boxColor = 'rgba(158,158,158,0.5)',
   duration = 0.4, overflow = 'hidden', className,
 }) {
   const mainControls = useAnimation();
@@ -96,7 +96,7 @@ function OrbitItem({ name, size, radius, duration, startAngle, cw, showPath }) {
           <circle
             cx="50%" cy="50%" r={radius}
             fill="none"
-            stroke="rgba(184,145,90,0.3)"
+            stroke="rgba(158,158,158,0.3)"
             strokeWidth="1.5"
             strokeDasharray="4 6"
           />
@@ -126,8 +126,8 @@ function OrbitItem({ name, size, radius, duration, startAngle, cw, showPath }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               borderRadius: '10px',
               background: 'linear-gradient(135deg, #f5f0e8, #ece5d8)',
-              border: '1px solid rgba(184,145,90,0.35)',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.06), 0 0 12px rgba(184,145,90,0.08)',
+              border: '1px solid rgba(158,158,158,0.35)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06), 0 0 12px rgba(158,158,158,0.08)',
             }}>
               <span style={{
                 fontSize: size >= 52 ? '11px' : '10px',
@@ -181,7 +181,7 @@ function Ripple() {
             borderRadius: '50%',
             width: `${s}px`,
             height: `${s}px`,
-            border: '1px solid rgba(184,145,90,0.15)',
+            border: '1px solid rgba(158,158,158,0.15)',
             opacity: 0.2 - i * 0.025,
             animationDelay: `${i * 0.1}s`,
             top: '50%', left: '50%',
@@ -205,7 +205,7 @@ function AnimatedPanel({ side = 'left' }) {
     >
       {/* Fond */}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #faf8f4 0%, #f1ece2 50%, #e8dfd0 100%)' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(184,145,90,0.08), transparent 70%)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(158,158,158,0.08), transparent 70%)' }} />
 
       {/* Logo dans le coin extérieur du panneau */}
       <div style={logoCorner}>
@@ -237,7 +237,7 @@ function AnimatedPanel({ side = 'left' }) {
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', margin: 0, padding: 0 }}>
           {['الدفع عند الاستلام', 'تصاميم أصلية', 'برنامج ولاء بمكافآت'].map((label) => (
             <li key={label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, borderRadius: '50%', flexShrink: 0, border: '1px solid rgba(184,145,90,0.4)', background: 'rgba(184,145,90,0.08)' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, borderRadius: '50%', flexShrink: 0, border: '1px solid rgba(158,158,158,0.4)', background: 'rgba(158,158,158,0.08)' }}>
                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden>
                   <path d="M2 6l3 3 5-5" stroke="#b8915a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -274,18 +274,18 @@ export function AuthLayout({ children }) {
       >
         {/* Mobile decorative glow */}
         <div className="lg:hidden absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-gold/10 rounded-full blur-[80px]" />
-          <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-gold/5 rounded-full blur-[60px]" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-silver/10 rounded-full blur-[80px]" />
+          <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-silver/5 rounded-full blur-[60px]" />
         </div>
         <div className="flex items-center justify-center pt-6 pb-4 lg:hidden">
           <Link to="/" className="flex items-center gap-3 group">
-            <span className="font-serif italic text-2xl text-gold group-hover:text-gold-deep transition-colors">Chello</span>
+            <span className="font-serif italic text-2xl text-silver group-hover:text-silver-deep transition-colors">Chello</span>
           </Link>
         </div>
         <div className="flex-1 flex items-center justify-center px-4 sm:px-8 py-8 lg:py-12 overflow-y-auto">
           <div className="relative w-full max-w-md rounded-2xl border border-ink/10 bg-cream-deep/80 backdrop-blur-sm px-6 sm:px-8 py-8 sm:py-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)]">
             {/* Liseré doré supérieur */}
-            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-silver/50 to-transparent" />
             {children}
           </div>
         </div>

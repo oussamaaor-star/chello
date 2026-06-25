@@ -126,7 +126,7 @@ export default function Search() {
 
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-1">{t('searchResultats')}</p>
+              <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-1">{t('searchResultats')}</p>
               <h1 className="text-2xl sm:text-3xl font-serif italic text-ink">« {query} »</h1>
               <p className="text-sm text-ink-soft mt-1">
                 {rawResults.totalProducts > 0
@@ -141,7 +141,7 @@ export default function Search() {
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="py-3 pl-3 pr-8 rounded-xl border border-ink/10 bg-cream text-sm text-ink focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all appearance-none cursor-pointer"
+                  className="py-3 pl-3 pr-8 rounded-xl border border-ink/10 bg-cream text-sm text-ink focus:outline-none focus:ring-2 focus:ring-silver/30 focus:border-silver transition-all appearance-none cursor-pointer"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>{o.label}</option>
@@ -156,7 +156,7 @@ export default function Search() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {categoryFilters.length > 1 && (
           <div className="mb-6">
-            <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-2">{t('categorie')}</p>
+            <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-2">{t('categorie')}</p>
             <div className="flex flex-wrap gap-2">
               {categoryFilters.map(({ slug, label }) => (
                 <QuickFilter
@@ -174,7 +174,7 @@ export default function Search() {
           <div className="flex flex-wrap items-center gap-2 mb-6">
             <button
               onClick={() => setActiveCategory(null)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/10 text-gold-deep border border-gold/20 text-xs font-semibold hover:bg-gold/20 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-silver/10 text-silver-deep border border-silver/20 text-xs font-semibold hover:bg-silver/20 transition-colors"
             >
               {categoryFilters.find((c) => c.slug === activeCategory)?.label ?? activeCategory}
               <X className="w-3 h-3" />
@@ -187,13 +187,13 @@ export default function Search() {
 
         {rawResults.categories.length > 0 && rawResults.products.length === 0 && (
           <div className="mb-8">
-            <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-gold-deep mb-3">{t('categorie')}</p>
+            <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mb-3">{t('categorie')}</p>
             <div className="flex flex-wrap gap-3">
               {rawResults.categories.map((cat) => (
                 <Link
                   key={cat.slug}
                   to={`/categorie/${cat.slug}`}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-cream-deep border border-ink/10 rounded-xl text-sm font-semibold text-ink hover:border-gold transition-all"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-cream-deep border border-ink/10 rounded-xl text-sm font-semibold text-ink hover:border-silver transition-all"
                 >
                   {cat.label}
                   <ArrowRight className="w-3.5 h-3.5 text-ink-soft" />

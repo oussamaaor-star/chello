@@ -98,7 +98,7 @@ function CityPicker({ value, onChange, error }) {
             focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all
             ${error
               ? 'border-red-500/50 bg-red-500/10 focus:ring-red-400/40 focus:border-red-400'
-              : 'border-ink/10 bg-cream-deep focus:ring-gold/30 focus:border-gold hover:border-ink/20'
+              : 'border-ink/10 bg-cream-deep focus:ring-silver/30 focus:border-silver hover:border-ink/20'
             }`}
         />
         <ChevronDown
@@ -150,7 +150,7 @@ function Field({ label, error, half, id: propId, ...props }) {
           focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all
           ${error
             ? 'border-red-500/50 bg-red-500/10 focus:ring-red-400/40 focus:border-red-400'
-            : 'border-ink/10 bg-cream-deep focus:ring-gold/30 focus:border-gold hover:border-ink/20'
+            : 'border-ink/10 bg-cream-deep focus:ring-silver/30 focus:border-silver hover:border-ink/20'
           }`}
         {...props}
       />
@@ -166,7 +166,7 @@ function ShippingOption({ id, icon: Icon, title, subtitle, price, selected, onCh
     <label
       className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
         selected
-          ? 'border-gold bg-gold/10'
+          ? 'border-silver bg-silver/10'
           : 'border-ink/10 bg-cream-deep hover:border-ink/20'
       }`}
     >
@@ -182,10 +182,10 @@ function ShippingOption({ id, icon: Icon, title, subtitle, price, selected, onCh
         <Icon className={`w-5 h-5 ${selected ? 'text-cream' : 'text-ink-soft'}`} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-semibold ${selected ? 'text-gold' : 'text-ink'}`}>{title}</p>
+        <p className={`text-sm font-semibold ${selected ? 'text-silver' : 'text-ink'}`}>{title}</p>
         <p className="text-xs text-ink-soft mt-0.5">{subtitle}</p>
       </div>
-      <span className={`text-sm font-bold flex-shrink-0 ${selected ? 'text-gold' : 'text-ink'}`}>
+      <span className={`text-sm font-bold flex-shrink-0 ${selected ? 'text-silver' : 'text-ink'}`}>
         {price}
       </span>
     </label>
@@ -300,8 +300,8 @@ export function DeliveryForm({ initial, subtotal, onNext, onShippingChange, save
 
       {/* Saved addresses suggestion */}
       {savedAddresses?.length > 0 && (
-        <div className="p-4 bg-gold/10 border border-gold/20 rounded-xl">
-          <p className="text-xs font-bold uppercase tracking-widest text-gold mb-3">
+        <div className="p-4 bg-silver/10 border border-silver/20 rounded-xl">
+          <p className="text-xs font-bold uppercase tracking-widest text-silver mb-3">
             {t('deliveryAdresseEnreg')}
           </p>
           <div className="flex gap-2.5 overflow-x-auto pb-0.5 scrollbar-none">
@@ -316,10 +316,10 @@ export function DeliveryForm({ initial, subtotal, onNext, onShippingChange, save
                   key={addr.id}
                   type="button"
                   onClick={() => applyAddress(addr)}
-                  className="flex-shrink-0 flex items-center gap-2.5 px-3.5 py-2.5 bg-cream-deep border border-ink/10 rounded-xl hover:border-gold hover:shadow-sm transition-all group"
+                  className="flex-shrink-0 flex items-center gap-2.5 px-3.5 py-2.5 bg-cream-deep border border-ink/10 rounded-xl hover:border-silver hover:shadow-sm transition-all group"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-gold/15 group-hover:bg-gold/25 flex items-center justify-center flex-shrink-0 transition-colors">
-                    <Icon className="w-3.5 h-3.5 text-gold" />
+                  <div className="w-7 h-7 rounded-lg bg-silver/15 group-hover:bg-silver/25 flex items-center justify-center flex-shrink-0 transition-colors">
+                    <Icon className="w-3.5 h-3.5 text-silver" />
                   </div>
                   <div className="text-left">
                     <p className="text-xs font-semibold text-ink leading-tight whitespace-nowrap">{firstName} {lastName}</p>
@@ -378,11 +378,11 @@ export function DeliveryForm({ initial, subtotal, onNext, onShippingChange, save
       </div>
 
       {/* COD notice */}
-      <div className="flex items-start gap-3 p-4 bg-gold/10 border border-gold/25 rounded-xl">
-        <Package className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 p-4 bg-silver/10 border border-silver/25 rounded-xl">
+        <Package className="w-5 h-5 text-silver flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-semibold text-gold">{t('deliveryCODTitle')}</p>
-          <p className="text-xs text-gold-light/80 mt-0.5">{t('deliveryCODDesc')}</p>
+          <p className="text-sm font-semibold text-silver">{t('deliveryCODTitle')}</p>
+          <p className="text-xs text-silver-light/80 mt-0.5">{t('deliveryCODDesc')}</p>
         </div>
       </div>
 

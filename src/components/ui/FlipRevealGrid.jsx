@@ -9,8 +9,8 @@ export function FlipRevealGrid({ filteredProducts, onReset, preferredFormat = nu
   if (filteredProducts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 px-4 text-center bg-cream-deep rounded-3xl border border-dashed border-ink/15">
-        <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-5">
-          <ShoppingBag className="w-7 h-7 text-gold opacity-60" />
+        <div className="w-16 h-16 rounded-full bg-silver/10 flex items-center justify-center mb-5">
+          <ShoppingBag className="w-7 h-7 text-silver opacity-60" />
         </div>
         <h3 className="text-xl font-serif text-ink mb-2">{t('emptyProductsTitle')}</h3>
         <p className="text-ink-soft/70 mb-7 max-w-sm text-sm leading-relaxed">

@@ -74,10 +74,10 @@ export default function Login() {
     <AuthLayout>
       {/* Titre */}
       <div className="mb-8">
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.4)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.4)" duration={0.35}>
           <h1 className="text-3xl font-serif italic text-ink mb-2 tracking-tight">{t('loginTitle')}</h1>
         </BoxReveal>
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.3)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.3)" duration={0.35}>
           <p className="text-sm text-ink-soft leading-relaxed">
             {t('loginSubtitle')}
           </p>
@@ -102,7 +102,7 @@ export default function Login() {
               type="button"
               onClick={handleResend}
               disabled={resendState === 'loading'}
-              className="text-xs font-medium text-gold hover:text-gold-deep underline underline-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="text-xs font-medium text-silver hover:text-silver-deep underline underline-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {resendState === 'loading' ? t('loginResendLoading') : t('loginResendConfirm')}
             </button>
@@ -117,7 +117,7 @@ export default function Login() {
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
 
         {/* Email */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.35)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="block text-sm font-medium text-ink">
               {t('loginEmail')}
@@ -136,7 +136,7 @@ export default function Login() {
         </BoxReveal>
 
         {/* Mot de passe */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.35)" duration={0.35}>
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <div className="flex flex-col gap-1.5">
             <PasswordField
               label={t('loginPassword')}
@@ -151,7 +151,7 @@ export default function Login() {
             <div className="flex justify-end mt-1">
               <Link
                 to="/mot-de-passe-oublie"
-                className="text-xs text-ink-soft hover:text-gold transition-colors"
+                className="text-xs text-ink-soft hover:text-silver transition-colors"
               >
                 {t('loginForgot')}
               </Link>
@@ -160,7 +160,7 @@ export default function Login() {
         </BoxReveal>
 
         {/* Bouton */}
-        <BoxReveal width="100%" boxColor="rgba(184,145,90,0.4)" duration={0.35} overflow="visible">
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.4)" duration={0.35} overflow="visible">
           <button
             type="submit"
             disabled={isLoading}
@@ -187,12 +187,12 @@ export default function Login() {
       </div>
 
       {/* Lien inscription */}
-      <BoxReveal width="100%" boxColor="rgba(184,145,90,0.3)" duration={0.35} overflow="visible">
+      <BoxReveal width="100%" boxColor="rgba(158,158,158,0.3)" duration={0.35} overflow="visible">
         <p className="text-sm text-center text-ink-soft">
           {t('loginPasDeCompte')}{' '}
           <Link
             to="/inscription"
-            className="font-semibold text-gold hover:text-gold-deep transition-colors underline underline-offset-2"
+            className="font-semibold text-silver hover:text-silver-deep transition-colors underline underline-offset-2"
           >
             {t('loginCreer')}
           </Link>

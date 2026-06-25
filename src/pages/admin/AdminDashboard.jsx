@@ -224,7 +224,7 @@ export default function AdminDashboard() {
             label="Catalogue"
             value={productsCount != null ? productsCount.toLocaleString('fr-FR') : null}
             icon={Package}
-            iconBg="bg-gold"
+            iconBg="bg-silver"
             sub="Produits actifs"
             loading={loading}
           />
@@ -301,7 +301,7 @@ export default function AdminDashboard() {
               <ShoppingBag className="w-8 h-8 text-ink-soft/30 mb-3" />
               <p className="text-sm text-ink-soft">Aucune commande disponible.</p>
               {rpcUnavailable && (
-                <p className="text-xs text-gold-deep mt-1">Migration 008 requise.</p>
+                <p className="text-xs text-silver-deep mt-1">Migration 008 requise.</p>
               )}
             </div>
           ) : (
@@ -373,7 +373,7 @@ export default function AdminDashboard() {
                   className="flex items-center gap-3 px-5 py-3.5 hover:bg-cream-deep/60 transition-colors"
                 >
                   <span className={`flex-shrink-0 w-5 text-center text-xs font-bold tabular-nums ${
-                    i === 0 ? 'text-gold' : 'text-ink-soft/40'
+                    i === 0 ? 'text-silver' : 'text-ink-soft/40'
                   }`}>{i + 1}</span>
 
                   <div className="flex-shrink-0 w-9 h-10 rounded-xl overflow-hidden bg-cream-deep border border-ink/10">

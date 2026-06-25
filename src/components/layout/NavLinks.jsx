@@ -69,10 +69,10 @@ export function NavLinks() {
               <Link
                 key={cat.slug}
                 to={`/categorie/${cat.slug}`}
-                className="text-2xl font-serif italic text-ink hover:text-gold-deep transition-colors flex items-center gap-2 group/link"
+                className="text-2xl font-serif italic text-ink hover:text-silver-deep transition-colors flex items-center gap-2 group/link"
               >
                 {isAr ? cat.label : cat.labelEn}
-                <ChevronRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all text-gold rtl:rotate-180" />
+                <ChevronRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all text-silver rtl:rotate-180" />
               </Link>
             ))}
           </div>
