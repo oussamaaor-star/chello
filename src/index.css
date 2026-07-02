@@ -232,3 +232,26 @@ p {
 .gallery-enter {
   animation: gallery-fade 0.22s ease-out forwards;
 }
+
+/* ─── Transitions de page (View Transitions API) ──────────────────────────────
+   Cross-fade + légère montée entre les routes ; l'image produit cliquée
+   « voyage » de la carte catalogue vers la galerie de la fiche
+   (view-transition-name: product-hero — posé au clic dans ProductCard,
+   permanent sur la galerie). Navigateurs sans support : navigation
+   instantanée classique (fallback natif du routeur). */
+@keyframes vt-page-out { to   { opacity: 0; } }
+@keyframes vt-page-in  { from { opacity: 0; transform: translateY(10px); } }
+
+::view-transition-old(root) { animation: vt-page-out 180ms ease both; }
+::view-transition-new(root) { animation: vt-page-in  280ms ease both; }
+
+::view-transition-group(product-hero) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(product-hero) { animation-duration: 1ms; }
+}

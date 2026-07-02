@@ -78,7 +78,7 @@ export function NavLinks() {
 
         {/* ── FIDÉLITÉ ── */}
         <div className="h-full flex items-center">
-          <NavLink to="/fidelite" className={({ isActive }) => getNavLinkClass(isActive)}>
+          <NavLink to="/fidelite" viewTransition className={({ isActive }) => getNavLinkClass(isActive)}>
             {({ isActive }) => (
               <>
                 <Gem className="w-3.5 h-3.5 flex-shrink-0" />
@@ -91,7 +91,7 @@ export function NavLinks() {
 
         {/* ── SUIVI DE COMMANDE ── */}
         <div className="h-full flex items-center">
-          <NavLink to="/suivi" className={({ isActive }) => getNavLinkClass(isActive)}>
+          <NavLink to="/suivi" viewTransition className={({ isActive }) => getNavLinkClass(isActive)}>
             {({ isActive }) => (
               <>
                 <Package className="w-3.5 h-3.5 flex-shrink-0" />

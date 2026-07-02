@@ -4,6 +4,7 @@ import {
   Trash2, ToggleLeft, ToggleRight, AlertCircle, Save,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { AnnouncementsManager } from '../../components/admin/AnnouncementsManager';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -264,6 +265,11 @@ export default function AdminPromos() {
             </tbody>
           </table>
         )}
+      </div>
+
+      {/* Bandeau d'annonces de la home (migration 022) */}
+      <div className="pt-4 border-t border-ink/10">
+        <AnnouncementsManager />
       </div>
 
       {/* Modal confirmation suppression */}

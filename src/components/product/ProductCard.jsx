@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, X, Check, Star } from 'lucide-react';
@@ -61,6 +61,15 @@ export function ProductCard({ product, priority = false }) {
   const [sheetSize, setSheetSize]   = useState(null);
   const [sheetAdded, setSheetAdded] = useState(false);
   const activeSheetSize = sheetSize ?? product.sizes?.[0] ?? null;
+
+  // Transition partagée : au clic, la zone image reçoit le nom `product-hero`
+  // et « voyage » vers la galerie de la fiche produit (View Transitions API).
+  // Posé au clic seulement — un nom doit être unique par page, or la grille
+  // affiche plusieurs cartes.
+  const imgZoneRef = useRef(null);
+  const markForTransition = () => {
+    if (imgZoneRef.current) imgZoneRef.current.style.viewTransitionName = 'product-hero';
+  };
 
   const handleAddToCart = (e, size) => {
     e.preventDefault();
@@ -179,9 +188,9 @@ export function ProductCard({ product, priority = false }) {
     <>
       {bottomSheet}
 
-      <Link to={`/produit/${product.slug}`} className="group flex flex-col h-full transition-transform duration-300 ease-out hover:-translate-y-1">
+      <Link to={`/produit/${product.slug}`} viewTransition onClick={markForTransition} className="group flex flex-col h-full transition-transform duration-300 ease-out hover:-translate-y-1">
         {/* Image zone */}
-        <div className={`relative aspect-[3/4] bg-cream-deep rounded-xl overflow-hidden transition-shadow duration-300 group-hover:shadow-[0_12px_30px_-12px_rgba(24,20,15,0.25)] ${isRupture ? 'grayscale' : ''}`}>
+        <div ref={imgZoneRef} className={`relative aspect-[3/4] bg-cream-deep rounded-xl overflow-hidden transition-shadow duration-300 group-hover:shadow-[0_12px_30px_-12px_rgba(24,20,15,0.25)] ${isRupture ? 'grayscale' : ''}`}>
           <img
             src={imgUrl(product.images?.[0] ?? '/products/placeholder-dresses.svg', { w: 500, q: 70 })}
             srcSet={product.images?.[0] ? [

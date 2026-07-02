@@ -42,7 +42,7 @@ export function CategoryBento({ products }) {
         {/* Dresses — large */}
         {cats.find(c => c.slug === 'dresses') && (
           <motion.div variants={fadeUp} className="col-span-2 lg:col-span-7 row-span-2">
-            <Link to="/categorie/dresses" className="group relative block w-full h-full overflow-hidden rounded-2xl">
+            <Link to="/categorie/dresses" viewTransition className="group relative block w-full h-full overflow-hidden rounded-2xl">
               <img
                 src={CATEGORY_COVERS.dresses}
                 alt={lang === 'ar' ? 'ملابس جاهزة' : 'Ready-to-wear'}
@@ -67,7 +67,7 @@ export function CategoryBento({ products }) {
         {/* Abayas */}
         {cats.find(c => c.slug === 'abayas') && (
           <motion.div variants={fadeUp} className="col-span-1 lg:col-span-5">
-            <Link to="/categorie/abayas" className="group relative block w-full h-full overflow-hidden rounded-2xl">
+            <Link to="/categorie/abayas" viewTransition className="group relative block w-full h-full overflow-hidden rounded-2xl">
               <img
                 src={CATEGORY_COVERS.abayas}
                 alt={lang === 'ar' ? 'عبايات' : 'Abayas'}
@@ -91,7 +91,7 @@ export function CategoryBento({ products }) {
         {/* Bags */}
         {cats.find(c => c.slug === 'bags') && (
           <motion.div variants={fadeUp} className="col-span-1 lg:col-span-5">
-            <Link to="/categorie/bags" className="group relative block w-full h-full overflow-hidden rounded-2xl">
+            <Link to="/categorie/bags" viewTransition className="group relative block w-full h-full overflow-hidden rounded-2xl">
               <img
                 src={CATEGORY_COVERS.bags}
                 alt={lang === 'ar' ? 'شنط' : 'Bags'}
@@ -115,7 +115,7 @@ export function CategoryBento({ products }) {
         {/* Shoes */}
         {cats.find(c => c.slug === 'shoes') && (
           <motion.div variants={fadeUp} className="col-span-1 lg:col-span-6">
-            <Link to="/categorie/shoes" className="group relative block w-full h-full overflow-hidden rounded-2xl">
+            <Link to="/categorie/shoes" viewTransition className="group relative block w-full h-full overflow-hidden rounded-2xl">
               <img
                 src={CATEGORY_COVERS.shoes}
                 alt={lang === 'ar' ? 'أحذية' : 'Shoes'}
@@ -139,7 +139,7 @@ export function CategoryBento({ products }) {
         {/* Perfumes */}
         {cats.find(c => c.slug === 'perfumes') && (
           <motion.div variants={fadeUp} className="col-span-1 lg:col-span-6">
-            <Link to="/categorie/perfumes" className="group relative block w-full h-full overflow-hidden rounded-2xl">
+            <Link to="/categorie/perfumes" viewTransition className="group relative block w-full h-full overflow-hidden rounded-2xl">
               <img
                 src={CATEGORY_COVERS.perfumes}
                 alt={lang === 'ar' ? 'عطورات' : 'Perfumes'}

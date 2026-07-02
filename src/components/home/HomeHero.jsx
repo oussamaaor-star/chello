@@ -113,6 +113,7 @@ export function HomeHero() {
           {/* CTA primaire dominant */}
           <Link
             to="/catalogue"
+            viewTransition
             className="group relative inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-full bg-cream text-ink hover:bg-white px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.18em] overflow-hidden transition-all active:scale-[0.97]"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-silver/20 to-transparent translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700" />
@@ -124,6 +125,7 @@ export function HomeHero() {
           {/* CTA secondaire (outline) — vers les abayas, pas un doublon */}
           <Link
             to="/categorie/abayas"
+            viewTransition
             className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-full border border-cream/30 hover:border-cream hover:bg-cream/10 text-cream px-8 py-4 text-[13px] font-medium uppercase tracking-[0.18em] transition-all active:scale-[0.97]"
           >
             {lang === 'ar' ? 'العبايات' : 'Abayas'}

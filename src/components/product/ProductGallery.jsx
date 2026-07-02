@@ -218,6 +218,8 @@ export function ProductGallery({ images = [], productName = '' }) {
         <div
           ref={galleryRef}
           className="relative w-full aspect-[4/5] bg-white sm:rounded-3xl rounded-2xl overflow-hidden group flex items-center justify-center cursor-zoom-in"
+          /* Cible de la transition partagée depuis ProductCard (image qui voyage) */
+          style={{ viewTransitionName: 'product-hero' }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onClick={() => { if (swipedRef.current) { swipedRef.current = false; return; } setLightbox(true); }}

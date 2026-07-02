@@ -79,6 +79,7 @@ export function FeaturedTabs({ products }) {
         <ScrollReveal className="mt-14 text-center">
           <Link
             to="/catalogue"
+            viewTransition
             className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-ink text-cream hover:bg-ink/90 px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.18em] transition-all active:scale-[0.97]"
           >
             {lang === 'ar' ? 'عرض كل المنتجات' : 'View All Products'}

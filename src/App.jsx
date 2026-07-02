@@ -1,4 +1,4 @@
-import { BrowserRouter, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom';
 import { useEffect, useRef, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
 import { AppRoutes } from './router';
@@ -100,14 +100,24 @@ function AppShell() {
   );
 }
 
-function App() {
-  return (
-    <BrowserRouter>
+// Data router (route splat unique) : requis pour `viewTransition` sur les
+// <Link> — le routeur enveloppe alors la navigation dans
+// document.startViewTransition (transitions de page fluides, fallback natif
+// instantané sur les navigateurs sans support). Le routage réel reste dans
+// <AppRoutes> (Routes/Route classiques).
+const router = createBrowserRouter([
+  {
+    path: '*',
+    element: (
       <SmoothScroll>
         <AppShell />
       </SmoothScroll>
-    </BrowserRouter>
-  );
+    ),
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router} />;
 }
 
 export default App;
