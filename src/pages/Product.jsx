@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { MessageCircle, ArrowRight, Ruler, Truck, RotateCcw, ShieldCheck } from 'lucide-react';
+import { MessageCircle, ArrowRight, Ruler, Truck, RotateCcw, ShieldCheck, Check } from 'lucide-react';
 import { StarRating } from '../components/ui/StarRating';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSEO } from '../hooks/useSEO';
@@ -86,6 +86,8 @@ export default function Product() {
   const [selectedColor, setSelectedColor] = useState(null);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [sizeError, setSizeError] = useState(false);
+  // Feedback « ajouté » : le CTA se transforme brièvement en coche verte
+  const [justAdded, setJustAdded] = useState(false);
 
   // Barre d'achat sticky mobile : on l'affiche quand le CTA principal sort du viewport
   const mainCtaRef = useRef(null);
@@ -149,6 +151,8 @@ export default function Product() {
     }
     setSizeError(false);
     addToCart(product, selectedSize, 1, selectedColor);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
     // L'image vole de la galerie vers l'icône panier, PUIS le drawer s'ouvre
     // (sinon il recouvrirait le vol). Sans animation (reduced motion,
     // navigateur ancien) : ouverture immédiate comme avant.
@@ -301,10 +305,16 @@ export default function Product() {
                 <button
                   onClick={handleAddToCart}
                   disabled={product.price == null}
-                  className="group relative flex-1 bg-ink text-cream font-medium uppercase tracking-[0.15em] text-sm rounded-full py-4 overflow-hidden transition-colors disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97]"
+                  className={`group relative flex-1 font-medium uppercase tracking-[0.15em] text-sm rounded-full py-4 overflow-hidden transition-colors disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] ${
+                    justAdded ? 'bg-emerald-600 text-white' : 'bg-ink text-cream'
+                  }`}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700" />
-                  <span className="relative z-10">{t('addToCart')}</span>
+                  <span className="relative z-10 inline-flex items-center justify-center gap-2">
+                    {justAdded
+                      ? <><Check className="w-4 h-4" />{t('productAjouteOk')}</>
+                      : t('addToCart')}
+                  </span>
                 </button>
                 <a
                   href={waHref}
@@ -410,9 +420,13 @@ export default function Product() {
             <button
               onClick={handleAddToCart}
               disabled={product.price == null}
-              className="flex-1 bg-ink text-cream font-semibold uppercase tracking-[0.08em] text-sm rounded-full py-3.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97]"
+              className={`flex-1 font-semibold uppercase tracking-[0.08em] text-sm rounded-full py-3.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] inline-flex items-center justify-center gap-2 ${
+                justAdded ? 'bg-emerald-600 text-white' : 'bg-ink text-cream'
+              }`}
             >
-              {t('addToCart')}
+              {justAdded
+                ? <><Check className="w-4 h-4" />{t('productAjouteOk')}</>
+                : t('addToCart')}
             </button>
             <a
               href={waHref}

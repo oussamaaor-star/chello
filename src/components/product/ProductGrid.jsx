@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'motion/react';
 import { ProductCard, ProductCardSkeleton } from './ProductCard';
 import { ShoppingBag } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -39,10 +40,25 @@ export function ProductGrid({ products = [], loading = false, onReset, preferred
   }
 
   return (
+    // Réorganisation animée au filtrage (pattern SSENSE/Farfetch) : les cartes
+    // restantes GLISSENT vers leur nouvelle position (layout), les nouvelles
+    // apparaissent en fondu, les retirées sortent en fondu (popLayout les
+    // retire du flux pour que les autres se replacent immédiatement).
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
-      {products.map((product, index) => (
-        <ProductCard key={product.id} product={product} priority={index < 8} preferredFormat={preferredFormat} />
-      ))}
+      <AnimatePresence mode="popLayout">
+        {products.map((product, index) => (
+          <motion.div
+            key={product.id}
+            layout
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <ProductCard product={product} priority={index < 8} preferredFormat={preferredFormat} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

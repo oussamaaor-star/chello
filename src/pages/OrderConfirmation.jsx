@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSEO } from '../hooks/useSEO';
@@ -6,12 +6,20 @@ import { buildTitle } from '../utils/seo';
 import { CheckCircle, Package, ArrowRight, ShoppingBag, Loader2, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SHOP_CONFIG } from '../utils/config';
+import { celebrate } from '../utils/microAnimations';
 
 const isUUID = (str) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
 export default function OrderConfirmation() {
   const { t, lang } = useLanguage();
+  const checkRef = useRef(null);
+
+  // Confettis crème/argent une seule fois, juste après l'apparition de la coche
+  useEffect(() => {
+    const timer = setTimeout(() => celebrate(checkRef.current), 350);
+    return () => clearTimeout(timer);
+  }, []);
   useSEO({
     title: buildTitle(lang === 'ar' ? 'تم استلام طلبك' : 'Order received'),
     robots: 'noindex,nofollow',
@@ -42,7 +50,7 @@ export default function OrderConfirmation() {
     <div className="bg-cream min-h-screen flex flex-col">
       <div className="py-12 sm:py-20 bg-cream-deep">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-ink mb-6">
+          <div ref={checkRef} className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-ink mb-6">
             <CheckCircle className="w-9 h-9 text-silver-light" strokeWidth={1.5} />
           </div>
           <p className="text-silver-deep text-xs font-bold uppercase tracking-widest mb-3">

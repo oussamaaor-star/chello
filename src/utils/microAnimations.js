@@ -55,7 +55,54 @@ export function flyToCart(fromEl, imgSrc) {
   ], { duration: 650, easing: 'cubic-bezier(0.3, 0, 0.4, 1)' });
   anim.onfinish = () => ghost.remove();
   anim.oncancel = () => ghost.remove();
+  // Filet : onglet passé en arrière-plan = animation en pause, onfinish jamais
+  // appelé → suppression forcée (no-op si déjà retiré).
+  setTimeout(() => ghost.remove(), 4000);
   return true;
+}
+
+/**
+ * Célébration : pluie de confettis crème/argent/rose qui jaillit d'un élément
+ * (page de confirmation de commande). Jouée une seule fois, ~1,5 s.
+ */
+export function celebrate(el) {
+  if (reducedMotion() || !el) return;
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colors = ['#c0c0c0', '#e8e6e1', '#f43f5e', '#d6c7a1', '#9e9e9e'];
+
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('span');
+    const w = 5 + Math.random() * 5;
+    const h = w * (0.4 + Math.random() * 0.6);
+    p.style.cssText = [
+      'position:fixed',
+      `left:${cx}px`,
+      `top:${cy}px`,
+      `width:${w}px`,
+      `height:${h}px`,
+      `border-radius:${Math.random() > 0.5 ? '9999px' : '2px'}`,
+      `background:${colors[i % colors.length]}`,
+      'z-index:250',
+      'pointer-events:none',
+    ].join(';');
+    document.body.appendChild(p);
+
+    // Jaillit vers le haut dans un cône, puis retombe (pseudo-gravité)
+    const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.9;
+    const speed = 90 + Math.random() * 140;
+    const dx = Math.cos(angle) * speed;
+    const dy = Math.sin(angle) * speed;
+    const rot = (Math.random() - 0.5) * 540;
+    const anim = p.animate([
+      { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(${rot * 0.5}deg)`, opacity: 1, offset: 0.4 },
+      { transform: `translate(${dx * 1.4}px, ${dy + 220}px) rotate(${rot}deg)`, opacity: 0 },
+    ], { duration: 1100 + Math.random() * 500, easing: 'cubic-bezier(0.2, 0.5, 0.6, 1)' });
+    anim.onfinish = () => p.remove();
+    setTimeout(() => p.remove(), 4000); // filet anti-onglet-en-arrière-plan
+  }
 }
 
 /**
@@ -91,5 +138,6 @@ export function heartBurst(el) {
       { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0.2)`, opacity: 0 },
     ], { duration: 480 + Math.random() * 180, easing: 'cubic-bezier(0.2, 0.6, 0.4, 1)' });
     anim.onfinish = () => p.remove();
+    setTimeout(() => p.remove(), 4000); // filet anti-onglet-en-arrière-plan
   }
 }

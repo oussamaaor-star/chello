@@ -91,6 +91,10 @@ export function ProductCard({ product, priority = false }) {
     return () => clearTimeout(timer);
   }, [isReturnTarget]);
 
+  // Bouton quick-add desktop → coche « ajouté » pendant ~1 s (déjà le cas
+  // dans le bottom sheet mobile via sheetAdded — ici pour la cohérence)
+  const [justAdded, setJustAdded] = useState(false);
+
   const handleAddToCart = (e, size) => {
     e.preventDefault();
     if (isRupture) return;
@@ -98,6 +102,8 @@ export function ProductCard({ product, priority = false }) {
     addToCart(product, s);
     trackAddToCart(product, 1);
     flyToCart(imgZoneRef.current, imgUrl(product.images?.[0], { w: 120, q: 70 }));
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1100);
   };
 
   const handleToggleWishlist = (e) => {
@@ -231,6 +237,20 @@ export function ProductCard({ product, priority = false }) {
             onError={(e) => { e.target.src = '/products/placeholder-dresses.svg'; e.target.classList.replace('opacity-0', 'opacity-100'); e.target.onerror = null; }}
           />
 
+          {/* 2e vue au survol (standard Zara/ASOS) — desktop uniquement :
+              lazy + display:none sur mobile = pas de téléchargement inutile */}
+          {product.images?.[1] && (
+            <img
+              src={imgUrl(product.images[1], { w: 500, q: 70 })}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className="hidden lg:block absolute inset-0 object-cover w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          )}
+
           {isRupture && (
             <div className="absolute inset-0 bg-cream/60 flex items-center justify-center z-10">
               <span className="px-3 py-1 bg-ink text-cream text-[10px] font-semibold uppercase tracking-wider rounded-full">
@@ -293,20 +313,26 @@ export function ProductCard({ product, priority = false }) {
                 </div>
                 <button
                   onClick={(e) => handleAddToCart(e, activeSize)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-ink hover:bg-ink/90 text-cream text-xs font-semibold uppercase tracking-wide rounded-md transition-all"
+                  className={`w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-md transition-all ${
+                    justAdded ? 'bg-emerald-600 text-white' : 'bg-ink hover:bg-ink/90 text-cream'
+                  }`}
                 >
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                  {t('addToCart')}
+                  {justAdded
+                    ? <><Check className="w-3.5 h-3.5" />{t('productAjouteOk')}</>
+                    : <><ShoppingBag className="w-3.5 h-3.5" />{t('addToCart')}</>}
                 </button>
               </div>
             ) : (
               <button
                 onClick={handleAddToCart}
                 disabled={isRupture}
-                className="w-full flex items-center justify-center gap-2 py-2.5 bg-ink hover:bg-ink/90 text-cream text-xs font-semibold uppercase tracking-wide rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className={`w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                  justAdded ? 'bg-emerald-600 text-white' : 'bg-ink hover:bg-ink/90 text-cream'
+                }`}
               >
-                <ShoppingBag className="w-3.5 h-3.5" />
-                {isRupture ? t('outOfStock') : t('addToCart')}
+                {justAdded
+                  ? <><Check className="w-3.5 h-3.5" />{t('productAjouteOk')}</>
+                  : <><ShoppingBag className="w-3.5 h-3.5" />{isRupture ? t('outOfStock') : t('addToCart')}</>}
               </button>
             )}
           </div>
