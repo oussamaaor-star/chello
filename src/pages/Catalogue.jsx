@@ -27,7 +27,7 @@ const isBestseller = (p) => p.tags?.includes('bestseller') ?? false;
 export default function Catalogue() {
   const { slug: categorySlug } = useParams();
   const navigate = useNavigate();
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
   const { products, loading, error } = useCatalogue();
 
   // Catégorie active = état local (filtre animé client-side, sans recharger la page).

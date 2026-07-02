@@ -36,7 +36,7 @@ class ErrorBoundary extends Component {
 }
 
 // ─── Fallback affiché si une erreur React non gérée remonte jusqu'ici ─────────
-function SentryFallback({ error }) {
+function SentryFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-cream">
       <div className="max-w-md text-center">

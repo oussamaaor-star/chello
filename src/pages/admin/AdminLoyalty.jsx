@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  Search, Plus, Gift, ChevronLeft, ChevronRight, Settings, Save,
-  Loader2, Star, TrendingUp, Minus, History,
+  Search, Gift, ChevronLeft, ChevronRight, Settings,
+  Loader2, TrendingUp, History,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { calculatePoints } from '../../utils/loyalty';
+import { LoyaltyConfigPanel } from '../../components/admin/LoyaltyConfigPanel';
+import { AdjustPointsModal, PointsHistoryModal } from '../../components/admin/LoyaltyModals';
 
 const PAGE_SIZE = 20;
-
-function formatOMR(v) {
-  if (v == null) return '—';
-  return Number(v).toFixed(3) + ' OMR';
-}
 
 export default function AdminLoyalty() {
   const [query, setQuery] = useState('');
@@ -23,93 +19,13 @@ export default function AdminLoyalty() {
   const [searching, setSearching] = useState(false);
   const inputRef = useRef(null);
 
-  // Config state
+  // Config en lecture seule (chargée/sauvée par LoyaltyConfigPanel)
   const [config, setConfig] = useState(null);
-  const [configLoading, setConfigLoading] = useState(true);
-  const [configSaving, setConfigSaving] = useState(false);
-  const [configSaved, setConfigSaved] = useState(false);
-  const [configError, setConfigError] = useState('');
-  const [editConfig, setEditConfig] = useState(null);
   const [showConfig, setShowConfig] = useState(false);
 
-  // Points adjustment
+  // Modales
   const [adjustMember, setAdjustMember] = useState(null);
-  const [adjustPoints, setAdjustPoints] = useState('');
-  const [adjustNote, setAdjustNote] = useState('');
-  const [adjusting, setAdjusting] = useState(false);
-  const [adjustError, setAdjustError] = useState('');
-
-  // Transaction history
   const [historyMember, setHistoryMember] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
-
-  const loadConfig = async () => {
-    setConfigLoading(true);
-    const { data } = await supabase.from('loyalty_config').select('*').limit(1).maybeSingle();
-    if (data) {
-      const parsed = {
-        ...data,
-        reward_tiers: typeof data.reward_tiers === 'string' ? JSON.parse(data.reward_tiers) : data.reward_tiers ?? [],
-      };
-      setConfig(parsed);
-      setEditConfig({
-        omr_per_point: String(parsed.omr_per_point),
-        points_per_threshold: String(parsed.points_per_threshold),
-        signup_bonus: String(parsed.signup_bonus),
-        reward_tiers: parsed.reward_tiers,
-      });
-    }
-    setConfigLoading(false);
-  };
-
-  const saveConfig = async () => {
-    if (!config || !editConfig) return;
-    setConfigSaving(true);
-    setConfigSaved(false);
-    setConfigError('');
-    const tiers = editConfig.reward_tiers.filter((t) => t.points > 0 && t.discount_omr > 0);
-    // .select() : un UPDATE bloqué par RLS renvoie error=null + 0 ligne →
-    // faux succès. On vérifie qu'une ligne a bien été modifiée.
-    const { data, error } = await supabase.from('loyalty_config').update({
-      omr_per_point: parseFloat(editConfig.omr_per_point) || 30,
-      points_per_threshold: parseInt(editConfig.points_per_threshold) || 1,
-      signup_bonus: parseInt(editConfig.signup_bonus) || 0,
-      reward_tiers: tiers,
-      updated_at: new Date().toISOString(),
-    }).eq('id', config.id).select('id');
-    setConfigSaving(false);
-    if (error || !data || data.length === 0) {
-      setConfigError('Save failed — the configuration was not updated.');
-      return;
-    }
-    setConfigSaved(true);
-    setTimeout(() => setConfigSaved(false), 2000);
-    loadConfig();
-  };
-
-  const addTier = () => {
-    setEditConfig((prev) => ({
-      ...prev,
-      reward_tiers: [...prev.reward_tiers, { points: 0, discount_omr: 0 }],
-    }));
-  };
-
-  const updateTier = (idx, field, value) => {
-    setEditConfig((prev) => ({
-      ...prev,
-      reward_tiers: prev.reward_tiers.map((t, i) =>
-        i === idx ? { ...t, [field]: parseFloat(value) || 0 } : t
-      ),
-    }));
-  };
-
-  const removeTier = (idx) => {
-    setEditConfig((prev) => ({
-      ...prev,
-      reward_tiers: prev.reward_tiers.filter((_, i) => i !== idx),
-    }));
-  };
 
   const loadRecent = async (p = page) => {
     const from = p * PAGE_SIZE;
@@ -122,10 +38,6 @@ export default function AdminLoyalty() {
     setMembers(data ?? []);
     setTotal(count ?? 0);
   };
-
-  useEffect(() => {
-    loadConfig();
-  }, []);
 
   useEffect(() => {
     loadRecent(page);
@@ -160,56 +72,11 @@ export default function AdminLoyalty() {
     setQuery('');
   };
 
-  const handleAdjust = async () => {
-    if (!adjustMember || !adjustPoints) return;
-    setAdjustError('');
-    setAdjusting(true);
-    const pts = parseInt(adjustPoints);
-    if (isNaN(pts) || pts === 0) { setAdjusting(false); return; }
-
-    const memberId = adjustMember.id;
-    const { error } = await supabase.rpc('add_loyalty_points', {
-      p_member_id: memberId,
-      p_points: pts,
-      p_type: 'adjustment',
-      p_source: 'admin',
-      p_note: adjustNote || `Manual adjustment by admin`,
-    });
-
-    setAdjusting(false);
-    if (error) {
-      setAdjustError('Adjustment failed — points were not changed.');
-      return;
-    }
-    setAdjustMember(null);
-    setAdjustPoints('');
-    setAdjustNote('');
+  // Après un ajustement réussi : refresh liste + membre trouvé s'il est concerné.
+  const handleAdjusted = (memberId, pts) => {
     loadRecent(page);
     if (found?.id === memberId) {
       setFound((prev) => prev ? { ...prev, points: prev.points + pts } : prev);
-    }
-  };
-
-  const loadHistory = async (member) => {
-    setHistoryMember(member);
-    setHistoryLoading(true);
-    const { data } = await supabase
-      .from('loyalty_transactions')
-      .select('*')
-      .eq('member_id', member.id)
-      .order('created_at', { ascending: false })
-      .limit(30);
-    setTransactions(data ?? []);
-    setHistoryLoading(false);
-  };
-
-  const typeLabel = (type) => {
-    switch (type) {
-      case 'earned': return 'Earned';
-      case 'redeemed': return 'Redeemed';
-      case 'bonus': return 'Bonus';
-      case 'adjustment': return 'Adjustment';
-      default: return type;
     }
   };
 
@@ -226,121 +93,11 @@ export default function AdminLoyalty() {
         </button>
       </div>
 
-      {/* ── Config Panel ─────────────────────────────────────── */}
-      {showConfig && (
-        <div className="bg-white rounded-2xl border border-ink/10 shadow-sm p-6 space-y-5">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-ink-soft flex items-center gap-2">
-            <Settings size={14} /> Points Configuration
-          </h2>
-
-          {configLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="w-5 h-5 animate-spin text-ink-soft" />
-            </div>
-          ) : editConfig && (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs text-ink-soft mb-1.5">OMR per point</label>
-                  <input
-                    type="number"
-                    step="0.001"
-                    value={editConfig.omr_per_point}
-                    onChange={(e) => setEditConfig({ ...editConfig, omr_per_point: e.target.value })}
-                    className="w-full border border-ink/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
-                  />
-                  <p className="text-[10px] text-ink-soft/60 mt-1">
-                    Customer spends {editConfig.omr_per_point} OMR = earns {editConfig.points_per_threshold} point(s)
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-xs text-ink-soft mb-1.5">Points per threshold</label>
-                  <input
-                    type="number"
-                    value={editConfig.points_per_threshold}
-                    onChange={(e) => setEditConfig({ ...editConfig, points_per_threshold: e.target.value })}
-                    className="w-full border border-ink/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-ink-soft mb-1.5">Signup bonus</label>
-                  <input
-                    type="number"
-                    value={editConfig.signup_bonus}
-                    onChange={(e) => setEditConfig({ ...editConfig, signup_bonus: e.target.value })}
-                    className="w-full border border-ink/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
-                  />
-                  <p className="text-[10px] text-ink-soft/60 mt-1">Points given when a new customer registers</p>
-                </div>
-              </div>
-
-              {/* Reward Tiers */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs text-ink-soft font-semibold">Reward Tiers</label>
-                  <button
-                    onClick={addTier}
-                    className="flex items-center gap-1 text-xs text-silver-deep hover:text-silver transition-colors"
-                  >
-                    <Plus size={12} /> Add tier
-                  </button>
-                </div>
-                {editConfig.reward_tiers.length === 0 ? (
-                  <p className="text-xs text-ink-soft/50">No reward tiers configured. Add one above.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {editConfig.reward_tiers.map((tier, idx) => (
-                      <div key={idx} className="flex items-center gap-3 bg-cream-deep rounded-xl px-3 py-2">
-                        <div className="flex items-center gap-1.5 flex-1">
-                          <Star size={12} className="text-silver" />
-                          <input
-                            type="number"
-                            value={tier.points}
-                            onChange={(e) => updateTier(idx, 'points', e.target.value)}
-                            className="w-20 border border-ink/10 rounded-lg px-2 py-1.5 text-sm bg-white"
-                          />
-                          <span className="text-xs text-ink-soft">pts =</span>
-                          <input
-                            type="number"
-                            step="0.001"
-                            value={tier.discount_omr}
-                            onChange={(e) => updateTier(idx, 'discount_omr', e.target.value)}
-                            className="w-24 border border-ink/10 rounded-lg px-2 py-1.5 text-sm bg-white"
-                          />
-                          <span className="text-xs text-ink-soft">OMR discount</span>
-                        </div>
-                        <button onClick={() => removeTier(idx)} className="text-red-400 hover:text-red-600 transition-colors">
-                          <Minus size={14} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={saveConfig}
-                  disabled={configSaving}
-                  className="flex items-center gap-2 bg-ink text-cream rounded-xl px-5 py-2.5 text-sm font-bold hover:bg-ink/90 transition-colors disabled:opacity-50"
-                >
-                  {configSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-                  Save configuration
-                </button>
-                {configSaved && (
-                  <span className="text-sm text-emerald-600 font-medium">Saved!</span>
-                )}
-                {configError && (
-                  <span className="text-sm text-red-600 font-medium">{configError}</span>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      )}
+      {/* ── Config Panel (toujours monté : charge la config même replié) ── */}
+      <LoyaltyConfigPanel visible={showConfig} onConfigChange={setConfig} />
 
       {/* ── Quick stats ──────────────────────────────────────── */}
-      {config && !configLoading && (
+      {config && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-white rounded-xl border border-ink/10 p-4">
             <p className="text-[10px] uppercase tracking-widest text-ink-soft mb-1">Rule</p>
@@ -390,7 +147,7 @@ export default function AdminLoyalty() {
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => loadHistory(found)}
+                onClick={() => setHistoryMember(found)}
                 className="flex items-center gap-1.5 text-xs font-medium text-ink-soft hover:text-ink transition-colors"
               >
                 <History size={14} /> History
@@ -459,7 +216,7 @@ export default function AdminLoyalty() {
                     {new Date(m.created_at).toLocaleDateString('en-GB')}
                   </td>
                   <td className="px-4 py-3 text-right space-x-3">
-                    <button onClick={() => loadHistory(m)} className="text-xs text-ink-soft hover:text-ink transition-colors">
+                    <button onClick={() => setHistoryMember(m)} className="text-xs text-ink-soft hover:text-ink transition-colors">
                       History
                     </button>
                     <button onClick={() => setAdjustMember(m)} className="text-xs text-silver-deep hover:text-silver transition-colors">
@@ -496,99 +253,19 @@ export default function AdminLoyalty() {
         </div>
       )}
 
-      {/* ── Adjust points modal ──────────────────────────────── */}
+      {/* ── Modales ──────────────────────────────────────────── */}
       {adjustMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={() => { setAdjustMember(null); setAdjustError(''); }}>
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-ink mb-1">Adjust Points</h3>
-            <p className="text-sm text-ink-soft mb-4">
-              {adjustMember.full_name} — current: <span className="font-bold text-ink">{adjustMember.points ?? 0}</span> pts
-            </p>
-            <div className="space-y-3 mb-5">
-              <div>
-                <label className="text-xs text-ink-soft mb-1 block">Points (+ or -)</label>
-                <input
-                  type="number"
-                  value={adjustPoints}
-                  onChange={(e) => setAdjustPoints(e.target.value)}
-                  placeholder="+5 or -3"
-                  className="w-full border border-ink/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="text-xs text-ink-soft mb-1 block">Note (optional)</label>
-                <input
-                  value={adjustNote}
-                  onChange={(e) => setAdjustNote(e.target.value)}
-                  placeholder="Reason for adjustment"
-                  className="w-full border border-ink/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
-                />
-              </div>
-            </div>
-            {adjustError && (
-              <p className="text-sm text-red-600 font-medium mb-3">{adjustError}</p>
-            )}
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setAdjustMember(null); setAdjustError(''); }}
-                className="flex-1 py-2.5 border border-ink/15 rounded-xl text-sm font-medium text-ink-soft hover:bg-cream-deep transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAdjust}
-                disabled={adjusting || !adjustPoints}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-ink text-cream rounded-xl text-sm font-bold hover:bg-ink/90 disabled:opacity-50 transition-colors"
-              >
-                {adjusting ? <Loader2 size={14} className="animate-spin" /> : <TrendingUp size={14} />}
-                Apply
-              </button>
-            </div>
-          </div>
-        </div>
+        <AdjustPointsModal
+          member={adjustMember}
+          onClose={() => setAdjustMember(null)}
+          onApplied={handleAdjusted}
+        />
       )}
-
-      {/* ── History modal ────────────────────────────────────── */}
       {historyMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={() => setHistoryMember(null)}>
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-ink mb-1">Points History</h3>
-            <p className="text-sm text-ink-soft mb-4">{historyMember.full_name} — {historyMember.points ?? 0} pts</p>
-
-            {historyLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-5 h-5 animate-spin text-ink-soft" />
-              </div>
-            ) : transactions.length === 0 ? (
-              <p className="text-sm text-ink-soft text-center py-6">No transactions yet.</p>
-            ) : (
-              <div className="space-y-2">
-                {transactions.map((tx) => (
-                  <div key={tx.id} className="flex items-center justify-between bg-cream-deep rounded-xl px-4 py-3">
-                    <div>
-                      <p className="text-sm font-medium text-ink">{typeLabel(tx.type)}</p>
-                      <p className="text-xs text-ink-soft">
-                        {tx.source}{tx.amount_omr ? ` — ${formatOMR(tx.amount_omr)}` : ''}{tx.note ? ` — ${tx.note}` : ''}
-                      </p>
-                      <p className="text-[10px] text-ink-soft/50">{new Date(tx.created_at).toLocaleString('en-GB')}</p>
-                    </div>
-                    <span className={`text-sm font-bold ${tx.points > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                      {tx.points > 0 ? '+' : ''}{tx.points}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <button
-              onClick={() => setHistoryMember(null)}
-              className="w-full mt-4 py-2.5 border border-ink/15 rounded-xl text-sm font-medium text-ink-soft hover:bg-cream-deep transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <PointsHistoryModal
+          member={historyMember}
+          onClose={() => setHistoryMember(null)}
+        />
       )}
     </div>
   );

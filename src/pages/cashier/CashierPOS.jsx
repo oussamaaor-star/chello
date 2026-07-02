@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle,
-  Loader2, Gift, User, Phone, Sparkles, PackageX,
+  Search, ShoppingCart, CheckCircle,
+  Loader2, Gift, User, Phone, PackageX,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { findMemberByPhone, getLoyaltyConfig, calculatePoints, addPoints, getBestReward } from '../../utils/loyalty';
 import { formatCurrency } from '../../utils/cashierFormat';
+import { SaleSuccessOverlay } from '../../components/cashier/SaleSuccessOverlay';
+import { PosProductGrid } from '../../components/cashier/PosProductGrid';
+import { PosCartItem } from '../../components/cashier/PosCartItem';
 
 export default function CashierPOS() {
   const { user } = useAuth();
@@ -273,8 +276,6 @@ export default function CashierPOS() {
     loadCatalogue();
   };
 
-  const dismissResult = () => setSaleResult(null);
-
   return (
     <div className="space-y-6">
       <div>
@@ -284,57 +285,7 @@ export default function CashierPOS() {
 
       {/* Sale success overlay */}
       {saleResult && (
-        <div className="fixed inset-0 bg-ink/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={dismissResult}>
-          <div
-            className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
-              <CheckCircle className="w-8 h-8 text-emerald-600" />
-            </div>
-            <h2 className="text-2xl font-serif text-ink mb-1">Sale recorded</h2>
-            <p className="text-ink-soft text-sm mb-2">{saleResult.customerName}</p>
-            <p className="text-3xl font-serif text-ink mb-6">{formatCurrency(saleResult.total)}</p>
-
-            {saleResult.loyalty ? (
-              <div className={`rounded-2xl p-5 mb-6 ${saleResult.loyalty.bestReward ? 'bg-silver/10 border-2 border-silver' : 'bg-cream-deep border border-ink/10'}`}>
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Sparkles className="w-5 h-5 text-silver" />
-                  <p className="text-sm font-bold text-ink">
-                    +{saleResult.loyalty.pointsEarned} points earned!
-                  </p>
-                </div>
-
-                <div className="bg-white/60 rounded-xl px-4 py-3 mb-3 text-center">
-                  <p className="text-2xl font-bold text-ink">{saleResult.loyalty.newBalance}</p>
-                  <p className="text-xs text-ink-soft">total points</p>
-                </div>
-
-                {saleResult.loyalty.bestReward && (
-                  <div className="flex items-center justify-center gap-2 bg-silver/15 rounded-xl px-3 py-2">
-                    <Gift className="w-4 h-4 text-silver" />
-                    <p className="text-sm font-semibold text-silver-deep">
-                      Can redeem {saleResult.loyalty.bestReward.discount_omr} OMR discount!
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="bg-cream-deep rounded-2xl p-4 mb-6 border border-ink/10">
-                <p className="text-xs text-ink-soft">
-                  No loyalty account linked to this number.
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={dismissResult}
-              className="w-full bg-ink text-cream py-3 rounded-xl font-bold text-sm hover:bg-ink/90 transition-colors"
-            >
-              New Sale
-            </button>
-          </div>
-        </div>
+        <SaleSuccessOverlay result={saleResult} onDismiss={() => setSaleResult(null)} />
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -352,64 +303,13 @@ export default function CashierPOS() {
             />
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 text-ink-soft animate-spin" />
-            </div>
-          ) : filtered.length === 0 ? (
-            <p className="text-ink-soft text-center py-8">No products found.</p>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[65vh] overflow-y-auto pr-1">
-              {filtered.map((p) => {
-                const stock = getStock(p.id);
-                const isOut = stock === 0;
-                const remaining = remainingStock(p.id);
-                const capped = !isOut && remaining <= 0; // tracked stock fully in cart
-                const disabled = isOut || capped;
-                return (
-                <button
-                  key={p.id}
-                  onClick={() => addToCart(p)}
-                  disabled={disabled}
-                  className={`bg-white rounded-2xl border border-ink/8 shadow-sm overflow-hidden text-left transition-all group ${
-                    disabled ? 'opacity-60 cursor-not-allowed' : 'hover:border-silver/30 hover:shadow-md'
-                  }`}
-                >
-                  <div className="aspect-square bg-cream-deep overflow-hidden relative">
-                    <img
-                      src={p.images?.[0] ?? '/products/placeholder-dresses.svg'}
-                      alt={p.name}
-                      className={`w-full h-full object-cover transition-transform duration-300 ${disabled ? 'grayscale' : 'group-hover:scale-105'}`}
-                      onError={(e) => { e.target.src = '/products/placeholder-dresses.svg'; e.target.onerror = null; }}
-                    />
-                    {isOut && (
-                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500 text-white">
-                        <PackageX className="w-2.5 h-2.5" /> Out
-                      </span>
-                    )}
-                    {capped && (
-                      <span className="absolute top-2 left-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white">
-                        Max in cart
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="text-xs font-semibold text-ink leading-snug line-clamp-2 mb-1">{p.name}</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold text-silver-deep">
-                        {p.price != null ? formatCurrency(p.price) : 'On request'}
-                      </p>
-                      {!disabled && <Plus className="w-4 h-4 text-ink-soft group-hover:text-silver transition-colors" />}
-                    </div>
-                    {stock != null && stock > 0 && (
-                      <p className="text-[10px] text-ink-soft mt-1">{stock} in stock</p>
-                    )}
-                  </div>
-                </button>
-                );
-              })}
-            </div>
-          )}
+          <PosProductGrid
+            products={filtered}
+            loading={loading}
+            getStock={getStock}
+            remainingStock={remainingStock}
+            onAdd={addToCart}
+          />
         </div>
 
         {/* Panier — 2/5 */}
@@ -431,47 +331,15 @@ export default function CashierPOS() {
             ) : (
               <div className="divide-y divide-ink/5 max-h-[30vh] overflow-y-auto">
                 {cart.map((item) => (
-                  <div key={item.id} className="px-5 py-3">
-                    <div className="flex items-start gap-3">
-                      <div className="w-12 h-14 rounded-xl overflow-hidden bg-cream-deep flex-shrink-0">
-                        <img src={item.image} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.src = '/products/placeholder-dresses.svg'; e.target.onerror = null; }} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-ink leading-snug line-clamp-2">{item.name}</p>
-                        <p className="text-xs text-silver-deep font-bold mt-0.5">{formatCurrency(item.price)}</p>
-                        {item.selectedSize && (
-                          <select
-                            value={item.selectedSize}
-                            onChange={(e) => updateSize(item.id, e.target.value)}
-                            className="mt-1 text-[10px] border border-ink/10 rounded-lg px-1.5 py-0.5 bg-cream-deep"
-                          >
-                            {(products.find((p) => p.id === item.id)?.sizes ?? []).map((s) => (
-                              <option key={s} value={s}>{s}</option>
-                            ))}
-                          </select>
-                        )}
-                      </div>
-                      <button onClick={() => removeItem(item.id)} className="text-ink-soft/40 hover:text-red-500 transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 rounded-lg border border-ink/15 flex items-center justify-center hover:bg-cream-deep transition-colors">
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="text-sm font-bold text-ink w-6 text-center">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQty(item.id, 1)}
-                          disabled={remainingStock(item.id) <= 0}
-                          className="w-7 h-7 rounded-lg border border-ink/15 flex items-center justify-center hover:bg-cream-deep transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
-                      <p className="text-sm font-bold text-ink">{formatCurrency(item.price * item.quantity)}</p>
-                    </div>
-                  </div>
+                  <PosCartItem
+                    key={item.id}
+                    item={item}
+                    sizes={products.find((p) => p.id === item.id)?.sizes ?? []}
+                    remaining={remainingStock(item.id)}
+                    onQty={updateQty}
+                    onSize={updateSize}
+                    onRemove={removeItem}
+                  />
                 ))}
               </div>
             )}

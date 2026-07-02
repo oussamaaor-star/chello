@@ -13,7 +13,7 @@ import { supabase } from '../lib/supabase';
 
 export default function Login() {
   useSEO(SEO_PRESETS.login);
-  const { login, isAuthenticated, role } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate  = useNavigate();
   const location  = useLocation();
   const from      = location.state?.from?.pathname || '/compte/profil';

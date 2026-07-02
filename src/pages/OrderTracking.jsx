@@ -15,7 +15,7 @@ export default function OrderTracking() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [order, setOrder] = useState(null);
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
 
   const formatDate = (iso) =>
     new Date(iso).toLocaleDateString(lang === 'ar' ? 'ar-OM' : 'en-US', {

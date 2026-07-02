@@ -126,7 +126,6 @@ export default function OrderDetail() {
   const [productImages, setProductImages] = useState({});
   const [loading, setLoading]           = useState(true);
   const [notFound, setNotFound]         = useState(false);
-  const [pdfLoading, setPdfLoading] = useState(false);
 
   const loadOrder = async () => {
     setLoading(true);
