@@ -42,7 +42,7 @@ function QuickFilter({ label, active, onClick }) {
 export default function Search() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const SORT_OPTIONS = [
     { value: 'relevance', label: t('sortPertinence') },
@@ -85,9 +85,12 @@ export default function Search() {
       .sort((a, b) => b[1] - a[1])
       .map(([slug]) => {
         const cat = categoriesData.find((c) => c.slug === slug);
-        return { slug, label: cat?.label ?? slug };
+        const label = lang === 'ar'
+          ? (cat?.label ?? slug)
+          : (cat?.labelEn ?? cat?.label ?? slug);
+        return { slug, label };
       });
-  }, [rawResults.products]);
+  }, [rawResults.products, lang]);
 
   const hasActiveFilter = !!activeCategory;
 
@@ -108,7 +111,7 @@ export default function Search() {
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-ink text-cream rounded-full text-sm font-semibold hover:bg-ink/90 transition-colors"
         >
           {t('navCatalogue')}
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-4 h-4 rtl:rotate-180" />
         </Link>
       </div>
     );
@@ -195,8 +198,8 @@ export default function Search() {
                   to={`/categorie/${cat.slug}`}
                   className="flex items-center gap-2 px-4 py-2.5 bg-cream-deep border border-ink/10 rounded-xl text-sm font-semibold text-ink hover:border-silver transition-all"
                 >
-                  {cat.label}
-                  <ArrowRight className="w-3.5 h-3.5 text-ink-soft" />
+                  {lang === 'ar' ? cat.label : (cat.labelEn ?? cat.label)}
+                  <ArrowRight className="w-3.5 h-3.5 text-ink-soft rtl:rotate-180" />
                 </Link>
               ))}
             </div>
@@ -224,7 +227,7 @@ export default function Search() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link to="/catalogue" className="inline-flex items-center gap-2 px-5 py-2.5 bg-ink text-cream rounded-full text-sm font-semibold hover:bg-ink/90 transition-colors">
                 {t('voirTout')}
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
               </Link>
               <Link to="/" className="inline-flex items-center gap-2 px-5 py-2.5 border border-ink/20 text-ink rounded-full text-sm font-medium hover:bg-cream-deep transition-colors">
                 {t('notFoundRetour')}

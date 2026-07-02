@@ -1,31 +1,44 @@
 import { useState, useEffect, useRef } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
-import { ChevronRight, Package, Gem } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { ChevronDown, Package, Gem } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import categoriesData from '../../data/categories.json';
+import { MegaMenu } from './MegaMenu';
 
 export function NavLinks() {
   const { t, lang } = useLanguage();
   const isAr = lang === 'ar';
   const location = useLocation();
 
-  const [activeMenu, setActiveMenu] = useState(null);
+  const [megaOpen, setMegaOpen] = useState(false);
   const closeTimeoutRef = useRef(null);
 
+  // Close on route change.
   useEffect(() => {
-    setActiveMenu(null);
+    setMegaOpen(false);
   }, [location.pathname]);
 
-  const handleMouseEnter = (menu) => {
+  // Close on Escape.
+  useEffect(() => {
+    if (!megaOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') setMegaOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [megaOpen]);
+
+  const openMega = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-    setActiveMenu(menu);
+    setMegaOpen(true);
   };
 
-  const handleMouseLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setActiveMenu(null);
-    }, 150);
+  // Small grace delay so the cursor can travel from the trigger to the panel.
+  const scheduleClose = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    closeTimeoutRef.current = setTimeout(() => setMegaOpen(false), 140);
   };
+
+  useEffect(() => () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+  }, []);
 
   const getNavLinkClass = (isActive) =>
     `relative text-xs font-semibold uppercase tracking-[0.15em] py-5 group flex items-center gap-1.5 transition-colors duration-200 ${
@@ -39,72 +52,66 @@ export function NavLinks() {
   );
 
   return (
-    <nav className="hidden lg:flex items-center gap-9 h-full">
+    <>
+      <nav className="hidden lg:flex items-center justify-center gap-9 h-full">
 
-      {/* ── MEGA MENU : CATÉGORIES ── */}
-      <div
-        className="h-full flex items-center"
-        onMouseEnter={() => handleMouseEnter('categories')}
-        onMouseLeave={handleMouseLeave}
-      >
-        <NavLink to="/catalogue" className={({ isActive }) => getNavLinkClass(isActive)}>
-          {({ isActive }) => (
-            <>
-              {t('navCatalogue')}
-              <span className={getUnderlineClass(isActive)} />
-            </>
-          )}
-        </NavLink>
-
-        <div className={`absolute top-full left-0 w-full transition-all duration-300 ease-out z-50 transform ${
-          activeMenu === 'categories'
-            ? 'opacity-100 visible translate-y-0'
-            : 'opacity-0 invisible translate-y-2 pointer-events-none'
-        }`}>
-          <div className="absolute -top-4 left-0 right-0 h-4" />
-          <div className="absolute inset-0 bg-cream border-b border-ink/10 shadow-[0_20px_40px_rgba(24,20,15,0.08)] -z-10" />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-wrap gap-x-12 gap-y-6">
-            {categoriesData.map((cat) => (
-              <Link
-                key={cat.slug}
-                to={`/categorie/${cat.slug}`}
-                className="text-2xl font-serif italic text-ink hover:text-silver-deep transition-colors flex items-center gap-2 group/link"
-              >
-                {isAr ? cat.label : cat.labelEn}
-                <ChevronRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all text-silver rtl:rotate-180" />
-              </Link>
-            ))}
-          </div>
+        {/* ── MEGA MENU TRIGGER : CATÉGORIES ── */}
+        <div
+          className="h-full flex items-center"
+          onMouseEnter={openMega}
+          onMouseLeave={scheduleClose}
+        >
+          <button
+            type="button"
+            onClick={() => setMegaOpen((o) => !o)}
+            aria-expanded={megaOpen}
+            aria-haspopup="true"
+            className={`${getNavLinkClass(megaOpen)} cursor-pointer`}
+          >
+            {t('navCatalogue')}
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform duration-300 ${megaOpen ? 'rotate-180' : ''}`}
+            />
+            <span className={getUnderlineClass(megaOpen)} />
+          </button>
         </div>
-      </div>
 
-      {/* ── FIDÉLITÉ ── */}
-      <div className="h-full flex items-center">
-        <NavLink to="/fidelite" className={({ isActive }) => getNavLinkClass(isActive)}>
-          {({ isActive }) => (
-            <>
-              <Gem className="w-3.5 h-3.5 flex-shrink-0" />
-              {t('navFidelite')}
-              <span className={getUnderlineClass(isActive)} />
-            </>
-          )}
-        </NavLink>
-      </div>
+        {/* ── FIDÉLITÉ ── */}
+        <div className="h-full flex items-center">
+          <NavLink to="/fidelite" className={({ isActive }) => getNavLinkClass(isActive)}>
+            {({ isActive }) => (
+              <>
+                <Gem className="w-3.5 h-3.5 flex-shrink-0" />
+                {t('navFidelite')}
+                <span className={getUnderlineClass(isActive)} />
+              </>
+            )}
+          </NavLink>
+        </div>
 
-      {/* ── SUIVI DE COMMANDE ── */}
-      <div className="h-full flex items-center">
-        <NavLink to="/suivi" className={({ isActive }) => getNavLinkClass(isActive)}>
-          {({ isActive }) => (
-            <>
-              <Package className="w-3.5 h-3.5 flex-shrink-0" />
-              {isAr ? 'تتبع' : 'Suivi'}
-              <span className={getUnderlineClass(isActive)} />
-            </>
-          )}
-        </NavLink>
-      </div>
+        {/* ── SUIVI DE COMMANDE ── */}
+        <div className="h-full flex items-center">
+          <NavLink to="/suivi" className={({ isActive }) => getNavLinkClass(isActive)}>
+            {({ isActive }) => (
+              <>
+                <Package className="w-3.5 h-3.5 flex-shrink-0" />
+                {isAr ? 'تتبع' : 'Tracking'}
+                <span className={getUnderlineClass(isActive)} />
+              </>
+            )}
+          </NavLink>
+        </div>
 
-    </nav>
+      </nav>
+
+      {/* Full-width centered mega panel — anchored to the header's nav row. */}
+      <MegaMenu
+        open={megaOpen}
+        onNavigate={() => setMegaOpen(false)}
+        onClose={() => setMegaOpen(false)}
+        onMouseEnter={openMega}
+        onMouseLeave={scheduleClose}
+      />
+    </>
   );
 }

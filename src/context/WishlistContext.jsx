@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { normalizeDbProduct } from '../hooks/useCatalogue';
@@ -8,7 +8,7 @@ export const WishlistContext = createContext(null);
 
 export function WishlistProvider({ children }) {
   // localStorage est la source unique de vérité — pas de race condition possible
-  const [items, setItems] = useLocalStorage('pm-wishlist-items', []);
+  const [items, setItems] = useLocalStorage('chello-wishlist-items', []);
   const [authUser, setAuthUser] = useState(null);
 
   // ── Sync DB → localStorage quand l'utilisateur se connecte ───────────────────
@@ -25,7 +25,7 @@ export function WishlistProvider({ children }) {
     // On récupère les produits manquants dans localStorage
     let currentItems = [];
     try {
-      currentItems = JSON.parse(window.localStorage.getItem('pm-wishlist-items') || '[]');
+      currentItems = JSON.parse(window.localStorage.getItem('chello-wishlist-items') || '[]');
       if (!Array.isArray(currentItems)) currentItems = [];
     } catch { currentItems = []; }
     const missingIds = ids.filter((id) => !currentItems.some((p) => p.id === id));
@@ -47,7 +47,8 @@ export function WishlistProvider({ children }) {
 
     const dbMap = {};
     for (const row of (productsRes.data ?? [])) {
-      dbMap[row.id] = normalizeDbProduct(row, imageMap[row.id] ?? []);
+      const rowWithImages = { ...row, images: imageMap[row.id]?.length ? imageMap[row.id] : (row.images ?? []) };
+      dbMap[row.id] = normalizeDbProduct(rowWithImages);
     }
 
     const extra = missingIds
@@ -126,10 +127,12 @@ export function WishlistProvider({ children }) {
     }
   };
 
+  const value = useMemo(() => ({
+    items, addToWishlist, removeFromWishlist, isInWishlist, toggleWishlist, clearWishlist,
+  }), [items, authUser]);
+
   return (
-    <WishlistContext.Provider
-      value={{ items, addToWishlist, removeFromWishlist, isInWishlist, toggleWishlist, clearWishlist }}
-    >
+    <WishlistContext.Provider value={value}>
       {children}
     </WishlistContext.Provider>
   );

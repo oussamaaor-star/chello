@@ -3,18 +3,21 @@ import { Lock, ShoppingBag, ArrowRight, Sparkles } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useCartDrawer } from '../../hooks/useCartDrawer';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { SHOP_CONFIG } from '../../utils/config';
-
-const FREE_SHIPPING_AT = 30;
+import { SHOP_CONFIG, FREE_SHIPPING_AT, getShippingCost } from '../../utils/config';
 
 export function CartSummary() {
   const { totalPrice } = useCart();
   const { close }      = useCartDrawer();
   const { t }          = useLanguage();
 
+  const CUR            = SHOP_CONFIG.currency;
   const isFreeShipping = totalPrice >= FREE_SHIPPING_AT;
   const remaining      = FREE_SHIPPING_AT - totalPrice;
   const progress       = Math.min((totalPrice / FREE_SHIPPING_AT) * 100, 100);
+
+  // Source de vérité unique : forfait sous le seuil, gratuit au-dessus.
+  const shippingCost   = getShippingCost(totalPrice);
+  const total          = totalPrice + shippingCost;
 
   return (
     <div className="flex flex-col gap-2.5">
@@ -51,17 +54,20 @@ export function CartSummary() {
       <div className="space-y-1 px-1">
         <div className="flex justify-between items-center text-sm">
           <span className="text-ink-soft">{t('cartSousTotal')}</span>
-          <span className="font-semibold text-ink" dir="ltr">{totalPrice.toFixed(2)} {SHOP_CONFIG.currency}</span>
+          <span className="font-semibold text-ink" dir="ltr">{totalPrice.toFixed(3)} {CUR}</span>
         </div>
         <div className="flex justify-between items-center text-sm">
           <span className="text-ink-soft">{t('cartLivraison')}</span>
-          <span className={isFreeShipping ? 'text-emerald-700 font-semibold' : 'text-ink-soft/60 text-xs'}>
-            {isFreeShipping ? t('cartLivraisonGratuite') : t('cartLivraisonSuivante')}
+          <span
+            className={isFreeShipping ? 'text-emerald-700 font-semibold' : 'font-semibold text-ink'}
+            dir="ltr"
+          >
+            {isFreeShipping ? t('cartLivraisonGratuite') : `${shippingCost.toFixed(3)} ${CUR}`}
           </span>
         </div>
         <div className="flex justify-between items-center pt-2 mt-1 border-t border-ink/10">
           <span className="text-base font-medium text-ink">{t('cartTotal')}</span>
-          <span className="text-xl font-semibold text-ink" dir="ltr">{totalPrice.toFixed(2)} {SHOP_CONFIG.currency}</span>
+          <span className="text-xl font-semibold text-ink" dir="ltr">{total.toFixed(3)} {CUR}</span>
         </div>
       </div>
 

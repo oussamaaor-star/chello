@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Ruler, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 const CLOTHING_SIZES = [
   { size: 'S',  bust: '84-88',  waist: '64-68',  hips: '90-94',  length: '135' },
@@ -22,6 +23,8 @@ const SHOE_SIZES = [
 export function SizeGuideModal({ open, onClose }) {
   const { t } = useLanguage();
   const [tab, setTab] = useState(0);
+  // Focus initial + piège Tab + fermeture Échap + restauration du focus.
+  const dialogRef = useFocusTrap(open, onClose);
 
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden';
@@ -43,6 +46,10 @@ export function SizeGuideModal({ open, onClose }) {
           <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" />
 
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="size-guide-title"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -54,7 +61,7 @@ export function SizeGuideModal({ open, onClose }) {
             <div className="sticky top-0 bg-cream z-10 flex items-center justify-between px-6 py-4 border-b border-ink/10">
               <div className="flex items-center gap-2.5">
                 <Ruler className="w-5 h-5 text-silver" />
-                <h2 className="font-serif italic text-lg text-ink">{t('sizeGuideTitle')}</h2>
+                <h2 id="size-guide-title" className="font-serif italic text-lg text-ink">{t('sizeGuideTitle')}</h2>
               </div>
               <button
                 onClick={onClose}
@@ -72,7 +79,7 @@ export function SizeGuideModal({ open, onClose }) {
                   onClick={() => setTab(i)}
                   className={`flex-1 py-3 text-sm font-medium transition-all border-b-2 ${
                     tab === i
-                      ? 'border-silver text-silver'
+                      ? 'border-ink text-ink'
                       : 'border-transparent text-ink-soft/60 hover:text-ink'
                   }`}
                 >

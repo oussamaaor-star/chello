@@ -38,12 +38,12 @@ export default function About() {
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-ink-soft uppercase tracking-wider">
             <Link to="/" className="hover:text-silver transition-colors">{t('breadcrumbAccueil')}</Link>
-            <ChevronRight className="w-3 h-3 opacity-50" />
+            <ChevronRight className="w-3 h-3 opacity-50 rtl:rotate-180" />
             <span className="text-silver">{t('footerAPropos')}</span>
           </div>
 
           <p className="text-[11px] font-semibold tracking-[0.3em] uppercase text-silver-deep mt-8 mb-4">{t('aboutTitle')}</p>
-          <h1 className="text-4xl lg:text-5xl font-serif italic text-ink mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif italic text-ink mb-6 leading-tight">
             Chello,<br />
             <span className="text-silver">{t('aboutMission')}</span>
           </h1>
@@ -54,17 +54,17 @@ export default function About() {
       </div>
 
       {/* ── Story / Timeline ── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <h2 className="text-2xl font-serif italic text-ink mb-10">{t('aboutTimelineTitle')}</h2>
 
         <div className="relative">
           {/* Vertical line */}
-          <div className="absolute left-16 top-3 bottom-3 w-px bg-ink/10 hidden sm:block" />
+          <div className="absolute start-16 top-3 bottom-3 w-px bg-ink/10 hidden sm:block" />
 
           <div className="flex flex-col gap-10">
             {TIMELINE.map((step) => (
               <div key={step.year} className="flex gap-6 sm:gap-10 items-start">
-                <div className="flex-shrink-0 w-12 sm:w-20 text-right">
+                <div className="flex-shrink-0 w-12 sm:w-20 text-end">
                   <span className="text-silver font-bold text-sm sm:text-base">{step.year}</span>
                 </div>
                 <div className="relative flex-shrink-0 w-3 h-3 mt-1 hidden sm:block">
@@ -81,7 +81,7 @@ export default function About() {
       </div>
 
       {/* ── Values ── */}
-      <div className="bg-cream-deep border-y border-ink/10 py-16">
+      <div className="bg-cream-deep border-y border-ink/10 py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-serif italic text-ink mb-10">{t('aboutValues')}</h2>
           <div className="grid sm:grid-cols-2 gap-6">
@@ -101,7 +101,7 @@ export default function About() {
       </div>
 
       {/* ── Why Chello ── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="bg-cream-deep rounded-3xl border border-ink/10 p-8 md:p-12">
           <h2 className="text-2xl font-serif italic text-ink mb-4">{t('aboutDecantsTitle')}</h2>
           <p className="text-ink-soft leading-relaxed mb-4">
@@ -126,13 +126,13 @@ export default function About() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <Link
               to="/contact"
-              className="px-5 py-2.5 rounded-full border border-ink/20 text-ink text-sm font-medium hover:bg-cream-deep transition-colors"
+              className="inline-flex items-center justify-center rounded-full border border-ink/20 text-ink px-5 py-2.5 text-sm font-medium hover:border-ink hover:bg-ink/5 transition-colors"
             >
               {t('contactTitle')}
             </Link>
             <Link
               to="/catalogue"
-              className="px-5 py-2.5 rounded-full bg-ink text-cream text-sm font-bold hover:bg-ink/90 transition-colors"
+              className="inline-flex items-center justify-center rounded-full bg-ink text-cream px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.97]"
             >
               {t('marquesVoirCatalogue')}
             </Link>

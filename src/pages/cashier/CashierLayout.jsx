@@ -30,11 +30,11 @@ function playNotifSound() {
 }
 
 const NAV_ITEMS = [
-  { to: '/caisse',          label: 'Caisse du jour', icon: LayoutDashboard, end: true },
-  { to: '/caisse/commandes', label: 'Commandes',     icon: ShoppingBag, notif: true },
-  { to: '/caisse/vente',    label: 'Nouvelle vente', icon: ShoppingCart },
-  { to: '/caisse/fidelite', label: 'Fidélité',       icon: Gem },
-  { to: '/caisse/stock',    label: 'Stock',          icon: PackageSearch },
+  { to: '/caisse',          label: 'Daily POS',   icon: LayoutDashboard, end: true },
+  { to: '/caisse/commandes', label: 'Orders',      icon: ShoppingBag, notif: true },
+  { to: '/caisse/vente',    label: 'New Sale',      icon: ShoppingCart },
+  { to: '/caisse/fidelite', label: 'Loyalty',       icon: Gem },
+  { to: '/caisse/stock',    label: 'Stock',         icon: PackageSearch },
 ];
 
 function CashierNavLink({ to, label, icon: Icon, end, badge, onClick }) {
@@ -44,19 +44,26 @@ function CashierNavLink({ to, label, icon: Icon, end, badge, onClick }) {
       end={end}
       onClick={onClick}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+        `relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
           isActive
-            ? 'bg-silver/15 text-silver-light font-semibold'
-            : 'text-cream/60 hover:bg-cream/8 hover:text-cream'
+            ? 'bg-cream/10 text-cream font-semibold'
+            : 'text-cream/55 hover:bg-cream/8 hover:text-cream'
         }`
       }
     >
-      <Icon className="w-4 h-4 flex-shrink-0" />
-      <span className="flex-1">{label}</span>
-      {badge > 0 && (
-        <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-silver text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
-          {badge > 99 ? '99+' : badge}
-        </span>
+      {({ isActive }) => (
+        <>
+          {isActive && (
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-silver-light" />
+          )}
+          <Icon className="w-4 h-4 flex-shrink-0" />
+          <span className="flex-1">{label}</span>
+          {badge > 0 && (
+            <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-silver text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
+              {badge > 99 ? '99+' : badge}
+            </span>
+          )}
+        </>
       )}
     </NavLink>
   );
@@ -80,16 +87,25 @@ export default function CashierLayout() {
   useEffect(() => {
     if (!isAuthenticated || !ALLOWED_ROLES.includes(role)) return;
 
-    const channel = supabase
-      .channel('cashier-new-orders')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
-        setNewOrders((n) => n + 1);
-        playNotifSound();
-      })
-      .subscribe();
-
-    channelRef.current = channel;
-    return () => { supabase.removeChannel(channel); };
+    // WebSocket peut échouer (navigation privée, VPN/Private Relay…) → notifs
+    // live optionnelles, ne jamais faire planter la caisse.
+    let channel;
+    try {
+      channel = supabase
+        .channel('cashier-orders')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+          setNewOrders((n) => n + 1);
+          playNotifSound();
+        })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+          playNotifSound();
+        })
+        .subscribe();
+      channelRef.current = channel;
+    } catch (err) {
+      if (import.meta.env.DEV) console.warn('[realtime caisse] indisponible:', err);
+    }
+    return () => { if (channel) supabase.removeChannel(channel); };
   }, [isAuthenticated, role]);
 
   const clearBadge = useCallback(() => setNewOrders(0), []);
@@ -106,17 +122,13 @@ export default function CashierLayout() {
   return (
     <div className="min-h-screen bg-cream flex">
 
-      {/* Sidebar desktop */}
-      <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 bg-ink min-h-screen sticky top-0 h-screen">
-        <div className="px-6 py-5 border-b border-cream/10">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-silver rounded-lg flex items-center justify-center flex-shrink-0">
-              <Store className="w-4 h-4 text-cream" />
-            </div>
-            <div>
-              <p className="text-cream font-bold text-sm leading-none">Chello</p>
-              <p className="text-silver text-[10px] font-semibold uppercase tracking-widest mt-0.5">Caisse</p>
-            </div>
+      {/* Sidebar desktop — fixe pleine hauteur, toujours visible */}
+      <aside className="hidden lg:flex flex-col w-60 bg-ink fixed inset-y-0 left-0 z-20">
+        <div className="px-6 py-6 border-b border-cream/10">
+          <p className="font-serif text-2xl text-cream leading-none tracking-tight">Chello</p>
+          <div className="flex items-center gap-1.5 mt-2">
+            <Store className="w-3 h-3 text-silver" />
+            <p className="text-silver text-[10px] font-bold uppercase tracking-widest">Caisse</p>
           </div>
         </div>
 
@@ -132,35 +144,40 @@ export default function CashierLayout() {
         </nav>
 
         <div className="px-3 py-4 border-t border-cream/10">
-          <div className="px-4 py-2 mb-2">
-            <p className="text-xs font-semibold text-cream/80 truncate">{user?.name}</p>
-            <p className="text-[10px] text-cream/40 truncate">{user?.email}</p>
+          <div className="flex items-center gap-3 px-4 py-2 mb-2">
+            <div className="w-8 h-8 bg-silver/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-silver-light text-xs font-bold">
+                {user?.name?.[0]?.toUpperCase() ?? 'C'}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-cream/80 truncate">{user?.name}</p>
+              <p className="text-[10px] text-cream/40 truncate">{user?.email}</p>
+            </div>
           </div>
           <NavLink
             to="/"
             className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-silver hover:bg-silver/10 transition-colors mb-1"
           >
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
-            Voir le site
+            View site
           </NavLink>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
-            Déconnexion
+            Log out
           </button>
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main (décalée pour la sidebar fixe) */}
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-60">
         <header className="bg-cream border-b border-ink/10 px-4 sm:px-6 h-14 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-2 lg:hidden">
-            <div className="w-6 h-6 bg-silver rounded-md flex items-center justify-center">
-              <Store className="w-3.5 h-3.5 text-cream" />
-            </div>
-            <span className="text-sm font-bold text-ink">Caisse</span>
+          <div className="flex items-baseline gap-2 lg:hidden">
+            <span className="font-serif text-lg text-ink leading-none">Chello</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-silver-deep">Caisse</span>
           </div>
 
           <nav className="hidden lg:flex items-center gap-2 text-xs text-ink-soft">
@@ -177,11 +194,11 @@ export default function CashierLayout() {
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-silver text-cream rounded-full text-xs font-bold animate-pulse"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
-                {newOrders} nouvelle{newOrders > 1 ? 's' : ''}
+                {newOrders} new
               </NavLink>
             )}
             <span className="hidden sm:inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[11px] font-bold uppercase tracking-wide border border-emerald-200">
-              Caissier
+              Cashier
             </span>
             <div className="w-8 h-8 bg-ink rounded-full flex items-center justify-center">
               <span className="text-silver-light text-xs font-bold">
@@ -220,12 +237,14 @@ export default function CashierLayout() {
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-red-500 hover:bg-red-50 whitespace-nowrap"
             >
               <LogOut className="w-3.5 h-3.5" />
-              Déconnexion
+              Log out
             </button>
           </div>
         </div>
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        {/* No overflow-y-auto here: scrolling stays at the window level so it
+            doesn't create an internal scroll container that fights global Lenis. */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

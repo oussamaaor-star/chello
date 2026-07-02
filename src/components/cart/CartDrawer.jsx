@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X, ShoppingBag, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -12,14 +12,35 @@ import { useLanguage } from '../../contexts/LanguageContext';
 export function CartDrawer() {
   const { isOpen, close } = useCartDrawer();
   const { items, totalItems, clearCart } = useCart();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
+  const isRTL      = lang === 'ar';
+  const closeBtnRef = useRef(null);
+
+  // Verrouille le scroll de fond quand le tiroir est ouvert.
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  // Échap pour fermer + focus initial sur le bouton de fermeture.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e) => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKeyDown);
+    const focusTimer = requestAnimationFrame(() => closeBtnRef.current?.focus());
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      cancelAnimationFrame(focusTimer);
+    };
+  }, [isOpen, close]);
+
   const isEmpty = items.length === 0;
+
+  // Le tiroir s'ouvre du côté « end » (droite en LTR, gauche en RTL).
+  // Hors écran : translation positive en LTR (vers la droite),
+  // négative en RTL (vers la gauche).
+  const hiddenTransform = isRTL ? 'translateX(-100%)' : 'translateX(100%)';
 
   return (
     <>
@@ -36,8 +57,8 @@ export function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label={t('cartTitle')}
-        className="fixed top-0 right-0 h-full w-full sm:w-96 max-w-[100vw] sm:max-w-[88vw] bg-cream border-l border-ink/10 shadow-2xl flex flex-col z-50 transition-transform duration-300 ease-out"
-        style={{ transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
+        className="fixed top-0 end-0 h-full w-full sm:w-96 max-w-[100vw] sm:max-w-[88vw] bg-cream border-s border-ink/10 shadow-2xl flex flex-col z-50 transition-transform duration-300 ease-out"
+        style={{ transform: isOpen ? 'translateX(0)' : hiddenTransform }}
       >
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-ink/10 flex-shrink-0">
@@ -62,9 +83,10 @@ export function CartDrawer() {
               </button>
             )}
             <button
+              ref={closeBtnRef}
               onClick={close}
               aria-label={t('cartFermer')}
-              className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-cream-deep transition-colors text-ink-soft ml-1"
+              className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-cream-deep transition-colors text-ink-soft ms-1"
             >
               <X className="w-5 h-5" />
             </button>

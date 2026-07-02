@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Star, Send, LogIn, Droplets, Sparkles, ShieldCheck, FlaskConical, Clock, Wind, CalendarDays } from 'lucide-react';
+import { Star, Send, LogIn, Sparkles, ShieldCheck, Truck, RotateCcw, Ruler } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { ReviewCard } from './ReviewCard';
@@ -7,6 +7,7 @@ import { StarRating } from '../ui/StarRating';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
+import categoriesData from '../../data/categories.json';
 
 // ─── Utilitaires ──────────────────────────────────────────────────────────────
 
@@ -25,33 +26,14 @@ function formatRelativeDate(iso, t) {
   return t('ilYAPlus');
 }
 
-// ─── Notes olfactives ─────────────────────────────────────────────────────────
-
-function NoteRow({ label, notes, bg, text, dot }) {
-  if (!notes?.length) return null;
-  return (
-    <div>
-      <div className="flex items-center gap-2 mb-3">
-        <span className={`w-2.5 h-2.5 rounded-full ${dot}`} />
-        <h4 className="text-xs font-bold uppercase tracking-widest text-ink-soft">{label}</h4>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {notes.map((note) => (
-          <span key={note} className={`px-3 py-1.5 rounded-full text-xs font-medium ${bg} ${text}`}>
-            {note}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ─── Sélecteur d'étoiles ──────────────────────────────────────────────────────
 
 function StarPicker({ value, onChange }) {
   const [hovered, setHovered] = useState(0);
-  const { t } = useLanguage();
-  const starLabel = (n) => t('starPickerLabel', { n }) || (n === 1 ? `Note 1 étoile` : `Note ${n} étoiles`);
+  const { t, lang } = useLanguage();
+  const starLabel = (n) =>
+    t('starPickerLabel', { n }) ||
+    (lang === 'ar' ? `${n} نجوم` : n === 1 ? '1 star' : `${n} stars`);
   return (
     <div className="flex items-center gap-1.5" role="radiogroup" aria-label={t('reviewNote')}>
       {[1, 2, 3, 4, 5].map((n) => (
@@ -67,7 +49,7 @@ function StarPicker({ value, onChange }) {
           className="focus:outline-none"
         >
           <Star className={`w-7 h-7 transition-colors ${
-            n <= (hovered || value) ? 'fill-silver text-silver' : 'text-ink/30 hover:text-silver'
+            n <= (hovered || value) ? 'fill-amber-500 text-amber-500' : 'text-ink/30 hover:text-amber-400'
           }`} />
         </button>
       ))}
@@ -109,7 +91,7 @@ function AddReviewForm({ productId, onAdded }) {
     if (insertErr) {
       setError(insertErr.code === '23505'
         ? t('reviewError')
-        : (insertErr.message ?? t('reviewError')));
+        : t('reviewError'));
     } else {
       setSuccess(true);
       setRating(0);
@@ -120,7 +102,7 @@ function AddReviewForm({ productId, onAdded }) {
 
   if (success) {
     return (
-      <div className="p-5 bg-emerald-900/30 border border-emerald-700/50 rounded-2xl text-sm text-emerald-400 font-medium">
+      <div className="p-5 bg-emerald-50 border border-emerald-200 rounded-2xl text-sm text-emerald-700 font-medium">
         ✓ {t('reviewSuccess')}
       </div>
     );
@@ -150,7 +132,7 @@ function AddReviewForm({ productId, onAdded }) {
         />
       </div>
 
-      {error && <p className="mb-3 text-xs text-red-400">{error}</p>}
+      {error && <p className="mb-3 text-xs text-red-500">{error}</p>}
 
       <button
         type="submit"
@@ -193,24 +175,19 @@ function ReviewsTab({ product }) {
 
   useEffect(() => { fetchReviews(); }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const liveAvg      = reviews.length > 0
+  const hasReviews    = reviews.length > 0;
+  const liveAvg       = hasReviews
     ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
     : null;
-  const displayRating = liveAvg ?? product.rating ?? null;
-  const totalCount    = reviews.length > 0 ? reviews.length : (product.reviewCount ?? 0);
+  const displayRating = liveAvg;
+  const totalCount    = reviews.length;
 
-  const distribution = (() => {
-    if (reviews.length === 0) {
-      const r = product.rating ?? 4;
-      if (r >= 4.8) return [72, 20, 5, 2, 1];
-      if (r >= 4.5) return [58, 28, 9, 3, 2];
-      if (r >= 4.0) return [40, 35, 15, 6, 4];
-      return [25, 35, 25, 10, 5];
-    }
-    return [5, 4, 3, 2, 1].map((star) =>
-      Math.round((reviews.filter((r) => r.rating === star).length / reviews.length) * 100),
-    );
-  })();
+  // Distribution réelle uniquement — rien d'inventé quand 0 avis
+  const distribution = hasReviews
+    ? [5, 4, 3, 2, 1].map((star) =>
+        Math.round((reviews.filter((r) => r.rating === star).length / reviews.length) * 100),
+      )
+    : null;
 
   const displayReviews = reviews.map((r) => ({
     name:     r.display_name,
@@ -232,25 +209,28 @@ function ReviewsTab({ product }) {
             <StarRating rating={displayRating} className="justify-center mt-2" />
           )}
           <div className="text-xs text-ink-soft/70 mt-1">
-            {totalCount > 0 ? `${totalCount.toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr-FR')} ${t('productAvisCount')}` : t('productNoAvis')}
+            {totalCount > 0 ? `${totalCount.toLocaleString(lang === 'ar' ? 'ar-OM' : 'en-US')} ${t('productAvisCount')}` : t('productNoAvis')}
           </div>
         </div>
 
-        <div className="flex-1 w-full space-y-1.5">
-          {[5, 4, 3, 2, 1].map((star, i) => (
-            <div key={star} className="flex items-center gap-2">
-              <span className="text-xs text-ink-soft w-3 text-right">{star}</span>
-              <Star className="w-3 h-3 fill-silver text-silver flex-shrink-0" />
-              <div className="flex-1 h-1.5 bg-ink/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-silver rounded-full transition-all"
-                  style={{ width: `${distribution[i]}%` }}
-                />
+        {/* Barres de distribution — uniquement s'il existe de vrais avis */}
+        {distribution && (
+          <div className="flex-1 w-full space-y-1.5">
+            {[5, 4, 3, 2, 1].map((star, i) => (
+              <div key={star} className="flex items-center gap-2">
+                <span className="text-xs text-ink-soft w-3 text-end">{star}</span>
+                <Star className="w-3 h-3 fill-amber-500 text-amber-500 flex-shrink-0" />
+                <div className="flex-1 h-1.5 bg-ink/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-silver rounded-full transition-all"
+                    style={{ width: `${distribution[i]}%` }}
+                  />
+                </div>
+                <span className="text-xs text-ink-soft/70 w-8 text-end">{distribution[i]}%</span>
               </div>
-              <span className="text-xs text-ink-soft/70 w-8 text-right">{distribution[i]}%</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Formulaire / invite */}
@@ -293,57 +273,117 @@ function ReviewsTab({ product }) {
   );
 }
 
-// ─── Onglet À propos ──────────────────────────────────────────────────────────
+// ─── Onglet À propos (mode — matière / entretien / livraison) ──────────────────
 
 function AboutTab({ product }) {
-  const { t } = useLanguage();
-  const initial = product.brand?.charAt(0).toUpperCase() ?? '?';
+  const { lang } = useLanguage();
+
+  const category = categoriesData.find((c) => c.slug === product.category);
+  const categoryLabel = category ? (lang === 'ar' ? category.label : category.labelEn) : null;
+
+  const sizesText = product.sizes?.length > 0 ? product.sizes.join(' · ') : null;
+  const colorsCount = product.colors?.length > 0 ? product.colors.length : null;
+
+  // Lignes « détails » — uniquement les champs réels du produit
+  const details = [
+    categoryLabel && { label: lang === 'ar' ? 'الفئة' : 'Category', value: categoryLabel },
+    sizesText && { label: lang === 'ar' ? 'المقاسات المتوفرة' : 'Available sizes', value: sizesText },
+    colorsCount && {
+      label: lang === 'ar' ? 'الألوان' : 'Colors',
+      value: lang === 'ar' ? `${colorsCount} ألوان متوفرة` : `${colorsCount} colors available`,
+    },
+  ].filter(Boolean);
 
   return (
     <div className="max-w-2xl space-y-6">
-      {/* Brand card */}
-      <div className="flex items-center gap-4 p-5 bg-cream rounded-2xl border border-ink/10">
-        <div className="w-14 h-14 rounded-2xl bg-silver/10 border border-silver/20 flex items-center justify-center flex-shrink-0">
-          <span className="text-2xl font-serif font-bold text-silver">{initial}</span>
+      {/* Description produit */}
+      <div>
+        <h3 className="text-sm font-bold text-ink mb-2.5 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-silver" />
+          {lang === 'ar' ? 'عن المنتج' : 'About this item'}
+        </h3>
+        {product.description ? (
+          <p className="text-sm text-ink-soft leading-relaxed whitespace-pre-line">
+            {product.description}
+          </p>
+        ) : (
+          <p className="text-sm text-ink-soft/70 leading-relaxed">
+            {lang === 'ar'
+              ? 'قطعة مختارة بعناية من تشيلو، تجمع بين الأناقة والجودة لتناسب إطلالاتك اليومية والمناسبات.'
+              : 'A carefully selected Chello piece that blends elegance and quality for both everyday looks and special occasions.'}
+          </p>
+        )}
+      </div>
+
+      {/* Détails (champs réels) */}
+      {details.length > 0 && (
+        <div className="border-t border-ink/10 pt-5">
+          <p className="text-xs font-bold uppercase tracking-widest text-ink-soft/70 mb-3">
+            {lang === 'ar' ? 'التفاصيل' : 'Details'}
+          </p>
+          <dl className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {details.map(({ label, value }) => (
+              <div key={label} className="p-3 bg-cream rounded-xl border border-ink/10">
+                <dt className="text-[10px] font-bold uppercase tracking-wider text-ink-soft/70 leading-none mb-1.5">{label}</dt>
+                <dd className="text-sm font-semibold text-ink">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-ink-soft/70 mb-0.5">{t('aboutMaison')}</p>
-          <p className="text-lg font-serif text-ink">{product.brand}</p>
+      )}
+
+      {/* Matière & entretien */}
+      <div className="border-t border-ink/10 pt-5">
+        <h3 className="text-sm font-bold text-ink mb-2.5 flex items-center gap-2">
+          <Ruler className="w-4 h-4 text-silver" />
+          {lang === 'ar' ? 'الخامة والعناية' : 'Material & care'}
+        </h3>
+        <p className="text-sm text-ink-soft leading-relaxed">
+          {lang === 'ar'
+            ? 'خامات منتقاة بعناية لراحة ومتانة عالية. يُنصح بالغسل اليدوي أو على دورة لطيفة بماء بارد، وتجنّب المُبيّض، والتجفيف في الظل للحفاظ على الشكل واللون.'
+            : 'Carefully selected fabrics for comfort and durability. Hand wash or use a gentle cold cycle, avoid bleach, and dry in the shade to preserve shape and color.'}
+        </p>
+      </div>
+
+      {/* Livraison & retours */}
+      <div className="border-t border-ink/10 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="flex items-start gap-2.5 p-3 bg-cream rounded-xl border border-ink/10">
+          <Truck className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-ink">{lang === 'ar' ? 'التوصيل' : 'Delivery'}</p>
+            <p className="text-xs text-ink-soft/70 mt-0.5">
+              {lang === 'ar'
+                ? 'خلال 2-3 أيام عمل في جميع أنحاء عُمان — الدفع عند الاستلام.'
+                : '2–3 business days across Oman — cash on delivery.'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-start gap-2.5 p-3 bg-cream rounded-xl border border-ink/10">
+          <RotateCcw className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-ink">{lang === 'ar' ? 'الإرجاع' : 'Returns'}</p>
+            <p className="text-xs text-ink-soft/70 mt-0.5">
+              {lang === 'ar'
+                ? 'إرجاع أو استبدال خلال 7 أيام إذا كانت القطعة بحالتها الأصلية.'
+                : 'Return or exchange within 7 days if the item is in its original condition.'}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* À propos du décant */}
-      <div className="p-5 bg-cream rounded-2xl border border-ink/10 space-y-4">
-        <h3 className="text-sm font-bold text-ink flex items-center gap-2">
-          <Droplets className="w-4 h-4 text-silver" />
-          {t('aboutCeQueVousRecevez')}
-        </h3>
-        <p className="text-sm text-ink-soft leading-relaxed">
-          {t('aboutDecantDesc')}
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-          {[
-            { icon: Droplets,    titleKey: 'aboutAuthentique',  subKey: 'aboutMemeJus' },
-            { icon: Sparkles,    titleKey: 'aboutTesterAvant',  subKey: 'aboutIdealDecouvrir' },
-            { icon: ShieldCheck, titleKey: 'aboutGarantiConforme', subKey: 'aboutFlacon' },
-          ].map(({ icon: Icon, titleKey, subKey }) => (
-            <div key={titleKey} className="flex items-start gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-ink/5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Icon className="w-4 h-4 text-silver" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-ink">{t(titleKey)}</p>
-                <p className="text-xs text-ink-soft/70 mt-0.5">{t(subKey)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Réassurance */}
+      <div className="flex items-center gap-2.5 text-xs text-ink-soft/70 border-t border-ink/10 pt-5">
+        <ShieldCheck className="w-4 h-4 text-silver flex-shrink-0" />
+        <span>
+          {lang === 'ar'
+            ? 'منتجات أصلية مع ضمان الجودة من تشيلو.'
+            : 'Authentic products with Chello’s quality guarantee.'}
+        </span>
       </div>
 
       {/* Tags */}
       {product.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 border-t border-ink/10 pt-5">
           {product.tags.map((tag) => (
             <span key={tag} className="px-3 py-1.5 bg-cream border border-ink/10 text-ink-soft rounded-full text-xs font-medium capitalize">
               {tag}
@@ -361,11 +401,8 @@ export function ProductTabs({ product }) {
   const [activeTab, setActiveTab] = useState(0);
   const { t } = useLanguage();
 
-  const hasNotes = Object.values(product.notes || {}).some((arr) => arr?.length > 0);
-
   const tabs = [
-    t('tabDescription'),
-    hasNotes ? t('tabNotes') : t('tabAPropos'),
+    t('tabAPropos'),
     t('tabAvis'),
   ];
 
@@ -380,7 +417,7 @@ export function ProductTabs({ product }) {
             onClick={() => setActiveTab(i)}
             className={`flex-shrink-0 px-6 py-4 text-sm font-medium transition-all border-b-2 whitespace-nowrap ${
               activeTab === i
-                ? 'border-silver text-silver'
+                ? 'border-ink text-ink'
                 : 'border-transparent text-ink-soft/70 hover:text-ink hover:border-ink/15'
             }`}
           >
@@ -391,130 +428,8 @@ export function ProductTabs({ product }) {
 
       {/* Contenu */}
       <div className="p-6 lg:p-8">
-
-        {/* ── Description ── */}
-        {activeTab === 0 && (
-          <div className="max-w-2xl space-y-6">
-            {product.description ? (
-              <p className="text-ink-soft leading-relaxed text-base">{product.description}</p>
-            ) : (
-              <div className="flex flex-col items-center py-8 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-cream-deep flex items-center justify-center mb-4">
-                  <Sparkles className="w-5 h-5 text-ink-soft/50" />
-                </div>
-                <p className="text-ink-soft text-sm">{t('specDescVenir')}</p>
-              </div>
-            )}
-
-            {/* ── Fiche technique ── */}
-            {(() => {
-              const SEASON_LABELS = { printemps: t('specSeasonPrintemps'), ete: t('specSeasonEte'), automne: t('specSeasonAutomne'), hiver: t('specSeasonHiver') };
-              const OCCASION_LABELS = { quotidien: t('specOccQuotidien'), soiree: t('specOccSoiree'), bureau: t('specOccBureau'), sport: t('specOccSport') };
-              const FAMILY_LABELS = { floral: t('specFamFloral'), 'fruite-sucre': t('specFamFruite'), 'sucre-gourmand': t('specFamSucre'), 'epice-oriental': t('specFamEpice'), 'fougere-classique': t('specFamFougere'), 'frais-aquatique': t('specFamFrais'), 'citron-boise': t('specFamCitron'), aromatique: t('specFamAromat'), animalique: 'Animalique', musque: 'Musqué', ambre: 'Ambré', oud: 'Oud', boise: 'Boisé', poudre: 'Poudré', balsamic: 'Balsamique', vanille: 'Vanillé', vert: 'Vert', fruite: 'Fruité', tropical: 'Tropical', sucre: 'Sucré', epice: 'Épicé', oriental: 'Oriental', fougere: 'Fougère', citronne: 'Citronné', frais: 'Frais', aquatique: 'Aquatique' };
-
-              const specs = [
-                product.concentration  && { icon: FlaskConical, label: t('specConcentration'), value: product.concentration },
-                Array.isArray(product.olfactoryFamily) && product.olfactoryFamily.length > 0 && { icon: Sparkles, label: t('specFamille'), value: product.olfactoryFamily.map(f => FAMILY_LABELS[f] ?? f).join(' · ') },
-                product.longevity      && { icon: Clock,        label: t('specTenue'),         value: product.longevity },
-                product.projection     && { icon: Wind,         label: t('specProjection'),    value: product.projection },
-              ].filter(Boolean);
-
-              const seasons   = product.season?.length   > 0 ? product.season.map(s => SEASON_LABELS[s] ?? s).join(' · ')   : null;
-              const occasions = product.occasion?.length > 0 ? product.occasion.map(o => OCCASION_LABELS[o] ?? o).join(' · ') : null;
-
-              if (specs.length === 0 && !seasons && !occasions) return null;
-
-              return (
-                <div className="border-t border-ink/10 pt-6">
-                  <p className="text-xs font-bold uppercase tracking-widest text-ink-soft/70 mb-4">{t('specCaracteristiques')}</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {specs.map(({ icon: Icon, label, value }) => (
-                      <div key={label} className="flex items-start gap-2.5 p-3 bg-cream rounded-xl border border-ink/10">
-                        <Icon className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-ink-soft/70 leading-none mb-1">{label}</p>
-                          <p className="text-sm font-semibold text-ink truncate">{value}</p>
-                        </div>
-                      </div>
-                    ))}
-                    {seasons && (
-                      <div className="flex items-start gap-2.5 p-3 bg-cream rounded-xl border border-ink/10 col-span-2 sm:col-span-1">
-                        <CalendarDays className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-ink-soft/70 leading-none mb-1">{t('specSaisons')}</p>
-                          <p className="text-xs font-medium text-ink">{seasons}</p>
-                        </div>
-                      </div>
-                    )}
-                    {occasions && (
-                      <div className="flex items-start gap-2.5 p-3 bg-cream rounded-xl border border-ink/10 col-span-2 sm:col-span-2">
-                        <Sparkles className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-ink-soft/70 leading-none mb-1">{t('specOccasions')}</p>
-                          <p className="text-xs font-medium text-ink">{occasions}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Ingrédients */}
-            {product.ingredients && (
-              <div className="border-t border-ink/10 pt-6">
-                <p className="text-xs font-bold uppercase tracking-widest text-ink-soft/70 mb-3">{t('specIngredients')}</p>
-                <p className="text-xs text-ink-soft/70 leading-relaxed">{product.ingredients}</p>
-              </div>
-            )}
-
-            {product.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {product.tags.map((tag) => (
-                  <span key={tag} className="px-3 py-1.5 bg-cream border border-ink/10 text-ink-soft rounded-full text-xs font-medium capitalize">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── Notes Olfactives ── */}
-        {activeTab === 1 && hasNotes && (
-          <div className="max-w-2xl">
-            <p className="text-xs text-ink-soft/70 mb-7 italic">
-              {t('specPyramideDesc')}
-            </p>
-            <div className="space-y-7">
-              <NoteRow
-                label={t('noteTop')}
-                notes={product.notes?.top}
-                bg="bg-silver/10" text="text-silver"
-                dot="bg-silver"
-              />
-              <NoteRow
-                label={t('noteCoeur')}
-                notes={product.notes?.heart}
-                bg="bg-rose-100" text="text-rose-700"
-                dot="bg-rose-400"
-              />
-              <NoteRow
-                label={t('noteFond')}
-                notes={product.notes?.base}
-                bg="bg-ink/5" text="text-ink-soft"
-                dot="bg-ink-soft"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* ── À propos ── */}
-        {activeTab === 1 && !hasNotes && <AboutTab product={product} />}
-
-        {/* ── Avis ── */}
-        {activeTab === 2 && <ReviewsTab product={product} />}
-
+        {activeTab === 0 && <AboutTab product={product} />}
+        {activeTab === 1 && <ReviewsTab product={product} />}
       </div>
     </div>
   );

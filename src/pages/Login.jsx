@@ -126,7 +126,7 @@ export default function Login() {
               id="email"
               name="email"
               type="email"
-              placeholder="vous@exemple.com"
+              placeholder="you@example.com"
               value={form.email}
               onChange={handleChange}
               autoComplete="email"
@@ -172,7 +172,7 @@ export default function Login() {
             {isLoading ? (
               <span className="w-4 h-4 border-2 border-cream/30 border-t-cream rounded-full animate-spin" />
             ) : (
-              <LogIn className="w-4 h-4" />
+              <LogIn className="w-4 h-4 rtl:-scale-x-100" />
             )}
             {isLoading ? t('loginLoading') : t('loginSubmit')}
           </button>

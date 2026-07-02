@@ -9,7 +9,7 @@ export const blogArticles = [
     category: 'Trends',
     date: '2026-06-01',
     readTime: '5 min',
-    image: '/products/trench-beige.png',
+    image: '/products/trench-coat-1.jpg',
     tags: ['modest-fashion', 'oman', 'trends', 'abaya', 'gcc'],
     content: `
       <h2>الأزياء المحتشمة: هوية وأناقة</h2>
@@ -61,7 +61,7 @@ export const blogArticles = [
 
       <p><em>At Chello, we offer a carefully curated collection that follows the latest trends while honoring the refined taste of the Gulf.</em></p>
     `,
-    relatedCategorySlug: 'trenchs'
+    relatedCategorySlug: 'abayas'
   },
   {
     id: 2,
@@ -73,7 +73,7 @@ export const blogArticles = [
     category: 'Styling Tips',
     date: '2026-05-15',
     readTime: '4 min',
-    image: '/products/robe-blazer-lavande.png',
+    image: '/products/blazer-dress-1.jpg',
     tags: ['styling', 'occasions', 'office', 'evening', 'tips'],
     content: `
       <h2>فن التنسيق: إطلالة واحدة بأكثر من وجه</h2>
@@ -133,7 +133,7 @@ export const blogArticles = [
 
       <p><em>The golden rule: invest in high-quality staple pieces and change up the look with accessories.</em></p>
     `,
-    relatedCategorySlug: 'tops'
+    relatedCategorySlug: 'dresses'
   },
   {
     id: 3,
@@ -145,7 +145,7 @@ export const blogArticles = [
     category: 'Seasonal Guide',
     date: '2026-04-20',
     readTime: '5 min',
-    image: '/products/set-jaune-modele.png',
+    image: '/products/yellow-set-1.jpg',
     tags: ['summer', 'gcc', 'guide', 'heat', 'fabrics'],
     content: `
       <h2>الصيف الخليجي: تحدٍّ أنيق</h2>
@@ -229,7 +229,7 @@ export const blogArticles = [
 
       <p><em>Browse Chello's summer collection and discover pieces designed specifically for our Gulf climate.</em></p>
     `,
-    relatedCategorySlug: 'sets'
+    relatedCategorySlug: 'dresses'
   },
   {
     id: 4,
@@ -241,7 +241,7 @@ export const blogArticles = [
     category: 'Accessories',
     date: '2026-03-28',
     readTime: '4 min',
-    image: '/products/collection-sacs.png',
+    image: '/products/quilted-bag-1.jpg',
     tags: ['bags', 'accessories', 'guide', 'handbags', 'styling'],
     content: `
       <h2>الحقيبة: القطعة التي تكمل الإطلالة</h2>
@@ -315,7 +315,7 @@ export const blogArticles = [
 
       <p><em>Discover Chello's diverse bag collection — modern designs with high quality for every occasion.</em></p>
     `,
-    relatedCategorySlug: 'sacs'
+    relatedCategorySlug: 'bags'
   },
   {
     id: 5,
@@ -327,7 +327,7 @@ export const blogArticles = [
     category: 'Accessories',
     date: '2026-03-10',
     readTime: '4 min',
-    image: '/products/sandale-oran-bordeaux.png',
+    image: '/products/sandal-elegant-1.jpg',
     tags: ['shoes', 'sandals', 'ballerinas', 'accessories', 'guide'],
     content: `
       <h2>الحذاء المناسب يصنع الفرق</h2>
@@ -395,7 +395,7 @@ export const blogArticles = [
 
       <p><em>Shop Chello shoes and discover a collection that combines beauty and comfort for every day.</em></p>
     `,
-    relatedCategorySlug: 'chaussures'
+    relatedCategorySlug: 'shoes'
   },
   {
     id: 6,
@@ -407,7 +407,7 @@ export const blogArticles = [
     category: 'Care Tips',
     date: '2026-02-18',
     readTime: '4 min',
-    image: '/products/trench-emeraude.png',
+    image: '/products/emerald-dress-1.jpg',
     tags: ['care', 'fabrics', 'tips', 'linen', 'cotton', 'maintenance'],
     content: `
       <h2>استثمري في ملابسكِ بالعناية بها</h2>
@@ -491,7 +491,7 @@ export const blogArticles = [
 
       <p><em>Chello clothing is made from the finest fabrics — take care of them and they'll be your companion for many seasons.</em></p>
     `,
-    relatedCategorySlug: 'trenchs'
+    relatedCategorySlug: 'dresses'
   },
   {
     id: 7,
@@ -503,7 +503,7 @@ export const blogArticles = [
     category: 'New Arrivals',
     date: '2026-05-01',
     readTime: '3 min',
-    image: '/products/trench-bleu-ciel.png',
+    image: '/products/coord-set-1.jpg',
     tags: ['new-collection', 'summer-2026', 'announcement', 'new-arrivals'],
     content: `
       <h2>مجموعة صيف 2026 وصلت!</h2>
@@ -573,7 +573,7 @@ export const blogArticles = [
     category: 'Styling Tips',
     date: '2026-01-25',
     readTime: '6 min',
-    image: '/products/tailleur-gris.png',
+    image: '/products/blazer-suit-1.jpg',
     tags: ['capsule-wardrobe', 'minimalism', 'styling', 'smart-shopping'],
     content: `
       <h2>ما هي خزانة الكبسولة؟</h2>
@@ -683,6 +683,6 @@ export const blogArticles = [
 
       <p><em>At Chello, every piece is designed to be part of a capsule wardrobe — coordinated colors and timeless designs that last more than one season.</em></p>
     `,
-    relatedCategorySlug: 'tops'
+    relatedCategorySlug: 'dresses'
   },
 ];

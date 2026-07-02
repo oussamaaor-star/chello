@@ -2,7 +2,7 @@
 
 export const SITE_NAME = 'Chello';
 export const SITE_URL  = 'https://chello-nine.vercel.app';
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/logo2.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-chello.png`;
 
 export function buildTitle(pageTitle) {
   if (!pageTitle) return SITE_NAME;

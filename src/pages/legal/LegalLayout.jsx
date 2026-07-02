@@ -16,7 +16,7 @@ export function LegalLayout({ title, updatedAt, children }) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <nav className="flex items-center gap-1.5 text-xs text-ink-soft uppercase tracking-widest mb-5">
             <Link to="/" className="hover:text-ink transition-colors">{t('breadcrumbAccueil')}</Link>
-            <ChevronRight className="w-3 h-3 opacity-50" />
+            <ChevronRight className="w-3 h-3 opacity-50 rtl:rotate-180" />
             <span className="text-silver-deep">{title}</span>
           </nav>
           <h1 className="text-3xl sm:text-4xl font-serif italic text-ink leading-tight">{title}</h1>

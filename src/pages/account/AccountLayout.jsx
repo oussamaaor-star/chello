@@ -1,5 +1,5 @@
 import { Link, Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { User, Package, MapPin, LogOut, ChevronRight, Bell } from 'lucide-react';
+import { User, Package, MapPin, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { PageLoader } from '../../components/ui/PageLoader';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -40,7 +40,6 @@ export default function AccountLayout() {
     { to: '/compte/profil',    label: t('profileTitle'),  icon: User    },
     { to: '/compte/commandes', label: t('navCommandes'),  icon: Package },
     { to: '/compte/adresses',  label: t('navAdresses'),   icon: MapPin  },
-    { to: '/compte/alertes',   label: t('navAlertes'),    icon: Bell    },
   ];
 
   // Attendre la résolution de la session Supabase avant de décider
@@ -75,7 +74,7 @@ export default function AccountLayout() {
             >
               {t('breadcrumbAccueil')}
             </Link>
-            <ChevronRight className="w-3 h-3 opacity-50" />
+            <ChevronRight className="w-3 h-3 opacity-50 rtl:rotate-180" />
             <span className="text-silver">{t('navMonCompte')}</span>
           </nav>
 
@@ -132,9 +131,9 @@ export default function AccountLayout() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
 
-          {/* Desktop sidebar */}
+          {/* Desktop sidebar — flux normal (Lenis casse `position: sticky`) */}
           <aside className="hidden lg:flex flex-col w-56 flex-shrink-0">
-            <div className="bg-cream-deep rounded-2xl border border-ink/10 p-3 sticky top-24 flex flex-col gap-1">
+            <div className="bg-cream-deep rounded-2xl border border-ink/10 p-3 flex flex-col gap-1">
               {NAV_ITEMS.map((item) => (
                 <AccountNavLink key={item.to} {...item} />
               ))}
@@ -143,7 +142,7 @@ export default function AccountLayout() {
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors w-full text-left"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors w-full text-start"
               >
                 <LogOut className="w-4 h-4 flex-shrink-0" />
                 {t('navDeconnexion')}

@@ -30,7 +30,7 @@ export function CartItem({ item }) {
           loading="lazy"
           decoding="async"
           onError={(e) => { e.target.src = PLACEHOLDER; e.target.onerror = null; }}
-          className="w-full h-full object-contain p-1"
+          className="w-full h-full object-cover"
         />
       </div>
 
@@ -62,7 +62,7 @@ export function CartItem({ item }) {
             <button
               onClick={handleDecrease}
               aria-label={t('cartDiminuerQuantite')}
-              className="w-9 h-9 flex items-center justify-center hover:bg-cream-deep transition-colors text-ink-soft"
+              className="w-11 h-11 flex items-center justify-center hover:bg-cream-deep transition-colors text-ink-soft"
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
@@ -73,7 +73,7 @@ export function CartItem({ item }) {
               onClick={handleIncrease}
               disabled={quantity >= 10}
               aria-label={t('cartAugmenterQuantite')}
-              className="w-9 h-9 flex items-center justify-center hover:bg-cream-deep transition-colors text-ink-soft disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-11 h-11 flex items-center justify-center hover:bg-cream-deep transition-colors text-ink-soft disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
@@ -82,10 +82,10 @@ export function CartItem({ item }) {
           <div className="text-right flex flex-col justify-end h-full" dir="ltr">
             {quantity > 1 && (
               <p className="text-[10px] text-ink-soft/70 leading-none mb-1">
-                {unitPrice.toFixed(2)} {SHOP_CONFIG.currency} × {quantity}
+                {unitPrice.toFixed(3)} {SHOP_CONFIG.currency} × {quantity}
               </p>
             )}
-            <p className="text-sm font-semibold text-ink leading-none">{lineTotal.toFixed(2)} {SHOP_CONFIG.currency}</p>
+            <p className="text-sm font-semibold text-ink leading-none">{lineTotal.toFixed(3)} {SHOP_CONFIG.currency}</p>
           </div>
         </div>
       </div>

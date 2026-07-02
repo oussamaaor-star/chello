@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { ArrowLeft, Clock, Share2, Tag, BookOpen } from 'lucide-react';
 import { blogArticles } from '../data/blog';
 import categoriesData from '../data/categories.json';
@@ -6,6 +7,16 @@ import { useSEO } from '../hooks/useSEO';
 import { imgUrl } from '../utils/img';
 import { blogFallbackImage } from '../utils/blogFallback';
 import { useLanguage } from '../contexts/LanguageContext';
+
+// Valeur de catégorie d'article -> clé i18n (badge localisé en arabe)
+const BLOG_CAT_KEYS = {
+  'Trends': 'blogCatMaroc',
+  'Styling Tips': 'blogCatMarques',
+  'Seasonal Guide': 'blogCatGuide',
+  'Accessories': 'blogCatSelections',
+  'Care Tips': 'blogCatOlfactif',
+  'New Arrivals': 'blogCatNewArrivals',
+};
 
 // Fallback cover: 1st error → varied product photo (deterministic by
 // article) ; 2nd error → placeholder SVG. Uses data-fb to avoid loop.
@@ -20,12 +31,23 @@ function handleCoverError(e, seed) {
   img.src = blogFallbackImage(seed);
 }
 
+// Sélection bilingue : en mode EN on lit les champs *En s'ils existent,
+// sinon repli sur l'arabe (jamais de champ vide).
+const pickTitle = (a, lang) => (lang === 'ar' ? a.title : a.titleEn || a.title);
+const pickExcerpt = (a, lang) => (lang === 'ar' ? a.excerpt : a.excerptEn || a.excerpt);
+const pickContent = (a, lang) => (lang === 'ar' ? a.content : a.contentEn || a.content);
+
 export default function BlogPost() {
   const { t, lang } = useLanguage();
   const { slug } = useParams();
-  
+
   // Trouver l'article correspondant
   const article = blogArticles.find(a => a.slug === slug);
+
+  // Contenu localisé (titre / extrait / corps) — pilote tout l'affichage + SEO.
+  const title = article ? pickTitle(article, lang) : '';
+  const excerpt = article ? pickExcerpt(article, lang) : '';
+  const content = article ? pickContent(article, lang) : '';
 
   // Articles liés : même catégorie, excluant l'article courant
   const relatedArticles = article
@@ -41,8 +63,8 @@ export default function BlogPost() {
     : '/catalogue';
 
   useSEO(article ? {
-    title: `${article.title} | Chello`,
-    description: article.excerpt,
+    title: `${title} | Chello`,
+    description: excerpt,
     ogImage: article.image,
     ogType: 'article',
     canonical: `https://chello-nine.vercel.app/blog/${article.slug}`,
@@ -54,9 +76,10 @@ export default function BlogPost() {
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": article.title,
-    "description": article.excerpt,
+    "headline": title,
+    "description": excerpt,
     "image": article.image,
+    "inLanguage": lang === 'ar' ? 'ar' : 'en',
     "datePublished": article.date,
     "dateModified": article.date,
     "author": { "@type": "Organization", "name": "Chello", "url": "https://chello-nine.vercel.app" },
@@ -74,7 +97,7 @@ export default function BlogPost() {
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": t('breadcrumbAccueil'), "item": "https://chello-nine.vercel.app/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://chello-nine.vercel.app/blog" },
-      { "@type": "ListItem", "position": 3, "name": article.title, "item": `https://chello-nine.vercel.app/blog/${article.slug}` },
+      { "@type": "ListItem", "position": 3, "name": title, "item": `https://chello-nine.vercel.app/blog/${article.slug}` },
     ]
   };
 
@@ -88,7 +111,7 @@ export default function BlogPost() {
         <div className="absolute inset-0 overflow-hidden">
           <img
             src={imgUrl(article.image, { w: 1400, q: 75 })}
-            alt={article.title}
+            alt={title}
             className="w-full h-full object-cover opacity-20"
             fetchPriority="high"
             decoding="async"
@@ -102,13 +125,13 @@ export default function BlogPost() {
             to="/blog" 
             className="inline-flex items-center gap-2 text-cream/60 hover:text-cream transition-colors text-sm font-semibold mb-8 group"
           >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180" />
             {t('blogRetour')}
           </Link>
 
           <div className="flex flex-wrap justify-center items-center gap-4 mb-6">
             <span className="px-3 py-1 bg-silver text-cream text-[10px] font-bold uppercase tracking-widest rounded-full">
-              {article.category}
+              {BLOG_CAT_KEYS[article.category] ? t(BLOG_CAT_KEYS[article.category]) : article.category}
             </span>
             <span className="text-cream/70 text-xs flex items-center gap-1.5 font-medium">
               <Clock className="w-3.5 h-3.5" /> {article.readTime}
@@ -116,11 +139,11 @@ export default function BlogPost() {
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif text-cream mb-6 leading-tight">
-            {article.title}
+            {title}
           </h1>
 
           <div className="text-cream/60 text-sm font-medium">
-            {t('blogPublie')} <time dateTime={article.date}>{new Date(article.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+            {t('blogPublie')} <time dateTime={article.date}>{new Date(article.date).toLocaleDateString(lang === 'ar' ? 'ar-OM' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
           </div>
         </div>
       </div>
@@ -144,7 +167,7 @@ export default function BlogPost() {
             <button 
               onClick={() => {
                 if (navigator.share) {
-                  navigator.share({ title: article.title, url: window.location.href });
+                  navigator.share({ title, url: window.location.href });
                 } else {
                   navigator.clipboard.writeText(window.location.href);
                   alert(t('blogLienCopie'));
@@ -166,7 +189,7 @@ export default function BlogPost() {
                        [&>ul>li]:text-ink-soft [&>ul>li]:mb-2
                        [&>p>strong]:text-ink [&>p>strong]:font-bold [&>li>strong]:text-ink [&>li>strong]:font-bold
                        [&>p>em]:text-ink-soft/70 [&>p>em]:italic"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
           />
 
           {/* Tag de redirection (si défini) */}
@@ -210,7 +233,7 @@ export default function BlogPost() {
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
                     src={imgUrl(related.image, { w: 400, q: 65 })}
-                    alt={related.title}
+                    alt={pickTitle(related, lang)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
@@ -218,9 +241,9 @@ export default function BlogPost() {
                   />
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
-                  <span className="text-silver text-[10px] font-bold uppercase tracking-wider mb-2">{related.category}</span>
+                  <span className="text-silver text-[10px] font-bold uppercase tracking-wider mb-2">{BLOG_CAT_KEYS[related.category] ? t(BLOG_CAT_KEYS[related.category]) : related.category}</span>
                   <h3 className="text-sm font-semibold text-ink group-hover:text-silver transition-colors leading-snug flex-1">
-                    {related.title}
+                    {pickTitle(related, lang)}
                   </h3>
                   <div className="flex items-center gap-1.5 text-ink-soft/70 text-xs mt-3">
                     <Clock className="w-3 h-3" /> {related.readTime}

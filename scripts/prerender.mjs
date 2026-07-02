@@ -1,7 +1,7 @@
 /**
  * scripts/prerender.mjs
  * ---------------------------------------------------------------------------
- * Prerendering POST-BUILD pour la SPA "Parfumerie Marwan".
+ * Prerendering POST-BUILD pour la SPA "Chello".
  *
  * Objectif : générer un snapshot HTML statique par route publique (via Chrome
  * headless / puppeteer) afin que les robots & réseaux sociaux voient le vrai

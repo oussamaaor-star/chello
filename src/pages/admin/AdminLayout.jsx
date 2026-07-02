@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Navigate, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Package, Tag, Users, Star, LogOut, ChevronRight, ShieldAlert, Gem, Bell, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, Tag, Users, Star, LogOut, ChevronRight, Gem, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { PageLoader } from '../../components/ui/PageLoader';
 import { supabase } from '../../lib/supabase';
@@ -34,13 +34,12 @@ function playNotifSound() {
 
 const NAV_ITEMS = [
   { to: '/admin',          label: 'Dashboard',    icon: LayoutDashboard, end: true },
-  { to: '/admin/orders',   label: 'Commandes',    icon: ShoppingBag, notif: true },
-  { to: '/admin/products', label: 'Produits',     icon: Package },
-  { to: '/admin/promos',   label: 'Codes promo',  icon: Tag },
-  { to: '/admin/loyalty',  label: 'Fidélité',     icon: Gem },
-  { to: '/admin/users',    label: 'Utilisateurs', icon: Users },
-  { to: '/admin/reviews',  label: 'Avis',         icon: Star  },
-  { to: '/admin/alerts',   label: 'Alertes stock',icon: Bell  },
+  { to: '/admin/orders',   label: 'Orders',       icon: ShoppingBag, notif: true },
+  { to: '/admin/products', label: 'Products',     icon: Package },
+  { to: '/admin/promos',   label: 'Promo Codes',  icon: Tag },
+  { to: '/admin/loyalty',  label: 'Loyalty',      icon: Gem },
+  { to: '/admin/users',    label: 'Users',        icon: Users },
+  { to: '/admin/reviews',  label: 'Reviews',      icon: Star  },
 ];
 
 // ─── Sidebar link ─────────────────────────────────────────────────────────────
@@ -52,19 +51,29 @@ function AdminNavLink({ to, label, icon: Icon, end, badge, onClick }) {
       end={end}
       onClick={onClick}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+        `group relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all ${
           isActive
-            ? 'bg-silver/15 text-silver-light font-semibold'
-            : 'text-cream/60 hover:bg-cream/8 hover:text-cream'
+            ? 'bg-cream/10 text-cream font-semibold'
+            : 'text-cream/55 hover:bg-cream/5 hover:text-cream/90 font-medium'
         }`
       }
     >
-      <Icon className="w-4 h-4 flex-shrink-0" />
-      <span className="flex-1">{label}</span>
-      {badge > 0 && (
-        <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-silver text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
-          {badge > 99 ? '99+' : badge}
-        </span>
+      {({ isActive }) => (
+        <>
+          {/* active accent bar */}
+          <span
+            className={`absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-silver-light transition-all ${
+              isActive ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+          <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-silver-light' : ''}`} />
+          <span className="flex-1">{label}</span>
+          {badge > 0 && (
+            <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-silver text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
+              {badge > 99 ? '99+' : badge}
+            </span>
+          )}
+        </>
       )}
     </NavLink>
   );
@@ -78,6 +87,7 @@ export default function AdminLayout() {
   const location  = useLocation();
   const [newOrders, setNewOrders] = useState(0);
   const channelRef = useRef(null);
+  const mobileNavRef = useRef(null);
 
   useSEO({ title: 'Administration — Chello', robots: 'noindex,nofollow' });
 
@@ -88,21 +98,38 @@ export default function AdminLayout() {
     }
   }, [location.pathname]);
 
+  // Mobile : faire défiler la barre d'onglets pour que l'onglet ACTIF soit visible
+  // (sinon on reste bloqué au début et l'onglet courant est hors écran).
+  useEffect(() => {
+    const active = mobileNavRef.current?.querySelector('[aria-current="page"]');
+    active?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  }, [location.pathname]);
+
   // Subscribe to new orders via Supabase Realtime
   useEffect(() => {
     if (!isAuthenticated || role !== 'admin') return;
 
-    const channel = supabase
-      .channel('admin-new-orders')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
-        setNewOrders((n) => n + 1);
-        playNotifSound();
-      })
-      .subscribe();
-
-    channelRef.current = channel;
+    // Le WebSocket peut échouer (navigation privée, VPN/Private Relay, in-app
+    // browser → "WebSocket: The operation is insecure"). Les notifs live sont
+    // optionnelles : on ne doit JAMAIS faire planter l'admin pour autant.
+    let channel;
+    try {
+      channel = supabase
+        .channel('admin-orders')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+          setNewOrders((n) => n + 1);
+          playNotifSound();
+        })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+          playNotifSound();
+        })
+        .subscribe();
+      channelRef.current = channel;
+    } catch (err) {
+      if (import.meta.env.DEV) console.warn('[realtime admin] indisponible:', err);
+    }
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [isAuthenticated, role]);
 
@@ -118,26 +145,29 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-cream flex">
+    // Interface admin 100 % en anglais → on la force en LTR (le site est en RTL
+    // par défaut, ce qui renversait titres/tableaux/ponctuation/chiffres).
+    <div dir="ltr" className="min-h-screen bg-cream flex">
 
-      {/* ── Sidebar (desktop) ── */}
-      <aside className="hidden lg:flex flex-col w-60 flex-shrink-0 bg-ink min-h-screen sticky top-0 h-screen">
+      {/* ── Sidebar (desktop) — fixe pleine hauteur, toujours visible ── */}
+      <aside className="hidden lg:flex flex-col w-64 bg-ink fixed inset-y-0 left-0 z-20">
 
         {/* Logo / brand */}
-        <div className="px-6 py-5 border-b border-cream/10">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-silver rounded-lg flex items-center justify-center flex-shrink-0">
-              <ShieldAlert className="w-4 h-4 text-cream" />
+        <div className="px-6 pt-6 pb-5 border-b border-cream/10">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-cream/5 border border-cream/10 flex items-center justify-center flex-shrink-0">
+              <span className="font-serif text-silver-light text-lg leading-none">C</span>
             </div>
             <div>
-              <p className="text-cream font-bold text-sm leading-none">Chello</p>
-              <p className="text-silver text-[10px] font-semibold uppercase tracking-widest mt-0.5">Admin</p>
+              <p className="font-serif text-cream text-lg leading-none tracking-wide">Chello</p>
+              <p className="text-silver text-[9px] font-bold uppercase tracking-[0.25em] mt-1">Administration</p>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
+        <nav className="flex-1 px-3 py-5 flex flex-col gap-1 overflow-y-auto">
+          <p className="px-4 mb-2 text-[9px] font-bold uppercase tracking-[0.2em] text-cream/30">Menu</p>
           {NAV_ITEMS.map((item) => (
             <AdminNavLink
               key={item.to}
@@ -150,39 +180,44 @@ export default function AdminLayout() {
 
         {/* Footer : user + logout */}
         <div className="px-3 py-4 border-t border-cream/10">
-          <div className="px-4 py-2 mb-2">
-            <p className="text-xs font-semibold text-cream/80 truncate">{user?.name}</p>
-            <p className="text-[10px] text-cream/40 truncate">{user?.email}</p>
+          <div className="flex items-center gap-3 px-3 py-2.5 mb-2 rounded-xl bg-cream/5">
+            <div className="w-8 h-8 rounded-full bg-silver/20 border border-silver/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-silver-light text-xs font-bold">{user?.name?.[0]?.toUpperCase() ?? 'A'}</span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-cream/85 truncate leading-tight">{user?.name}</p>
+              <p className="text-[10px] text-cream/40 truncate leading-tight">{user?.email}</p>
+            </div>
           </div>
           <NavLink
             to="/"
             className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-silver hover:bg-silver/10 transition-colors mb-1"
           >
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
-            Voir le site
+            View site
           </NavLink>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
-            Déconnexion
+            Log out
           </button>
         </div>
       </aside>
 
-      {/* ── Main area ── */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* ── Main area (décalée pour la sidebar fixe) ── */}
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
 
         {/* Top bar (mobile + desktop) */}
         <header className="bg-cream border-b border-ink/10 px-4 sm:px-6 h-14 flex items-center justify-between sticky top-0 z-10">
 
           {/* Mobile brand */}
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="w-6 h-6 bg-silver rounded-md flex items-center justify-center">
-              <ShieldAlert className="w-3.5 h-3.5 text-cream" />
+            <div className="w-7 h-7 rounded-lg bg-ink flex items-center justify-center">
+              <span className="font-serif text-silver-light text-sm leading-none">C</span>
             </div>
-            <span className="text-sm font-bold text-ink">Admin</span>
+            <span className="font-serif text-base text-ink">Chello</span>
           </div>
 
           {/* Breadcrumb (desktop) */}
@@ -201,7 +236,7 @@ export default function AdminLayout() {
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-silver text-cream rounded-full text-xs font-bold animate-pulse"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
-                {newOrders} nouvelle{newOrders > 1 ? 's' : ''} commande{newOrders > 1 ? 's' : ''}
+                {newOrders} new order{newOrders > 1 ? 's' : ''}
               </NavLink>
             )}
             <span className="hidden sm:inline-flex items-center px-2.5 py-1 bg-silver/10 text-silver-deep rounded-full text-[11px] font-bold uppercase tracking-wide border border-silver/20">
@@ -216,7 +251,7 @@ export default function AdminLayout() {
         </header>
 
         {/* Mobile nav tabs */}
-        <div className="lg:hidden bg-cream border-b border-ink/10 overflow-x-auto">
+        <div ref={mobileNavRef} className="lg:hidden bg-cream border-b border-ink/10 overflow-x-auto">
           <div className="flex px-4 gap-1 py-2 min-w-max">
             {NAV_ITEMS.map(({ to, label, icon: Icon, end, notif }) => (
               <NavLink
@@ -246,20 +281,20 @@ export default function AdminLayout() {
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-silver-deep hover:bg-cream-deep whitespace-nowrap transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              Voir le site
+              View site
             </NavLink>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-red-500 hover:bg-red-50 whitespace-nowrap transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
-              Déconnexion
+              Log out
             </button>
           </div>
         </div>
 
         {/* Page content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

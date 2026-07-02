@@ -14,8 +14,15 @@ const CookieBanner    = lazy(() => import('./components/ui/CookieBanner').then(m
 function SmoothScroll({ children }) {
   const lenisRef = useRef(null);
   const { pathname } = useLocation();
+  // Lenis casse position:sticky et introduit un scroll saccadé dans les conteneurs
+  // internes des dashboards → on le DÉSACTIVE sur /admin et /caisse (scroll natif).
+  const noSmooth = pathname.startsWith('/admin') || pathname.startsWith('/caisse');
 
   useEffect(() => {
+    if (noSmooth) {
+      lenisRef.current = null;
+      return undefined;
+    }
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -23,17 +30,23 @@ function SmoothScroll({ children }) {
     });
     lenisRef.current = lenis;
 
+    let rafId;
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
-    return () => lenis.destroy();
-  }, []);
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, [noSmooth]);
 
   useEffect(() => {
-    lenisRef.current?.scrollTo(0, { immediate: true });
+    if (lenisRef.current) lenisRef.current.scrollTo(0, { immediate: true });
+    else window.scrollTo(0, 0);
   }, [pathname]);
 
   return children;
@@ -43,10 +56,11 @@ const AUTH_ROUTES = ['/connexion', '/inscription', '/mot-de-passe-oublie', '/res
 
 function AppShell() {
   const { pathname } = useLocation();
-  const isAdmin = pathname.startsWith('/admin');
-  const isAuth  = AUTH_ROUTES.includes(pathname);
+  const isAdmin   = pathname.startsWith('/admin');
+  const isCashier = pathname.startsWith('/caisse');
+  const isAuth    = AUTH_ROUTES.includes(pathname);
 
-  if (isAdmin) {
+  if (isAdmin || isCashier) {
     return (
       <div className="min-h-screen">
         <AppRoutes />
@@ -64,13 +78,13 @@ function AppShell() {
     );
   }
 
+  const isHome = pathname === '/';
+
   return (
     <>
       <div className="flex flex-col min-h-screen bg-cream">
         <Header />
-        {/* Compense la hauteur du header fixe : mobile = barre haut (80px) +
-            barre recherche persistante (~52px) ≈ 132px ; desktop = 96px + nav (~40px) = 136px */}
-        <div className="h-[132px] lg:h-[136px] flex-shrink-0" />
+        {!isHome && <div className="h-[132px] lg:h-[136px] flex-shrink-0" />}
         <main className="flex-grow min-h-screen">
           <AppRoutes />
         </main>

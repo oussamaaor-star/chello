@@ -1,16 +1,19 @@
 import { useEffect } from 'react';
-import { X, ChevronRight, User, Heart, ShoppingBag, Globe, Package, Newspaper, Mail, HelpCircle } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { X, ChevronRight, ArrowUpRight, User, Heart, ShoppingBag, Globe, Package, Newspaper, Mail, HelpCircle } from 'lucide-react';
+import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useLanguage } from '../../contexts/LanguageContext';
-import categoriesData from '../../data/categories.json';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { MEGA_CATEGORIES, catLabel } from './megaMenuData';
 
 export function MobileMenu({ isOpen, onClose }) {
   const { isAuthenticated, user } = useAuth();
   const { items: wishlistItems }  = useWishlist();
   const { t, toggleLang, lang }    = useLanguage();
   const isRtl = lang === 'ar';
+  // Focus initial + piège Tab + fermeture Échap + restauration du focus.
+  const panelRef = useFocusTrap(isOpen, onClose);
 
   const accountPath = isAuthenticated ? '/compte/profil' : '/connexion';
 
@@ -18,15 +21,6 @@ export function MobileMenu({ isOpen, onClose }) {
     document.body.style.overflowY = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflowY = ''; };
   }, [isOpen]);
-
-  const NAV_LINKS = [
-    { labelKey: 'navCatalogue', path: '/catalogue' },
-    ...categoriesData.map((cat) => ({
-      label: isRtl ? cat.label : cat.labelEn,
-      path: `/categorie/${cat.slug}`,
-    })),
-    { labelKey: 'navFidelite', path: '/fidelite' },
-  ];
 
   const linkClass = ({ isActive }) =>
     `flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium transition-all ${
@@ -48,7 +42,11 @@ export function MobileMenu({ isOpen, onClose }) {
 
       {/* Slide-in panel */}
       <div
-        className="absolute inset-y-0 left-0 rtl:left-auto rtl:right-0 flex w-full max-w-[85vw] flex-col bg-cream border-r border-ink/10 shadow-2xl transition-transform duration-300 ease-out"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={isRtl ? 'القائمة' : 'Menu'}
+        className="absolute inset-y-0 left-0 rtl:left-auto rtl:right-0 flex w-full max-w-[85vw] flex-col bg-cream border-e border-ink/10 shadow-2xl transition-transform duration-300 ease-out"
         style={{ transform: isOpen ? 'translateX(0)' : isRtl ? 'translateX(100%)' : 'translateX(-100%)' }}
       >
         {/* Header */}
@@ -74,18 +72,51 @@ export function MobileMenu({ isOpen, onClose }) {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
-          <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft/70 mb-2">
+          <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft/70 mb-3">
             {t('navCategories')}
           </p>
-          <ul className="space-y-0.5 mb-6">
-            {NAV_LINKS.map((link) => (
-              <li key={link.path}>
-                <NavLink to={link.path} onClick={onClose} tabIndex={isOpen ? 0 : -1} className={linkClass}>
-                  {link.label ? link.label : t(link.labelKey)}
-                  <ChevronRight className="w-4 h-4 opacity-40 rtl:rotate-180" />
-                </NavLink>
-              </li>
+
+          {/* Image-rich category grid */}
+          <div className="grid grid-cols-2 gap-2.5 px-1 mb-3">
+            {MEGA_CATEGORIES.map((cat) => (
+              <Link
+                key={cat.slug}
+                to={`/categorie/${cat.slug}`}
+                onClick={onClose}
+                tabIndex={isOpen ? 0 : -1}
+                className="group relative block overflow-hidden rounded-2xl aspect-[5/4] bg-cream-deep ring-1 ring-ink/5"
+              >
+                <img
+                  src={cat.image}
+                  alt={catLabel(cat, lang)}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-active:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-3 flex items-end justify-between gap-1">
+                  <span className="font-serif italic text-base leading-tight text-cream drop-shadow">
+                    {catLabel(cat, lang)}
+                  </span>
+                  <ArrowUpRight className="w-4 h-4 text-cream/90 flex-shrink-0 rtl:-scale-x-100" />
+                </div>
+              </Link>
             ))}
+          </div>
+
+          {/* All products + Loyalty rows */}
+          <ul className="space-y-0.5 mb-6">
+            <li>
+              <NavLink to="/catalogue" onClick={onClose} tabIndex={isOpen ? 0 : -1} className={linkClass}>
+                {t('navCatalogue')}
+                <ChevronRight className="w-4 h-4 opacity-40 rtl:rotate-180" />
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/fidelite" onClick={onClose} tabIndex={isOpen ? 0 : -1} className={linkClass}>
+                {t('navFidelite')}
+                <ChevronRight className="w-4 h-4 opacity-40 rtl:rotate-180" />
+              </NavLink>
+            </li>
           </ul>
 
           <div className="h-px bg-ink/10 mb-4 mx-3" />
@@ -121,7 +152,7 @@ export function MobileMenu({ isOpen, onClose }) {
               <NavLink to="/suivi" onClick={onClose} tabIndex={isOpen ? 0 : -1} className={linkClass}>
                 <span className="flex items-center gap-3">
                   <Package className="w-4 h-4" />
-                  {t('headerSuivi') || 'Suivre ma commande'}
+                  {t('headerSuivi') || 'Track my order'}
                 </span>
                 <ChevronRight className="w-4 h-4 opacity-40 rtl:rotate-180" />
               </NavLink>
@@ -131,11 +162,11 @@ export function MobileMenu({ isOpen, onClose }) {
           <div className="h-px bg-ink/10 my-4 mx-3" />
 
           <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft/70 mb-2">
-            {isRtl ? 'مساعدة' : 'Aide & infos'}
+            {isRtl ? 'مساعدة' : 'Help & Info'}
           </p>
           <ul className="space-y-0.5">
             {[
-              { to: '/blog',    icon: Newspaper,  label: t('navBlog') || 'Blog & Conseils' },
+              { to: '/blog',    icon: Newspaper,  label: t('navBlog') || 'Blog & Tips' },
               { to: '/contact', icon: Mail,       label: t('footerContact') || 'Contact' },
               { to: '/faq',     icon: HelpCircle, label: t('footerFaq') || 'FAQ' },
             ].map(({ to, icon: Icon, label }) => (

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 
 export const AuthContext = createContext(null);
@@ -22,6 +22,19 @@ export function AuthProvider({ children }) {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [role, setRole]           = useState(null);
   const [loading, setLoading]     = useState(true);
+
+  // ── Charger le profil (avatar + rôle) depuis la table profiles ──
+  // Déclaré avant l'effet qui l'appelle (piège TDZ signalé par react-hooks).
+
+  const loadProfile = async (userId) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+    setAvatarUrl(data?.avatar_url ?? null);
+    setRole(data?.role ?? null);
+  };
 
   useEffect(() => {
     // Attendre le profil (et donc le rôle) avant de lever le loading.
@@ -48,18 +61,6 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ── Charger le profil (avatar + rôle) depuis la table profiles ──
-
-  const loadProfile = async (userId) => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-    setAvatarUrl(data?.avatar_url ?? null);
-    setRole(data?.role ?? null);
-  };
-
   const isAuthenticated = !!user;
 
   // ── Auth actions ───────────────────────────────────────────────
@@ -82,11 +83,11 @@ export function AuthProvider({ children }) {
     return { success: true, role: userRole };
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, phone) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: { name, phone } },
     });
     if (error) return { success: false, error: error.message };
     // If session is null, email confirmation is required — don't set user yet
@@ -201,20 +202,22 @@ export function AuthProvider({ children }) {
     return { success: true };
   };
 
+  const value = useMemo(() => ({
+    user,
+    avatarUrl,
+    role,
+    isAuthenticated,
+    loading,
+    login,
+    register,
+    logout,
+    updateProfile,
+    updateAvatar,
+    deleteAvatar,
+  }), [user, avatarUrl, role, isAuthenticated, loading]);
+
   return (
-    <AuthContext.Provider value={{
-      user,
-      avatarUrl,
-      role,
-      isAuthenticated,
-      loading,
-      login,
-      register,
-      logout,
-      updateProfile,
-      updateAvatar,
-      deleteAvatar,
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

@@ -17,13 +17,13 @@ function Field({ label, id, icon: Icon, error, ...props }) {
       </label>
       <div className="relative">
         {Icon && (
-          <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 start-3.5 flex items-center pointer-events-none">
             <Icon className="w-4 h-4 text-ink-soft" />
           </div>
         )}
         <input
           id={id}
-          className={`w-full ${Icon ? 'pl-10' : 'pl-4'} pr-4 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50
+          className={`w-full ${Icon ? 'ps-10' : 'ps-4'} pe-4 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50
             focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all
             ${error
               ? 'border-red-500 bg-red-50 focus:ring-red-500/30 focus:border-red-500'

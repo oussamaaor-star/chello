@@ -13,6 +13,8 @@ export function Badge({
     new:       'bg-silver/15 text-silver-deep border border-silver/30',
     bestseller:'bg-silver text-cream',
     lowstock:  'bg-orange-500/15 text-orange-600 border border-orange-500/30',
+    success:   'bg-emerald-500/15 text-emerald-600 border border-emerald-500/30',
+    warning:   'bg-orange-500/15 text-orange-600 border border-orange-500/30',
   };
 
   const content = children || label;

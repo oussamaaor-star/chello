@@ -31,6 +31,10 @@ export function normalizeDbProduct(row) {
     tags: row.is_bestseller ? ['bestseller'] : [],
     stock: row.stock ?? null,
     inStock: row.in_stock ?? true,
+    // Note moyenne (migration 021) — null tant que la colonne n'existe pas ou
+    // qu'aucun avis n'est approuvé : ProductCard n'affiche alors aucune étoile.
+    rating: row.avg_rating != null ? Number(row.avg_rating) : null,
+    reviewCount: row.review_count != null ? Number(row.review_count) : null,
   };
 }
 

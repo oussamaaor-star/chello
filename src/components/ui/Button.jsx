@@ -9,22 +9,22 @@ export function Button({
   ...props
 }) {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97] select-none';
+    'inline-flex items-center justify-center gap-2.5 font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97] select-none';
 
   const variants = {
     primary:
-      'bg-gradient-to-b from-ink to-ink text-cream hover:from-ink-soft hover:to-ink focus-visible:ring-ink focus-visible:ring-offset-1 border border-ink/30 shadow-md shadow-ink/10',
+      'rounded-full bg-ink text-cream hover:bg-ink/90 focus-visible:ring-ink focus-visible:ring-offset-1',
     secondary:
-      'bg-cream text-ink border border-ink/10 hover:bg-cream-deep hover:border-ink/20 focus-visible:ring-silver focus-visible:ring-offset-1 shadow-sm',
+      'rounded-full border border-ink/20 text-ink font-medium hover:border-ink hover:bg-ink/5 focus-visible:ring-silver focus-visible:ring-offset-1',
     ghost:
-      'bg-transparent text-ink-soft hover:bg-cream-deep hover:text-ink focus-visible:ring-silver focus-visible:ring-offset-1',
+      'rounded-full bg-transparent text-ink-soft font-medium hover:bg-cream-deep hover:text-ink focus-visible:ring-silver focus-visible:ring-offset-1',
     icon: 'bg-transparent text-ink-soft hover:text-ink hover:bg-cream-deep focus-visible:ring-silver focus-visible:ring-offset-1 rounded-full',
   };
 
   const sizes = {
-    sm: variant === 'icon' ? 'p-1.5' : 'px-3 py-1.5 text-sm rounded-lg',
-    md: variant === 'icon' ? 'p-2' : 'px-4 py-2.5 text-sm rounded-xl',
-    lg: variant === 'icon' ? 'p-3' : 'px-6 py-3.5 text-base rounded-xl',
+    sm: variant === 'icon' ? 'p-1.5' : 'px-5 py-2.5 text-[12px] uppercase tracking-[0.18em]',
+    md: variant === 'icon' ? 'p-2' : 'px-8 py-4 text-[13px] uppercase tracking-[0.18em]',
+    lg: variant === 'icon' ? 'p-3' : 'px-10 py-4 text-[13px] uppercase tracking-[0.18em]',
   };
 
   const disabledStyles = disabled

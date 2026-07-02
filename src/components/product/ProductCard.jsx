@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, X, Check } from 'lucide-react';
+import { Heart, ShoppingBag, X, Check, Star } from 'lucide-react';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { StarRating } from '../ui/StarRating';
 import { imgUrl } from '../../utils/img';
 import { SHOP_CONFIG } from '../../utils/config';
 
@@ -31,17 +32,27 @@ export function ProductCard({ product, priority = false }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
   const { trackAddToCart } = useAnalytics();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const isFavorite = isInWishlist(product.id);
   const hasSizes = product.sizes?.length > 0;
   const displayPrice = product.price;
 
   const isRupture = product.stock === 0 || product.inStock === false;
+  const isBestseller = product.tags?.includes('bestseller') ?? false;
+  // Urgence douce : n'apparaît QUE si un stock numérique faible est réellement connu.
+  const lowStock = typeof product.stock === 'number' && product.stock > 0 && product.stock <= 3;
+
+  // Note moyenne : remontée par normalizeDbProduct depuis products.avg_rating
+  // (maintenue par trigger sur reviews — migration 021, avis approuvés seulement).
+  // → affichage 100% CONDITIONNEL : rien tant que le produit n'a pas de note.
+  const ratingValue = typeof product.rating === 'number' ? product.rating : null;
+  const reviewCount = typeof product.reviewCount === 'number' ? product.reviewCount : null;
+
   let badgeLabel = null;
   if (isRupture) badgeLabel = t('badgeRupture');
   else if (product.isNew) badgeLabel = t('badgeNouveau');
-  else if (product.tags?.includes('bestseller')) badgeLabel = t('badgeBestseller');
+  else if (isBestseller) badgeLabel = t('badgeBestseller');
 
   const [selectedSize, setSelectedSize] = useState(null);
   const activeSize = selectedSize ?? product.sizes?.[0] ?? null;
@@ -61,6 +72,7 @@ export function ProductCard({ product, priority = false }) {
 
   const handleToggleWishlist = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     toggleWishlist(product);
   };
 
@@ -153,7 +165,7 @@ export function ProductCard({ product, priority = false }) {
         >
           {sheetAdded
             ? <><Check className="w-5 h-5" />{t('productAjouteOk')}</>
-            : <><ShoppingBag className="w-5 h-5" />{displayPrice != null ? `${Number(displayPrice).toFixed(2)} ${CUR} · ` : ''}{t('addToCart')}</>
+            : <><ShoppingBag className="w-5 h-5" />{displayPrice != null ? `${Number(displayPrice).toFixed(3)} ${CUR} · ` : ''}{t('addToCart')}</>
           }
         </button>
       </div>
@@ -167,9 +179,9 @@ export function ProductCard({ product, priority = false }) {
     <>
       {bottomSheet}
 
-      <Link to={`/produit/${product.slug}`} className="group flex flex-col h-full">
+      <Link to={`/produit/${product.slug}`} className="group flex flex-col h-full transition-transform duration-300 ease-out hover:-translate-y-1">
         {/* Image zone */}
-        <div className={`relative aspect-[3/4] bg-cream-deep rounded-xl overflow-hidden ${isRupture ? 'grayscale' : ''}`}>
+        <div className={`relative aspect-[3/4] bg-cream-deep rounded-xl overflow-hidden transition-shadow duration-300 group-hover:shadow-[0_12px_30px_-12px_rgba(24,20,15,0.25)] ${isRupture ? 'grayscale' : ''}`}>
           <img
             src={imgUrl(product.images?.[0] ?? '/products/placeholder-dresses.svg', { w: 500, q: 70 })}
             srcSet={product.images?.[0] ? [
@@ -182,7 +194,7 @@ export function ProductCard({ product, priority = false }) {
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : 'auto'}
             decoding={priority ? 'sync' : 'async'}
-            className="object-contain w-full h-full p-3 transition-transform duration-700 group-hover:scale-105 opacity-0"
+            className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105 opacity-0"
             onLoad={(e) => e.target.classList.replace('opacity-0', 'opacity-100')}
             onError={(e) => { e.target.src = '/products/placeholder-dresses.svg'; e.target.classList.replace('opacity-0', 'opacity-100'); e.target.onerror = null; }}
           />
@@ -195,11 +207,15 @@ export function ProductCard({ product, priority = false }) {
             </div>
           )}
 
-          {badgeLabel && !isRupture && (
+          {lowStock && !isRupture ? (
+            <span className="absolute top-3 start-3 z-20 px-2.5 py-1 bg-rose-600/95 text-white text-[10px] font-semibold uppercase tracking-wide rounded-full shadow-sm">
+              {lang === 'ar' ? `آخر ${product.stock} قطع` : `Only ${product.stock} left`}
+            </span>
+          ) : badgeLabel && !isRupture ? (
             <span className="absolute top-3 start-3 z-20 px-2.5 py-1 bg-cream/90 text-ink text-[10px] font-semibold uppercase tracking-wide rounded-full">
               {badgeLabel}
             </span>
-          )}
+          ) : null}
 
           {/* Wishlist */}
           <button
@@ -269,9 +285,30 @@ export function ProductCard({ product, priority = false }) {
           <h3 className="text-sm text-ink leading-snug mb-1 line-clamp-1">
             {product.name}
           </h3>
-          <p className="text-sm font-medium text-ink-soft">
+
+          {/* Note ★ si dispo, sinon mise en avant bestseller — jamais de chiffre inventé */}
+          {ratingValue != null ? (
+            <div className="flex items-center gap-1.5 mb-1">
+              <StarRating rating={ratingValue} />
+              <span className="text-xs text-ink-soft font-medium" dir="ltr">
+                {ratingValue.toFixed(1)}
+                {reviewCount != null && reviewCount > 0 && (
+                  <span className="text-ink-soft/60"> ({reviewCount})</span>
+                )}
+              </span>
+            </div>
+          ) : isBestseller && !isRupture ? (
+            <div className="flex items-center gap-1 mb-1">
+              <Star className="w-3.5 h-3.5 fill-silver text-silver" />
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
+                {t('badgeBestseller')}
+              </span>
+            </div>
+          ) : null}
+
+          <p className="text-sm font-semibold text-ink">
             {displayPrice != null
-              ? <span dir="ltr">{Number(displayPrice).toFixed(2)} {CUR}</span>
+              ? <span dir="ltr">{Number(displayPrice).toFixed(3)} {CUR}</span>
               : <span className="text-ink-soft/60">{t('priceOnRequest')}</span>
             }
           </p>

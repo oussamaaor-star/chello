@@ -3,8 +3,8 @@ import { translations } from '../../i18n/translations';
 
 // Lecture de la langue hors React (composant classe, pas de hook possible).
 function tr(key) {
-  const lang = (typeof localStorage !== 'undefined' && localStorage.getItem('lang')) || 'fr';
-  return translations[lang]?.[key] ?? translations.fr[key] ?? key;
+  const lang = (typeof localStorage !== 'undefined' && localStorage.getItem('lang')) || 'ar';
+  return translations[lang]?.[key] ?? translations.ar[key] ?? key;
 }
 
 // ─── RouteErrorBoundary ───────────────────────────────────────────────────────
@@ -35,12 +35,12 @@ function isChunkLoadError(error) {
 export class RouteErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, isReloading: false };
+    this.state = { hasError: false, isReloading: false, error: null };
     this.handleReload = this.handleReload.bind(this);
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error) {
@@ -58,7 +58,6 @@ export class RouteErrorBoundary extends Component {
       }
 
       if (!alreadyReloaded) {
-        // eslint-disable-next-line react/no-direct-mutation-state
         this.setState({ isReloading: true });
         window.location.reload();
         return;
@@ -102,6 +101,11 @@ export class RouteErrorBoundary extends Component {
                 {tr('errBoundaryHome')}
               </a>
             </div>
+            {this.state.error && (
+              <p dir="ltr" className="mt-5 text-[10px] leading-relaxed text-ink-soft/55 font-mono break-words text-left">
+                {String(this.state.error.name || 'Error')}: {String(this.state.error.message || this.state.error)}
+              </p>
+            )}
           </div>
         </div>
       );

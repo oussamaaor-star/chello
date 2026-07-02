@@ -32,7 +32,7 @@ export default function OrderConfirmation() {
   }, [orderId]);
 
   const shortRef = (order?.id ?? orderId ?? '').replace(/-/g, '').slice(0, 8).toUpperCase() || '—';
-  const displayTotal = order ? Number(order.total).toFixed(2) : '—';
+  const displayTotal = order ? Number(order.total).toFixed(3) : '—';
   const dateLocale = lang === 'ar' ? 'ar-OM' : 'en-US';
   const orderDate = order
     ? new Date(order.created_at).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })
@@ -92,7 +92,7 @@ export default function OrderConfirmation() {
                       </div>
                       {item.price != null && (
                         <span className="font-semibold text-ink flex-shrink-0 ms-3">
-                          {(item.price * item.quantity).toFixed(2)} {SHOP_CONFIG.currency}
+                          {(item.price * item.quantity).toFixed(3)} {SHOP_CONFIG.currency}
                         </span>
                       )}
                     </div>

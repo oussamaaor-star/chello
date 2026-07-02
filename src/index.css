@@ -81,15 +81,6 @@
   display: none;
 }
 
-/* ── FlipRevealGrid — apparition CSS (remplace framer-motion) ───────────────── */
-@keyframes pm-card-in {
-  from { opacity: 0; transform: scale(0.88); }
-  to   { opacity: 1; transform: scale(1); }
-}
-.pm-card-reveal {
-  animation: pm-card-in 0.22s ease both;
-}
-
 /* ── Cacher les flèches des inputs number ───────────────────────────────────── */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
@@ -105,6 +96,37 @@ input[type=number] {
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
+/* ── Arabe : l'écriture est cursive → le letter-spacing (tracking, pensé pour le
+   latin) disloque les lettres liées et casse les sur-titres. On le neutralise
+   partout en RTL ; les îlots explicitement dir="ltr" (mots latins, codes,
+   @handle, coordonnées) gardent un rendu latin normal. ── */
+[dir="rtl"] [class*="tracking-"] {
+  letter-spacing: 0 !important;
+}
+[dir="rtl"] [dir="ltr"] {
+  letter-spacing: normal;
+}
+
+/* ── Accessibilité / confort : respecter « réduire les animations » du système
+   (mobile inclus) → on neutralise animations, transitions et scroll animé. ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Rebond du panier (header) quand un article est ajouté — feedback "app-like" ── */
+@keyframes cart-bump {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.35); }
+  60%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.animate-cart-bump { animation: cart-bump 0.45s ease; }
 
 html, body {
   overflow-x: hidden;
@@ -174,7 +196,7 @@ p {
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b8915a;
+  background: #a8a29e;
 }
 
 /* ── Liens nav éditoriaux : soulignement fin au survol ───────────────────── */

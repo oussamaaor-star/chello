@@ -214,7 +214,7 @@ export function FloatingWidgets() {
   if (cartOpen) return null;
 
   return (
-    <div className={`fixed bottom-20 sm:bottom-6 right-4 sm:right-5 rtl:right-auto rtl:left-4 rtl:sm:left-5 z-50 flex-col items-end gap-3 transition-[bottom] duration-300 ${isProductPage ? 'hidden lg:flex' : 'flex'}`}>
+    <div className={`fixed bottom-4 sm:bottom-6 right-4 sm:right-5 rtl:right-auto rtl:left-4 rtl:sm:left-5 z-50 flex-col items-end gap-3 transition-[bottom] duration-300 ${isProductPage ? 'hidden lg:flex' : 'flex'}`}>
 
       {/* Chatbot window */}
       {chatOpen && (

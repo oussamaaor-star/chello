@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Package, ShoppingBag, ChevronRight,
-  Clock, CheckCircle, Truck, X, Loader2, Eye,
+  Clock, CheckCircle, Truck, X, Eye,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
@@ -22,11 +22,11 @@ const STATUS = {
 // ─── OrderCard ────────────────────────────────────────────────────
 
 function OrderCard({ order }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const cfg   = STATUS[order.status] ?? STATUS.confirmed;
   const Icon  = cfg.icon;
   const ref   = order.id.replace(/-/g, '').slice(0, 8).toUpperCase();
-  const date  = new Date(order.created_at).toLocaleDateString('fr-FR', {
+  const date  = new Date(order.created_at).toLocaleDateString(lang === 'ar' ? 'ar-OM' : 'en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
 
@@ -44,20 +44,20 @@ function OrderCard({ order }) {
       </div>
 
       {/* Items preview */}
-      {order.order_items?.length > 0 && (
+      {order.items?.length > 0 && (
         <div className="mb-4 space-y-1.5">
-          {order.order_items.slice(0, 2).map((item) => (
-            <div key={item.id} className="flex items-center gap-2 text-xs text-ink-soft">
+          {order.items.slice(0, 2).map((item, i) => (
+            <div key={i} className="flex items-center gap-2 text-xs text-ink-soft">
               <span className="w-5 text-center font-semibold text-ink-soft">{item.quantity}×</span>
-              <span className="flex-1 truncate">{item.product_name}</span>
-              {item.selected_size && (
-                <span className="text-ink-soft flex-shrink-0">{item.selected_size}</span>
+              <span className="flex-1 truncate">{item.name}</span>
+              {item.size && (
+                <span className="text-ink-soft flex-shrink-0">{item.size}</span>
               )}
             </div>
           ))}
-          {order.order_items.length > 2 && (
-            <p className="text-xs text-ink-soft ml-7">
-              +{order.order_items.length - 2}
+          {order.items.length > 2 && (
+            <p className="text-xs text-ink-soft ms-7">
+              +{order.items.length - 2}
             </p>
           )}
         </div>
@@ -66,11 +66,11 @@ function OrderCard({ order }) {
       {/* Footer */}
       <div className="flex items-center justify-between pt-3 border-t border-ink/10">
         <span className="text-xs text-ink-soft">
-          {order.order_items?.length ?? 0} {t('ordersArticle')}
+          {order.items?.length ?? 0} {t('ordersArticle')}
         </span>
         <div className="flex items-center gap-3">
           <span className="text-sm font-bold text-ink">
-            {Number(order.total).toFixed(2)} OMR
+            {Number(order.total).toFixed(3)} ر.ع
           </span>
           <Link
             to={`/compte/commandes/${order.id}`}
@@ -112,21 +112,21 @@ export default function Orders() {
   const [orders, setOrders]       = useState([]);
   const [loading, setLoading]     = useState(true);
 
-  useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    loadOrders();
-  }, [user?.id]);
-
   const loadOrders = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('orders')
-      .select('*, order_items(*)')
+      .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
     if (!error && data) setOrders(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    loadOrders();
+  }, [user?.id]);
 
   return (
     <div className="space-y-6">
@@ -144,8 +144,26 @@ export default function Orders() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-6 h-6 text-ink-soft animate-spin" />
+        <div className="space-y-4">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="bg-cream-deep rounded-2xl border border-ink/10 p-5 animate-pulse">
+              <div className="flex items-start justify-between mb-4">
+                <div className="space-y-2">
+                  <div className="h-3.5 w-24 bg-ink/10 rounded-full" />
+                  <div className="h-2.5 w-16 bg-ink/10 rounded-full" />
+                </div>
+                <div className="h-6 w-20 bg-ink/10 rounded-full" />
+              </div>
+              <div className="space-y-2 mb-4">
+                <div className="h-2.5 w-3/4 bg-ink/10 rounded-full" />
+                <div className="h-2.5 w-1/2 bg-ink/10 rounded-full" />
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-ink/10">
+                <div className="h-2.5 w-16 bg-ink/10 rounded-full" />
+                <div className="h-7 w-20 bg-ink/10 rounded-lg" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : orders.length === 0 ? (
         <EmptyOrders />

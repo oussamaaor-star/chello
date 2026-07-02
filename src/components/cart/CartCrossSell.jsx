@@ -50,7 +50,7 @@ export function CartCrossSell() {
 
         <div className="flex-1">
           <h4 className="text-sm font-medium text-ink line-clamp-1">{crossSellProduct.name}</h4>
-          <p className="text-sm font-semibold text-ink-soft mt-0.5" dir="ltr">{Number(priceToDisplay).toFixed(2)} {SHOP_CONFIG.currency}</p>
+          <p className="text-sm font-semibold text-ink-soft mt-0.5" dir="ltr">{Number(priceToDisplay).toFixed(3)} {SHOP_CONFIG.currency}</p>
         </div>
 
         <button

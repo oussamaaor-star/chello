@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import { AlertCircle, UserPlus, CheckCircle } from 'lucide-react';
+import { AlertCircle, UserPlus, CheckCircle, Phone } from 'lucide-react';
 
 import { AuthLayout, BoxReveal, AnimatedInput } from '../components/auth/AuthLayout';
 import { PasswordField } from '../components/auth/PasswordField';
@@ -51,9 +51,9 @@ export default function Register() {
   useSEO(SEO_PRESETS.register);
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
-  const [form, setForm]               = useState({ name: '', email: '', password: '', confirm: '' });
+  const [form, setForm]               = useState({ name: '', email: '', phone: '', password: '', confirm: '' });
   const [errors, setErrors]           = useState({});
   const [globalError, setGlobalError] = useState('');
   const [isLoading, setIsLoading]     = useState(false);
@@ -80,6 +80,8 @@ export default function Register() {
     if (!form.email.trim())    next.email    = t('registerErrEmail');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = t('registerErrEmailFmt');
     else if (BLOCKED_EMAIL_DOMAINS.includes(form.email.trim().split('@')[1]?.toLowerCase())) next.email = t('registerErrEmailDomain');
+    if (!form.phone.trim())    next.phone    = t('registerErrPhone') || (lang === 'ar' ? 'رقم الهاتف مطلوب' : 'Phone number is required');
+    else if (!/^[79]\d{7}$/.test(form.phone.trim())) next.phone = t('registerErrPhoneFmt') || (lang === 'ar' ? 'الرجاء إدخال رقم هاتف صحيح (8 أرقام)' : 'Please enter a valid phone number (8 digits)');
     if (!form.password)        next.password = t('registerErrPassword');
     else if (form.password.length < 8) next.password = t('registerErrPasswordMin');
     if (!form.confirm)         next.confirm  = t('registerErrConfirm');
@@ -95,13 +97,18 @@ export default function Register() {
     if (globalError)  setGlobalError('');
   };
 
+  const toggleAccepted = () => {
+    setAccepted((v) => !v);
+    if (errors.terms) setErrors((prev) => ({ ...prev, terms: '' }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const fieldErrors = validate();
     if (Object.keys(fieldErrors).length > 0) { setErrors(fieldErrors); return; }
 
     setIsLoading(true);
-    const result = await register(form.name.trim(), form.email.trim(), form.password);
+    const result = await register(form.name.trim(), form.email.trim(), form.password, form.phone.trim());
     setIsLoading(false);
     if (result.success) {
       fetch('/api/send-welcome-email', {
@@ -206,6 +213,29 @@ export default function Register() {
           </div>
         </BoxReveal>
 
+        {/* Téléphone */}
+        <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="phone" className="block text-sm font-medium text-ink">
+              {lang === 'ar' ? 'رقم الهاتف' : 'Phone number'}
+            </label>
+            <div className="relative">
+              <Phone className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft/50 pointer-events-none" />
+              <AnimatedInput
+                id="phone" name="phone" type="tel"
+                placeholder="9XXXXXXX"
+                value={form.phone} onChange={handleChange}
+                autoComplete="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={8}
+                className={`ps-10 ${errors.phone ? 'ring-2 ring-red-500/50' : ''}`}
+              />
+            </div>
+            {errors.phone && <p className="text-xs text-red-500 mt-0.5">{errors.phone}</p>}
+          </div>
+        </BoxReveal>
+
         {/* Mot de passe */}
         <BoxReveal width="100%" boxColor="rgba(158,158,158,0.35)" duration={0.35}>
           <div>
@@ -235,34 +265,40 @@ export default function Register() {
 
         {/* CGU */}
         <div>
-          <label className="flex items-start gap-3 cursor-pointer group">
-            <div
-              className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+          <div className="flex items-start gap-3 group">
+            <button
+              type="button"
+              role="checkbox"
+              aria-checked={accepted}
+              aria-invalid={!!errors.terms}
+              aria-describedby={errors.terms ? 'terms-error' : undefined}
+              onClick={toggleAccepted}
+              className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 cursor-pointer transition-all
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-silver/40 focus-visible:ring-offset-1 focus-visible:ring-offset-cream-deep ${
                 accepted
                   ? 'bg-ink border-ink'
                   : errors.terms
                   ? 'border-red-500'
                   : 'border-ink/30 group-hover:border-silver'
               }`}
-              onClick={() => {
-                setAccepted((v) => !v);
-                if (errors.terms) setErrors((prev) => ({ ...prev, terms: '' }));
-              }}
             >
               {accepted && (
-                <svg className="w-3 h-3 text-cream" viewBox="0 0 12 12" fill="none">
+                <svg className="w-3 h-3 text-cream" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                   <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               )}
-            </div>
-            <span className="text-sm text-ink-soft select-none leading-snug">
+            </button>
+            <span
+              className="text-sm text-ink-soft select-none leading-snug cursor-pointer"
+              onClick={toggleAccepted}
+            >
               {t('registerCgu')}{' '}
-              <Link to="/cgv" target="_blank" rel="noopener noreferrer" className="text-silver font-medium underline underline-offset-2 hover:text-silver-deep transition-colors">
+              <Link to="/cgv" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-silver font-medium underline underline-offset-2 hover:text-silver-deep transition-colors">
                 {t('registerCguLink')}
               </Link>
             </span>
-          </label>
-          {errors.terms && <p className="mt-1.5 text-xs text-red-500">{errors.terms}</p>}
+          </div>
+          {errors.terms && <p id="terms-error" className="mt-1.5 text-xs text-red-500">{errors.terms}</p>}
         </div>
 
         {/* Bouton */}

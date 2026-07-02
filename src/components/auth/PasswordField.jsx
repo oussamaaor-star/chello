@@ -23,7 +23,7 @@ export function PasswordField({ label, id, error, ...props }) {
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
-          className="absolute inset-y-0 right-3 flex items-center text-ink-soft hover:text-silver transition-colors z-10 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-silver/40"
+          className="absolute inset-y-0 end-3 flex items-center text-ink-soft hover:text-silver transition-colors z-10 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-silver/40"
           aria-label={visible ? t('pwdHide') : t('pwdShow')}
         >
           {visible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

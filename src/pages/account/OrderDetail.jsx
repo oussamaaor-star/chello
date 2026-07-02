@@ -25,7 +25,7 @@ function OrderItemRow({ item, imageUrl }) {
         {imageUrl ? (
           <img
             src={imageUrl}
-            alt={item.product_name}
+            alt={item.name}
             className="w-full h-full object-cover"
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
@@ -39,28 +39,25 @@ function OrderItemRow({ item, imageUrl }) {
       {/* Infos */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-ink leading-snug truncate">
-          {item.product_name}
+          {item.name}
         </p>
-        {item.brand && (
-          <p className="text-xs text-ink-soft mt-0.5">{item.brand}</p>
-        )}
         <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-          {item.selected_size && (
+          {item.size && (
             <span className="text-xs bg-cream-deep border border-ink/10 text-ink-soft px-2 py-0.5 rounded-md">
-              {item.selected_size}
+              {item.size}
             </span>
           )}
           <span className="text-xs text-ink-soft">{t('orderDetailQte')} : {item.quantity}</span>
           <span className="text-xs text-ink-soft">
-            {Number(item.unit_price).toFixed(2)} OMR / {t('orderDetailUnite')}
+            {Number(item.price).toFixed(3)} ر.ع / {t('orderDetailUnite')}
           </span>
         </div>
       </div>
 
       {/* Total ligne */}
-      <div className="flex-shrink-0 text-right">
+      <div className="flex-shrink-0 text-end">
         <p className="text-sm font-bold text-ink">
-          {Number(item.line_total).toFixed(2)} OMR
+          {Number((item.price ?? 0) * (item.quantity ?? 1)).toFixed(3)} ر.ع
         </p>
       </div>
     </div>
@@ -70,12 +67,11 @@ function OrderItemRow({ item, imageUrl }) {
 // ─── Helper : URL transporteur ───────────────────────────────────────────────
 
 const CARRIER_CONFIG = {
-  amana:      { label: 'Amana',         url: (n) => `https://www.amana.ma/track?ref=${n}` },
+  oman_post:  { label: 'Oman Post',     url: (n) => `https://www.omanpost.om/track?id=${n}` },
   aramex:     { label: 'Aramex',        url: (n) => `https://www.aramex.com/track/results?mode=0&ShipmentNumber=${n}` },
-  zr_express: { label: 'ZR Express',    url: (n) => `https://zrexpresse.com/tracking?num=${n}` },
-  sendex:     { label: 'Sendex',        url: (n) => `https://sendex.ma/suivi?code=${n}` },
-  barid:      { label: 'Barid Al-Maghrib', url: (n) => `https://www.poste.ma/suivi?code=${n}` },
-  dhl:        { label: 'DHL',           url: (n) => `https://www.dhl.com/ma-fr/home/tracking.html?tracking-id=${n}` },
+  fedex:      { label: 'FedEx',         url: (n) => `https://www.fedex.com/fedextrack/?trknbr=${n}` },
+  dhl:        { label: 'DHL',           url: (n) => `https://www.dhl.com/om-en/home/tracking.html?tracking-id=${n}` },
+  ups:        { label: 'UPS',           url: (n) => `https://www.ups.com/track?tracknum=${n}` },
 };
 
 // ─── Composant : carte info ───────────────────────────────────────────────────
@@ -132,16 +128,11 @@ export default function OrderDetail() {
   const [notFound, setNotFound]         = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  useEffect(() => {
-    if (!user || !id) { setLoading(false); return; }
-    loadOrder();
-  }, [id, user?.id]);
-
   const loadOrder = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('orders')
-      .select('*, order_items(*)')
+      .select('*')
       .eq('id', id)
       .eq('user_id', user.id)   // sécurité : uniquement les commandes de l'utilisateur
       .maybeSingle();
@@ -155,7 +146,7 @@ export default function OrderDetail() {
     setOrder(data);
 
     // Récupère les images depuis Supabase pour tous les produits de la commande
-    const productIds = (data.order_items ?? []).map((i) => i.product_id).filter(Boolean);
+    const productIds = (data.items ?? []).map((i) => i.product_id).filter(Boolean);
     if (productIds.length > 0) {
       const { data: products } = await supabase
         .from('products')
@@ -175,6 +166,11 @@ export default function OrderDetail() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    if (!user || !id) { setLoading(false); return; }
+    loadOrder();
+  }, [id, user?.id]);
+
   const downloadInvoice = async () => {
     if (!order) return;
     try {
@@ -192,7 +188,7 @@ export default function OrderDetail() {
   const cfg = STATUS[order?.status] ?? STATUS.confirmed;
   const StatusIcon = cfg.icon;
 
-  const dateLocale = lang === 'ar' ? 'ar-MA' : 'fr-FR';
+  const dateLocale = lang === 'ar' ? 'ar-OM' : 'en-US';
   const orderDate = order
     ? new Date(order.created_at).toLocaleDateString(dateLocale, {
         year: 'numeric', month: 'long', day: 'numeric',
@@ -200,7 +196,13 @@ export default function OrderDetail() {
     : '';
 
   const currentStepIdx = STEP_ORDER.indexOf(order?.status ?? 'confirmed');
-  const snap           = order?.shipping_address_snapshot;
+  const snap           = order?.shipping_address_snapshot || (order ? {
+    full_name: order.full_name,
+    address_line_1: order.address,
+    city: order.city,
+    country: 'Oman',
+    phone: order.phone,
+  } : null);
 
   // ── Loading ─────────────────────────────────────────────────────────────────
 
@@ -221,7 +223,7 @@ export default function OrderDetail() {
           onClick={() => navigate('/compte/commandes')}
           className="flex items-center gap-2 text-sm text-ink-soft hover:text-ink transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />{t('ordersTitle')}
+          <ArrowLeft className="w-4 h-4 rtl:rotate-180" />{t('ordersTitle')}
         </button>
         <div className="bg-cream-deep rounded-2xl border border-ink/10 shadow-sm p-12 text-center">
           <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto mb-4">
@@ -235,7 +237,7 @@ export default function OrderDetail() {
             to="/compte/commandes"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-cream-deep text-cream rounded-xl text-sm font-semibold hover:bg-cream transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />{t('orderDetailRetour')}
+            <ArrowLeft className="w-4 h-4 rtl:rotate-180" />{t('orderDetailRetour')}
           </Link>
         </div>
       </div>
@@ -253,7 +255,7 @@ export default function OrderDetail() {
           onClick={() => navigate('/compte/commandes')}
           className="flex items-center gap-1.5 text-sm text-ink-soft hover:text-ink transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
           <span className="hidden sm:inline">{t('orderDetailRetour')}</span>
         </button>
         <span className="text-ink-soft/60">/</span>
@@ -281,10 +283,10 @@ export default function OrderDetail() {
             </div>
           </div>
           <div className="flex flex-col items-end gap-3 sm:flex-shrink-0">
-            <div className="text-right">
+            <div className="text-end">
               <p className="text-xs text-ink-soft mb-0.5">{t('orderDetailTotalCmd')}</p>
               <p className="text-2xl font-black text-ink">
-                {Number(order.total).toFixed(2)} OMR
+                {Number(order.total).toFixed(3)} ر.ع
               </p>
             </div>
             {/* Download Invoice Button - always visible for orders */}
@@ -348,14 +350,14 @@ export default function OrderDetail() {
                 {t('orderDetailArticles')}
               </p>
               <span className="text-xs text-ink-soft bg-cream border border-ink/10 px-2.5 py-1 rounded-full">
-                {order.order_items?.length ?? 0} {(order.order_items?.length ?? 0) > 1 ? t('orderDetailArticles2') : t('orderDetailArticle')}
+                {order.items?.length ?? 0} {(order.items?.length ?? 0) > 1 ? t('orderDetailArticles2') : t('orderDetailArticle')}
               </span>
             </div>
             <div className="divide-y divide-ink/10">
-              {order.order_items?.length > 0
-                ? order.order_items.map((item) => (
+              {order.items?.length > 0
+                ? order.items.map((item, i) => (
                     <OrderItemRow
-                      key={item.id}
+                      key={i}
                       item={item}
                       imageUrl={productImages[item.product_id] ?? null}
                     />
@@ -380,7 +382,7 @@ export default function OrderDetail() {
               <div className="flex justify-between text-sm">
                 <span className="text-ink-soft">{t('cartSousTotal')}</span>
                 <span className="font-semibold text-ink">
-                  {Number(order.subtotal).toFixed(2)} OMR
+                  {Number(order.subtotal).toFixed(3)} ر.ع
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -388,13 +390,13 @@ export default function OrderDetail() {
                 <span className={`font-semibold ${Number(order.shipping_cost) === 0 ? 'text-emerald-400' : 'text-ink'}`}>
                   {Number(order.shipping_cost) === 0
                     ? t('checkoutGratuite')
-                    : `${Number(order.shipping_cost).toFixed(2)} OMR`}
+                    : `${Number(order.shipping_cost).toFixed(3)} ر.ع`}
                 </span>
               </div>
               <div className="flex justify-between items-center pt-2.5 border-t border-ink/10">
                 <span className="font-bold text-ink">{t('orderDetailTotal')}</span>
                 <span className="text-lg font-black text-ink">
-                  {Number(order.total).toFixed(2)} OMR
+                  {Number(order.total).toFixed(3)} ر.ع
                 </span>
               </div>
             </div>
@@ -454,7 +456,7 @@ export default function OrderDetail() {
                     <span className="text-xs font-bold uppercase tracking-widest text-ink-soft">
                       {t('orderDetailTransporteur')}
                     </span>
-                    <span className="text-sm font-medium text-ink ml-auto">
+                    <span className="text-sm font-medium text-ink ms-auto">
                       {CARRIER_CONFIG[order.carrier]?.label ?? order.carrier}
                     </span>
                   </div>
@@ -498,7 +500,7 @@ export default function OrderDetail() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-ink-soft">{t('orderDetailReduction')}</span>
                     <span className="text-sm font-semibold text-emerald-400">
-                      −{Number(order.discount_amount).toFixed(2)} OMR
+                      −{Number(order.discount_amount).toFixed(3)} ر.ع
                     </span>
                   </div>
                 )}

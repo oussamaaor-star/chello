@@ -5,12 +5,11 @@
     "category": "dresses",
     "name": "تيور 3 قطع بتصميم راقي — خردلي",
     "description": "لوك واحد بعشرة ألوان متاحة. تيور 3 قطع بتصميم راقي يناسب كل إطلالاتك.",
-    "price": null,
-    "images": ["/products/tiour-moutarde-1.png", "/products/tiour-moutarde-2.png", "/products/tiour-moutarde-3.png", "/products/tiour-moutarde-4.png"],
+    "price": 28.500,
+    "images": ["/products/dress-elegant-1.jpg", "/products/dress-elegant-2.jpg"],
     "sizes": ["S", "M", "L", "XL"],
     "featured": true,
-    "isNew": true,
-    "sourceUrl": "https://www.instagram.com/p/DZ40zgHM6MC/"
+    "isNew": true
   },
   {
     "id": "p02",
@@ -18,25 +17,11 @@
     "category": "dresses",
     "name": "معطف ترنش أنيق — بألوان متعددة",
     "description": "معطف ترنش بقصة كلاسيكية وحزام عند الخصر، يضيف لمسة راقية لإطلالتك في كل المواسم. متوفر بأكثر من 10 ألوان — اختاري ما يناسبك.",
-    "price": null,
-    "images": [
-      "/products/trench-bleu-pastel.png",
-      "/products/trench-blanc.png",
-      "/products/trench-sauge.png",
-      "/products/trench-rose-poudre.png",
-      "/products/trench-moutarde.png",
-      "/products/trench-gris.png",
-      "/products/trench-beige.png",
-      "/products/trench-bleu-ciel.png",
-      "/products/trench-emeraude.png",
-      "/products/trench-violet.png",
-      "/products/trench-corail.png",
-      "/products/trench-peche.png"
-    ],
+    "price": 32.000,
+    "images": ["/products/trench-coat-1.jpg", "/products/trench-coat-2.jpg"],
     "sizes": ["S", "M", "L", "XL"],
     "featured": true,
-    "isNew": true,
-    "sourceUrl": "https://www.instagram.com/reel/DR5BZCujOjH/"
+    "isNew": true
   },
   {
     "id": "p03",
@@ -44,11 +29,10 @@
     "category": "dresses",
     "name": "طقم خردلي مع قلادة",
     "description": "طقم بلوزة وبنطال واسع بقصة مريحة، يعطي حضوراً أنيقاً وواثقاً مع إضافة إكسسوار قلادة.",
-    "price": null,
-    "images": ["/products/set-moutarde-1.png", "/products/set-moutarde-2.png"],
+    "price": 22.000,
+    "images": ["/products/outfit-set-1.jpg", "/products/outfit-set-2.jpg"],
     "sizes": ["S", "M", "L"],
-    "featured": true,
-    "sourceUrl": "https://www.instagram.com/p/DUyWaUGDOlo/"
+    "featured": false
   },
   {
     "id": "p04",
@@ -56,21 +40,10 @@
     "category": "dresses",
     "name": "توب بدون أكمام بقصة كشكش — بألوان متعددة",
     "description": "توب أنيق بدون أكمام، ياقة عالية وتفصيلة كشكش عند الخصر تعطي حركة جميلة. متوفر بأكثر من 10 ألوان.",
-    "price": null,
-    "images": [
-      "/products/top-cache-coeur-blanc.png",
-      "/products/top-cache-coeur-beige.png",
-      "/products/top-cache-coeur-camel.png",
-      "/products/top-cache-coeur-sauge.png",
-      "/products/top-cache-coeur-ardoise.png",
-      "/products/top-cache-coeur-olive.png",
-      "/products/top-cache-coeur-peche.png",
-      "/products/top-cache-coeur-emeraude.png",
-      "/products/top-cache-coeur-marine.png"
-    ],
+    "price": 14.500,
+    "images": ["/products/top-fashion-1.jpg", "/products/top-fashion-2.jpg"],
     "sizes": ["S", "M", "L"],
-    "isNew": true,
-    "sourceUrl": "https://www.instagram.com/reel/DSFqAGbDNQv/"
+    "isNew": false
   },
   {
     "id": "p05",
@@ -78,17 +51,10 @@
     "category": "shoes",
     "name": "صندل أوران الفاخر — بألوان متعددة",
     "description": "صندل بتصميم كلاسيكي أنيق، خامة جلد فاخرة، يناسب الإطلالات اليومية والمناسبات. متوفر بعدة ألوان.",
-    "price": null,
-    "images": [
-      "/products/sandale-oran-marron.png",
-      "/products/sandale-oran-mauve.png",
-      "/products/sandale-oran-bordeaux.png",
-      "/products/sandale-oran-bleu.png",
-      "/products/sandale-oran-noir.png"
-    ],
+    "price": 18.000,
+    "images": ["/products/sandal-elegant-1.jpg", "/products/sandal-elegant-2.jpg"],
     "sizes": [],
-    "featured": true,
-    "sourceUrl": "https://www.instagram.com/reel/DVRIX5aDNY0/"
+    "featured": true
   },
   {
     "id": "p06",
@@ -96,11 +62,10 @@
     "category": "shoes",
     "name": "حذاء ساتان بفيونكة أنيقة — بألوان متعددة",
     "description": "سحر الساتان وفخامة التصميم — حذاء سلينج باك بفيونكة مميزة. متوفر بعدة ألوان.",
-    "price": null,
-    "images": ["/products/ballerine-noeud-noir.png", "/products/ballerine-noeud-blanc.png", "/products/ballerine-noeud-rose.png"],
+    "price": 15.500,
+    "images": ["/products/ballet-flat-1.jpg", "/products/ballet-flat-2.jpg"],
     "sizes": [],
-    "featured": true,
-    "sourceUrl": "https://www.instagram.com/p/DU_U24KDKHP/"
+    "featured": false
   },
   {
     "id": "p07",
@@ -108,17 +73,10 @@
     "category": "bags",
     "name": "شنطة مبطنة فاخرة — بألوان متعددة",
     "description": "شنطة بتصميم مبطن أنيق وحمالة قابلة للتعديل، تكمل أناقتك في كل خروجة. متوفرة بعدة ألوان.",
-    "price": null,
-    "images": [
-      "/products/sac-matelasse-rose.png",
-      "/products/sac-matelasse-marine.png",
-      "/products/sac-matelasse-noir.png",
-      "/products/sac-matelasse-emeraude.png",
-      "/products/sac-matelasse-creme.png"
-    ],
+    "price": 24.000,
+    "images": ["/products/quilted-bag-1.jpg", "/products/quilted-bag-2.jpg"],
     "sizes": [],
-    "featured": true,
-    "sourceUrl": "https://www.instagram.com/reel/DVYlF4HjFzV/"
+    "featured": true
   },
   {
     "id": "p08",
@@ -126,10 +84,9 @@
     "category": "bags",
     "name": "شنطة دلو جلدية — بألوان متعددة",
     "description": "شنطة دلو بخامة جلد فاخرة وتفاصيل معدنية ذهبية، تناسب الإطلالات اليومية والرسمية.",
-    "price": null,
-    "images": ["/products/sac-seau-marron.png", "/products/sac-seau-noir.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/reel/DVYlF4HjFzV/"
+    "price": 19.500,
+    "images": ["/products/bucket-bag-1.jpg", "/products/bucket-bag-2.jpg"],
+    "sizes": []
   },
   {
     "id": "p09",
@@ -137,10 +94,9 @@
     "category": "bags",
     "name": "شنطة هيكلية بيج",
     "description": "شنطة بتصميم هيكلي عصري وتفاصيل معدنية ذهبية، خامة فاخرة تناسب كل الإطلالات.",
-    "price": null,
-    "images": ["/products/sac-seau-beige.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/reel/DZmxabuuklp/"
+    "price": 22.500,
+    "images": ["/products/structured-bag-1.jpg"],
+    "sizes": []
   },
   {
     "id": "p10",
@@ -148,10 +104,9 @@
     "category": "dresses",
     "name": "بدلة بليزر رمادية",
     "description": "بدلة بليزر وبنطال واسع بقصة عملية أنيقة، تمنحك حضوراً واثقاً ومرتباً في العمل والمناسبات.",
-    "price": null,
-    "images": ["/products/tailleur-gris.png"],
-    "sizes": ["S", "M", "L"],
-    "sourceUrl": "https://www.instagram.com/p/DUyWaUGDOlo/"
+    "price": 35.000,
+    "images": ["/products/blazer-suit-1.jpg"],
+    "sizes": ["S", "M", "L"]
   },
   {
     "id": "p11",
@@ -159,10 +114,9 @@
     "category": "dresses",
     "name": "طقم بيج بأكمام طويلة",
     "description": "طقم بلوزة وبنطال بنفس اللون، قصة مريحة وأنيقة تناسب الإطلالات اليومية الراقية.",
-    "price": null,
-    "images": ["/products/co-ord-beige.png"],
-    "sizes": ["S", "M", "L"],
-    "sourceUrl": "https://www.instagram.com/p/DXclPjAjrTU/"
+    "price": 25.000,
+    "images": ["/products/coord-set-1.jpg"],
+    "sizes": ["S", "M", "L"]
   },
   {
     "id": "p12",
@@ -170,11 +124,10 @@
     "category": "dresses",
     "name": "فستان بليزر لافندر",
     "description": "فستان بتصميم بليزر أنيق بلون لافندر هادئ، مزين بحزام عند الخصر لإطلالة عصرية ومميزة.",
-    "price": null,
-    "images": ["/products/robe-blazer-lavande.png"],
+    "price": 29.000,
+    "images": ["/products/blazer-dress-1.jpg"],
     "sizes": ["S", "M", "L"],
-    "isNew": true,
-    "sourceUrl": "https://www.instagram.com/reel/DVG-Y-XjJWQ/"
+    "isNew": true
   },
   {
     "id": "p13",
@@ -182,11 +135,10 @@
     "category": "dresses",
     "name": "طقم بنطال كامو",
     "description": "طقم بنطال واسع بطباعة كامو عصرية، يناسب الإطلالات الكاجوال الأنيقة.",
-    "price": null,
-    "images": ["/products/ensemble-camouflage.png"],
+    "price": 23.000,
+    "images": ["/products/fashion-outfit-1.jpg"],
     "sizes": ["S", "M", "L"],
-    "isNew": true,
-    "sourceUrl": "https://www.instagram.com/reel/DVBsl2sDOfG/"
+    "isNew": true
   },
   {
     "id": "p14",
@@ -194,10 +146,9 @@
     "category": "dresses",
     "name": "فستان زمردي أنيق",
     "description": "فستان بلون زمردي جذاب وقصة انسيابية، مثالي للمناسبات والخروجات المسائية.",
-    "price": null,
-    "images": ["/products/robe-emeraude.png"],
-    "sizes": ["S", "M", "L"],
-    "sourceUrl": "https://www.instagram.com/reel/DVBsl2sDOfG/"
+    "price": 27.500,
+    "images": ["/products/emerald-dress-1.jpg"],
+    "sizes": ["S", "M", "L"]
   },
   {
     "id": "p15",
@@ -205,10 +156,9 @@
     "category": "dresses",
     "name": "بنطال كحلي بقصة مستقيمة",
     "description": "بنطال أنيق بتصميم عملي راقٍ، قصة مستقيمة واسعة تمنح الراحة والانسيابية طوال اليوم.",
-    "price": null,
-    "images": ["/products/pantalon-marine.png"],
-    "sizes": ["S", "M", "L", "XL"],
-    "sourceUrl": "https://www.instagram.com/reel/DXclPjAjrTU/"
+    "price": 16.000,
+    "images": ["/products/fashion-pants-1.jpg"],
+    "sizes": ["S", "M", "L", "XL"]
   },
   {
     "id": "p16",
@@ -216,10 +166,9 @@
     "category": "shoes",
     "name": "صندل كعب نبيتي",
     "description": "صندل بكعب متوسط وتصميم عصري، يجمع بين الأناقة والراحة.",
-    "price": null,
-    "images": ["/products/sandale-talon-bordeaux.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/reel/DSStyt4DBvu/"
+    "price": 17.000,
+    "images": ["/products/heel-sandal-1.jpg"],
+    "sizes": []
   },
   {
     "id": "p17",
@@ -227,10 +176,9 @@
     "category": "shoes",
     "name": "صندل بيج بكعب أنيق",
     "description": "صندل بكعب نحيف وتصميم راقٍ، مناسب للمناسبات والخروجات المسائية.",
-    "price": null,
-    "images": ["/products/sandale-talon-beige.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/reel/DSKuKOODKOA/"
+    "price": 19.000,
+    "images": ["/products/heel-sandal-2.jpg"],
+    "sizes": []
   },
   {
     "id": "p18",
@@ -238,10 +186,9 @@
     "category": "dresses",
     "name": "طقم أصفر أنيق",
     "description": "طقم بلوزة وبنطال واسع بلون أصفر مشمس، إطلالة مميزة وجذابة.",
-    "price": null,
-    "images": ["/products/set-jaune-modele.png"],
-    "sizes": ["S", "M", "L"],
-    "sourceUrl": "https://www.instagram.com/p/DZ40zgHM6MC/"
+    "price": 21.500,
+    "images": ["/products/yellow-set-1.jpg"],
+    "sizes": ["S", "M", "L"]
   },
   {
     "id": "p19",
@@ -249,10 +196,9 @@
     "category": "bags",
     "name": "تشكيلة شنط متنوعة",
     "description": "تشكيلة مختارة من الشنط بتصاميم وألوان متنوعة تناسب كل إطلالة.",
-    "price": null,
-    "images": ["/products/collection-sacs.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/reel/DVYlF4HjFzV/"
+    "price": 26.000,
+    "images": ["/products/bags-collection-1.jpg"],
+    "sizes": []
   },
   {
     "id": "p20",
@@ -260,10 +206,9 @@
     "category": "bags",
     "name": "شنطتين بيج وأحمر",
     "description": "شنط بتصاميم أنيقة بلونين مميزين، تناسب الإطلالات اليومية والرسمية.",
-    "price": null,
-    "images": ["/products/sacs-beige-rouge.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/reel/DVYlF4HjFzV/"
+    "price": 20.000,
+    "images": ["/products/bags-duo-1.jpg"],
+    "sizes": []
   },
   {
     "id": "p21",
@@ -271,9 +216,41 @@
     "category": "perfumes",
     "name": "تشكيلة عطورات متنوعة",
     "description": "تشكيلة مختارة من أرقى دور العطور العالمية، متوفرة في المتجر.",
-    "price": null,
-    "images": ["/products/etagere-parfums.png"],
-    "sizes": [],
-    "sourceUrl": "https://www.instagram.com/p/DJOUzoFMHcX/"
+    "price": 12.000,
+    "images": ["/products/perfume-collection-1.jpg", "/products/perfume-collection-2.jpg"],
+    "sizes": []
+  },
+  {
+    "id": "p22",
+    "slug": "abaya-noire-classique",
+    "category": "abayas",
+    "name": "عباية سوداء كلاسيكية",
+    "description": "عباية سوداء بقصة انسيابية كلاسيكية مع تطريزات ذهبية رقيقة على الأكمام، تناسب كل المناسبات.",
+    "price": 38.000,
+    "images": ["/products/abaya-black-1.jpg"],
+    "sizes": ["S", "M", "L", "XL"],
+    "featured": false,
+    "isNew": true
+  },
+  {
+    "id": "p23",
+    "slug": "abaya-ouverte-beige",
+    "category": "abayas",
+    "name": "عباية مفتوحة بيج",
+    "description": "عباية مفتوحة بتصميم عصري بلون بيج أنيق مع حزام عند الخصر، مثالية للإطلالات اليومية الراقية.",
+    "price": 34.000,
+    "images": ["/products/abaya-beige-1.jpg"],
+    "sizes": ["S", "M", "L", "XL"],
+    "isNew": true
+  },
+  {
+    "id": "p24",
+    "slug": "abaya-emeraude-brodee",
+    "category": "abayas",
+    "name": "عباية زمردية مطرزة",
+    "description": "عباية بلون زمردي مميز مع تطريزات يدوية فاخرة، تضيف لمسة من الفخامة لإطلالتك في المناسبات.",
+    "price": 42.000,
+    "images": ["/products/abaya-green-1.jpg"],
+    "sizes": ["S", "M", "L"]
   }
 ]

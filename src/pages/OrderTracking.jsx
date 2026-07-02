@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, Phone, Hash } from 'lucide-react';
+import { Search, Truck, CheckCircle, Clock, AlertCircle, Phone, Hash, Package } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useSEO } from '../hooks/useSEO';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -22,10 +22,14 @@ export default function OrderTracking() {
       day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
     });
 
+  // Les 5 étapes de progression d'une commande (cancelled est géré à part).
+  // Doit rester aligné sur orders.status : pending → confirmed → processing → shipped → delivered.
   const STATUS_STEPS = [
-    { key: 'pending',   label: lang === 'ar' ? 'قيد الانتظار' : 'Pending',   icon: Clock,       color: 'bg-ink-soft/40' },
-    { key: 'confirmed', label: lang === 'ar' ? 'مؤكد' : 'Confirmed',         icon: CheckCircle, color: 'bg-silver' },
-    { key: 'delivered', label: lang === 'ar' ? 'تم التوصيل' : 'Delivered',   icon: Truck,       color: 'bg-emerald-600' },
+    { key: 'pending',    label: lang === 'ar' ? 'قيد الانتظار' : 'Pending',     icon: Clock,       color: 'bg-ink-soft/40' },
+    { key: 'confirmed',  label: lang === 'ar' ? 'مؤكد' : 'Confirmed',           icon: CheckCircle, color: 'bg-silver' },
+    { key: 'processing', label: lang === 'ar' ? 'قيد التجهيز' : 'Processing',   icon: Package,     color: 'bg-silver' },
+    { key: 'shipped',    label: lang === 'ar' ? 'تم الشحن' : 'Shipped',         icon: Truck,       color: 'bg-indigo-500' },
+    { key: 'delivered',  label: lang === 'ar' ? 'تم التوصيل' : 'Delivered',     icon: CheckCircle, color: 'bg-emerald-600' },
   ];
 
   useSEO({
@@ -35,8 +39,8 @@ export default function OrderTracking() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!phone || !reference) {
-      setError(t('error'));
+    if (!phone.trim() || !reference.trim()) {
+      setError('fields');
       return;
     }
 
@@ -53,22 +57,28 @@ export default function OrderTracking() {
     const found = data?.[0];
 
     if (sbError || !found) {
-      setError(lang === 'ar' ? 'لم يتم العثور على طلب بهذه المعطيات' : 'No order found with these details');
+      setError('notFound');
       return;
     }
     setOrder(found);
   };
 
   const renderTimeline = (currentStatus) => {
+    // Statut « annulé » : affiché distinctement, hors timeline de progression.
     if (currentStatus === 'cancelled') {
       return (
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
           <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-3" />
           <h3 className="text-xl font-bold text-red-600 mb-1">{lang === 'ar' ? 'تم إلغاء الطلب' : 'Order cancelled'}</h3>
+          <p className="text-sm text-red-600/80">
+            {lang === 'ar' ? 'لمزيد من المعلومات تواصل معنا عبر واتساب' : 'Contact us on WhatsApp for more information'}
+          </p>
         </div>
       );
     }
 
+    // Pour un statut valide, findIndex retourne toujours un index ≥ 0 (les 5 clés sont couvertes).
+    // Le fallback à 0 ne sert que pour un statut inattendu/legacy.
     const currentIndex = STATUS_STEPS.findIndex((s) => s.key === currentStatus);
     const activeStepIdx = currentIndex >= 0 ? currentIndex : 0;
 
@@ -119,7 +129,11 @@ export default function OrderTracking() {
               {error && (
                 <div className="p-4 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-600">{error}</p>
+                  <p className="text-sm text-red-600">
+                    {error === 'fields'
+                      ? (lang === 'ar' ? 'الرجاء تعبئة جميع الحقول' : 'Please fill all fields')
+                      : (lang === 'ar' ? 'لم يتم العثور على طلب بهذه المعطيات' : 'No order found with these details')}
+                  </p>
                 </div>
               )}
 
@@ -129,14 +143,14 @@ export default function OrderTracking() {
                     {lang === 'ar' ? 'رقم الطلب' : 'Order number'}
                   </label>
                   <div className="relative">
-                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-soft/40" />
+                    <Hash className="absolute left-4 rtl:left-auto rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-soft/40" />
                     <input
                       type="text"
                       required
                       value={reference}
                       onChange={(e) => setReference(e.target.value)}
                       placeholder="ex: A1B2C3D4"
-                      className="w-full pl-12 pr-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-silver transition-all uppercase"
+                      className="w-full ps-12 pe-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-silver transition-all uppercase"
                     />
                   </div>
                 </div>
@@ -146,14 +160,17 @@ export default function OrderTracking() {
                     {lang === 'ar' ? 'رقم الواتساب' : 'WhatsApp number'}
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-soft/40" />
+                    <Phone className="absolute left-4 rtl:left-auto rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-soft/40" />
                     <input
                       type="tel"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="96877671234"
-                      className="w-full pl-12 pr-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-silver transition-all"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="tel"
+                      className="w-full ps-12 pe-4 py-4 bg-cream border border-ink/10 rounded-2xl text-ink placeholder-ink-soft/40 focus:outline-none focus:border-silver transition-all"
                     />
                   </div>
                 </div>
@@ -208,7 +225,7 @@ export default function OrderTracking() {
                   </div>
                   <div className="pt-3 border-t border-ink/10 flex justify-between items-center">
                     <span className="text-ink-soft">{lang === 'ar' ? 'الإجمالي' : 'Total'}</span>
-                    <span className="text-lg font-semibold text-ink">{Number(order.total).toFixed(2)} {SHOP_CONFIG.currency}</span>
+                    <span className="text-lg font-semibold text-ink">{Number(order.total).toFixed(3)} {SHOP_CONFIG.currency}</span>
                   </div>
                 </div>
               </div>

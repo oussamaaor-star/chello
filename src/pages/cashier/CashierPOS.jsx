@@ -1,23 +1,21 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle,
-  Loader2, Gift, User, Phone, Sparkles,
+  Loader2, Gift, User, Phone, Sparkles, PackageX,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
-import { findMemberByPhone, addLoyaltyVisit, currentCycle, isRewardReady } from '../../utils/loyalty';
-
-function formatCurrency(amount) {
-  if (amount == null) return '—';
-  return new Intl.NumberFormat('ar-OM', { minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(amount) + ' ر.ع.';
-}
+import { findMemberByPhone, getLoyaltyConfig, calculatePoints, addPoints, getBestReward } from '../../utils/loyalty';
+import { formatCurrency } from '../../utils/cashierFormat';
 
 export default function CashierPOS() {
   const { user } = useAuth();
   const [products, setProducts] = useState([]);
+  const [stockMap, setStockMap] = useState({});
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stockError, setStockError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -27,22 +25,58 @@ export default function CashierPOS() {
   const [loyaltyMember, setLoyaltyMember] = useState(null);
   const [loyaltySearching, setLoyaltySearching] = useState(false);
   const [loyaltyNotFound, setLoyaltyNotFound] = useState(false);
+  const [loyaltyConfig, setLoyaltyConfig] = useState(null);
   const phoneDebounce = useRef(null);
 
   // Post-sale feedback
   const [saleResult, setSaleResult] = useState(null);
+  const [phoneError, setPhoneError] = useState(false);
+  const [orderError, setOrderError] = useState(false);
 
   useEffect(() => {
-    supabase
-      .from('products')
-      .select('id, name, slug, price, images, sizes, active')
-      .eq('active', true)
-      .order('name')
-      .then(({ data }) => {
-        setProducts(data ?? []);
-        setLoading(false);
-      });
+    getLoyaltyConfig().then(setLoyaltyConfig);
   }, []);
+
+  const loadCatalogue = useCallback(async () => {
+    setLoading(true);
+    const [productsRes, stockRes] = await Promise.all([
+      supabase
+        .from('products')
+        .select('id, name, slug, price, images, sizes, active')
+        .eq('active', true)
+        .order('name'),
+      supabase.from('product_stock').select('product_id, stock'),
+    ]);
+
+    setProducts(productsRes.data ?? []);
+
+    // product_stock.stock === 0 => out of stock ; null => not tracked (unlimited).
+    // A positive number (if the view ever becomes a counted table) is the cap.
+    const map = {};
+    (stockRes.data ?? []).forEach((s) => { map[s.product_id] = s.stock; });
+    setStockMap(map);
+
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadCatalogue();
+  }, [loadCatalogue]);
+
+  // Available stock for a product. null => untracked / unlimited.
+  const getStock = useCallback((id) => {
+    const s = stockMap[id];
+    return s === undefined ? null : s;
+  }, [stockMap]);
+
+  // How many more units can still be added, given what's already in the cart.
+  // Returns Infinity when the product is not tracked.
+  const remainingStock = useCallback((id) => {
+    const stock = getStock(id);
+    if (stock == null) return Infinity;
+    const inCart = cart.find((c) => c.id === id)?.quantity ?? 0;
+    return stock - inCart;
+  }, [getStock, cart]);
 
   // Auto-search loyalty member when phone changes
   const searchLoyalty = useCallback(async (phone) => {
@@ -71,6 +105,8 @@ export default function CashierPOS() {
   const handlePhoneChange = (e) => {
     const val = e.target.value;
     setCustomerPhone(val);
+    setPhoneError(false);
+    setOrderError(false);
     setSaleResult(null);
 
     clearTimeout(phoneDebounce.current);
@@ -85,6 +121,21 @@ export default function CashierPOS() {
     : products;
 
   const addToCart = (product) => {
+    const stock = getStock(product.id);
+
+    // Hard out-of-stock: never allow it into the cart.
+    if (stock === 0) {
+      setStockError(`${product.name} is out of stock.`);
+      return;
+    }
+
+    // Tracked quantity: block adding one more than what's available.
+    if (stock != null && remainingStock(product.id) <= 0) {
+      setStockError(`Only ${stock} of "${product.name}" in stock.`);
+      return;
+    }
+
+    setStockError(null);
     setCart((prev) => {
       const existing = prev.find((c) => c.id === product.id);
       if (existing) {
@@ -102,6 +153,14 @@ export default function CashierPOS() {
   };
 
   const updateQty = (id, delta) => {
+    if (delta > 0) {
+      const stock = getStock(id);
+      if (stock != null && remainingStock(id) <= 0) {
+        setStockError(`Only ${stock} in stock for this item.`);
+        return;
+      }
+    }
+    setStockError(null);
     setCart((prev) => prev
       .map((c) => c.id === id ? { ...c, quantity: Math.max(0, c.quantity + delta) } : c)
       .filter((c) => c.quantity > 0));
@@ -119,6 +178,32 @@ export default function CashierPOS() {
 
   const submitOrder = async () => {
     if (cart.length === 0) return;
+
+    // Anti-oversell guard at checkout (stock may have changed since items
+    // were added). Block the whole sale if any line exceeds available stock.
+    const offender = cart.find((c) => {
+      const stock = getStock(c.id);
+      return stock != null && c.quantity > stock;
+    });
+    if (offender) {
+      const stock = getStock(offender.id);
+      setStockError(
+        stock === 0
+          ? `${offender.name} is out of stock — remove it to continue.`
+          : `Only ${stock} of "${offender.name}" in stock — reduce the quantity.`,
+      );
+      return;
+    }
+
+    // Oman phone: 8 digits starting with 7 or 9 (when a number is provided).
+    const digits = customerPhone.replace(/[^0-9]/g, '');
+    if (customerPhone.trim() && !/^[79]\d{7}$/.test(digits)) {
+      setPhoneError(true);
+      return;
+    }
+    setPhoneError(false);
+    setOrderError(false);
+    setStockError(null);
     setSubmitting(true);
     setSaleResult(null);
 
@@ -131,10 +216,10 @@ export default function CashierPOS() {
     }));
 
     const { error } = await supabase.from('orders').insert({
-      full_name: customerName.trim() || 'Vente en caisse',
+      full_name: customerName.trim() || 'In-store sale',
       phone: customerPhone.trim() || null,
       city: 'Seeb',
-      address: 'Al Araimi Boulevard — Vente en boutique',
+      address: 'Al Araimi Boulevard — In-store sale',
       items,
       total,
       subtotal: total,
@@ -142,25 +227,39 @@ export default function CashierPOS() {
       status: 'confirmed',
       payment_status: 'paid',
       payment_method: 'cash',
-      notes: `Vente en caisse par ${user?.name ?? 'Caissier'}`,
+      user_id: user?.id ?? null,
+      notes: `In-store sale by ${user?.name ?? 'Cashier'}`,
     });
 
     if (error) {
       setSubmitting(false);
+      setOrderError(true);
       return;
     }
 
-    // Auto-stamp loyalty if member found
+    // Credit loyalty points ONCE here, at the cashed sale. The toast shows the
+    // authoritative balance (newTotal) returned by the RPC, never a local calc.
     let loyaltyResult = null;
-    if (loyaltyMember) {
-      loyaltyResult = await addLoyaltyVisit(loyaltyMember.id);
+    if (loyaltyMember && loyaltyConfig) {
+      const pts = calculatePoints(total, loyaltyConfig);
+      if (pts > 0) {
+        const newTotal = await addPoints(loyaltyMember.id, pts, 'earned', 'cashier', total);
+        if (newTotal != null) {
+          loyaltyResult = {
+            pointsEarned: pts,
+            newBalance: newTotal,
+            memberName: loyaltyMember.full_name,
+            bestReward: getBestReward(newTotal, loyaltyConfig.reward_tiers),
+          };
+        }
+      }
     }
 
     setSubmitting(false);
 
     setSaleResult({
       total,
-      customerName: customerName.trim() || 'Client',
+      customerName: customerName.trim() || 'Customer',
       loyalty: loyaltyResult,
     });
 
@@ -169,13 +268,19 @@ export default function CashierPOS() {
     setCustomerPhone('');
     setLoyaltyMember(null);
     setLoyaltyNotFound(false);
+    setStockError(null);
+    // Refresh stock so the next sale reflects what was just sold.
+    loadCatalogue();
   };
 
   const dismissResult = () => setSaleResult(null);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-serif text-ink">Nouvelle vente</h1>
+      <div>
+        <h1 className="text-2xl font-serif text-ink">New Sale</h1>
+        <p className="text-sm text-ink-soft mt-0.5">Ring up an in-store purchase</p>
+      </div>
 
       {/* Sale success overlay */}
       {saleResult && (
@@ -187,55 +292,37 @@ export default function CashierPOS() {
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
               <CheckCircle className="w-8 h-8 text-emerald-600" />
             </div>
-            <h2 className="text-xl font-bold text-ink mb-1">Vente enregistrée !</h2>
+            <h2 className="text-2xl font-serif text-ink mb-1">Sale recorded</h2>
             <p className="text-ink-soft text-sm mb-2">{saleResult.customerName}</p>
-            <p className="text-2xl font-bold text-ink mb-6">{formatCurrency(saleResult.total)}</p>
+            <p className="text-3xl font-serif text-ink mb-6">{formatCurrency(saleResult.total)}</p>
 
             {saleResult.loyalty ? (
-              <div className={`rounded-2xl p-5 mb-6 ${saleResult.loyalty.rewardReady ? 'bg-silver/10 border-2 border-silver' : 'bg-cream-deep border border-ink/10'}`}>
+              <div className={`rounded-2xl p-5 mb-6 ${saleResult.loyalty.bestReward ? 'bg-silver/10 border-2 border-silver' : 'bg-cream-deep border border-ink/10'}`}>
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  {saleResult.loyalty.rewardReady ? (
-                    <Sparkles className="w-5 h-5 text-silver" />
-                  ) : (
-                    <Gift className="w-5 h-5 text-silver" />
-                  )}
+                  <Sparkles className="w-5 h-5 text-silver" />
                   <p className="text-sm font-bold text-ink">
-                    {saleResult.loyalty.rewardReady
-                      ? '🎉 Récompense débloquée !'
-                      : 'Fidélité mise à jour'}
+                    +{saleResult.loyalty.pointsEarned} points earned!
                   </p>
                 </div>
 
-                <div className="flex justify-center gap-1.5 mb-3">
-                  {Array.from({ length: 8 }, (_, i) => (
-                    <div
-                      key={i}
-                      className={`w-7 h-7 rounded-full border-2 transition-colors ${
-                        i < saleResult.loyalty.stamps
-                          ? 'bg-silver border-silver'
-                          : 'bg-white border-ink/15'
-                      }`}
-                    />
-                  ))}
+                <div className="bg-white/60 rounded-xl px-4 py-3 mb-3 text-center">
+                  <p className="text-2xl font-bold text-ink">{saleResult.loyalty.newBalance}</p>
+                  <p className="text-xs text-ink-soft">total points</p>
                 </div>
 
-                <p className="text-sm text-ink-soft">
-                  <span className="font-bold text-ink">{saleResult.loyalty.stamps}/8</span> tampons
-                  {saleResult.loyalty.cycles > 0 && (
-                    <span> — {saleResult.loyalty.cycles} cycle{saleResult.loyalty.cycles > 1 ? 's' : ''} complété{saleResult.loyalty.cycles > 1 ? 's' : ''}</span>
-                  )}
-                </p>
-
-                {saleResult.loyalty.rewardReady && (
-                  <p className="text-sm font-semibold text-silver-deep mt-2">
-                    Informez la cliente de sa récompense !
-                  </p>
+                {saleResult.loyalty.bestReward && (
+                  <div className="flex items-center justify-center gap-2 bg-silver/15 rounded-xl px-3 py-2">
+                    <Gift className="w-4 h-4 text-silver" />
+                    <p className="text-sm font-semibold text-silver-deep">
+                      Can redeem {saleResult.loyalty.bestReward.discount_omr} OMR discount!
+                    </p>
+                  </div>
                 )}
               </div>
             ) : (
               <div className="bg-cream-deep rounded-2xl p-4 mb-6 border border-ink/10">
                 <p className="text-xs text-ink-soft">
-                  Pas de compte fidélité associé à ce numéro.
+                  No loyalty account linked to this number.
                 </p>
               </div>
             )}
@@ -244,7 +331,7 @@ export default function CashierPOS() {
               onClick={dismissResult}
               className="w-full bg-ink text-cream py-3 rounded-xl font-bold text-sm hover:bg-ink/90 transition-colors"
             >
-              Nouvelle vente
+              New Sale
             </button>
           </div>
         </div>
@@ -260,7 +347,7 @@ export default function CashierPOS() {
               ref={inputRef}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Chercher un produit..."
+              placeholder="Search for a product..."
               className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 bg-white"
             />
           </div>
@@ -270,49 +357,76 @@ export default function CashierPOS() {
               <Loader2 className="w-6 h-6 text-ink-soft animate-spin" />
             </div>
           ) : filtered.length === 0 ? (
-            <p className="text-ink-soft text-center py-8">Aucun produit trouvé.</p>
+            <p className="text-ink-soft text-center py-8">No products found.</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[65vh] overflow-y-auto pr-1">
-              {filtered.map((p) => (
+              {filtered.map((p) => {
+                const stock = getStock(p.id);
+                const isOut = stock === 0;
+                const remaining = remainingStock(p.id);
+                const capped = !isOut && remaining <= 0; // tracked stock fully in cart
+                const disabled = isOut || capped;
+                return (
                 <button
                   key={p.id}
                   onClick={() => addToCart(p)}
-                  className="bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden text-left hover:border-silver/30 hover:shadow-md transition-all group"
+                  disabled={disabled}
+                  className={`bg-white rounded-2xl border border-ink/8 shadow-sm overflow-hidden text-left transition-all group ${
+                    disabled ? 'opacity-60 cursor-not-allowed' : 'hover:border-silver/30 hover:shadow-md'
+                  }`}
                 >
-                  <div className="aspect-square bg-cream-deep overflow-hidden">
+                  <div className="aspect-square bg-cream-deep overflow-hidden relative">
                     <img
                       src={p.images?.[0] ?? '/products/placeholder-dresses.svg'}
                       alt={p.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className={`w-full h-full object-cover transition-transform duration-300 ${disabled ? 'grayscale' : 'group-hover:scale-105'}`}
                       onError={(e) => { e.target.src = '/products/placeholder-dresses.svg'; e.target.onerror = null; }}
                     />
+                    {isOut && (
+                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500 text-white">
+                        <PackageX className="w-2.5 h-2.5" /> Out
+                      </span>
+                    )}
+                    {capped && (
+                      <span className="absolute top-2 left-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white">
+                        Max in cart
+                      </span>
+                    )}
                   </div>
                   <div className="p-3">
                     <p className="text-xs font-semibold text-ink leading-snug line-clamp-2 mb-1">{p.name}</p>
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-bold text-silver-deep">
-                        {p.price != null ? formatCurrency(p.price) : 'Sur demande'}
+                        {p.price != null ? formatCurrency(p.price) : 'On request'}
                       </p>
-                      <Plus className="w-4 h-4 text-ink-soft group-hover:text-silver transition-colors" />
+                      {!disabled && <Plus className="w-4 h-4 text-ink-soft group-hover:text-silver transition-colors" />}
                     </div>
+                    {stock != null && stock > 0 && (
+                      <p className="text-[10px] text-ink-soft mt-1">{stock} in stock</p>
+                    )}
                   </div>
                 </button>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
 
         {/* Panier — 2/5 */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl border border-ink/10 shadow-sm sticky top-20">
+          <div className="bg-white rounded-2xl border border-ink/8 shadow-sm sticky top-20">
             <div className="px-5 py-4 border-b border-ink/5 flex items-center gap-2">
               <ShoppingCart className="w-4 h-4 text-silver" />
-              <h2 className="text-sm font-bold uppercase tracking-widest text-ink-soft">Panier ({cart.length})</h2>
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-ink-soft">Cart ({cart.length})</h2>
             </div>
 
             {cart.length === 0 ? (
-              <div className="px-5 py-10 text-center">
-                <p className="text-sm text-ink-soft">Ajoutez des produits au panier</p>
+              <div className="px-5 py-12 text-center flex flex-col items-center">
+                <div className="w-12 h-12 rounded-2xl bg-cream-deep flex items-center justify-center mb-3">
+                  <ShoppingCart className="w-6 h-6 text-silver" />
+                </div>
+                <p className="text-sm font-semibold text-ink">Cart is empty</p>
+                <p className="text-xs text-ink-soft mt-0.5">Tap a product to add it.</p>
               </div>
             ) : (
               <div className="divide-y divide-ink/5 max-h-[30vh] overflow-y-auto">
@@ -347,7 +461,11 @@ export default function CashierPOS() {
                           <Minus className="w-3 h-3" />
                         </button>
                         <span className="text-sm font-bold text-ink w-6 text-center">{item.quantity}</span>
-                        <button onClick={() => updateQty(item.id, 1)} className="w-7 h-7 rounded-lg border border-ink/15 flex items-center justify-center hover:bg-cream-deep transition-colors">
+                        <button
+                          onClick={() => updateQty(item.id, 1)}
+                          disabled={remainingStock(item.id) <= 0}
+                          className="w-7 h-7 rounded-lg border border-ink/15 flex items-center justify-center hover:bg-cream-deep transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
@@ -361,7 +479,7 @@ export default function CashierPOS() {
             {/* Client + Fidélité */}
             {cart.length > 0 && (
               <div className="px-5 py-4 border-t border-ink/5 space-y-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-ink-soft">Client & fidélité</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-ink-soft">Customer & Loyalty</p>
 
                 {/* Phone — triggers loyalty lookup */}
                 <div className="relative">
@@ -369,7 +487,7 @@ export default function CashierPOS() {
                   <input
                     value={customerPhone}
                     onChange={handlePhoneChange}
-                    placeholder="Numéro de téléphone du client"
+                    placeholder="Customer phone number"
                     className="w-full border border-ink/10 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
                   />
                   {loyaltySearching && (
@@ -385,39 +503,32 @@ export default function CashierPOS() {
                         <Gift className="w-4 h-4 text-silver" />
                         <span className="text-xs font-bold text-ink">{loyaltyMember.full_name}</span>
                       </div>
-                      {isRewardReady(loyaltyMember.visits_count) && (
-                        <span className="text-[10px] font-bold text-silver-deep bg-silver/10 px-2 py-0.5 rounded-full">
-                          🎁 Récompense !
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        {Array.from({ length: 8 }, (_, i) => (
-                          <div
-                            key={i}
-                            className={`w-5 h-5 rounded-full border-2 ${
-                              i < currentCycle(loyaltyMember.visits_count)
-                                ? 'bg-silver border-silver'
-                                : 'bg-white border-ink/15'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs text-ink-soft font-medium">
-                        {currentCycle(loyaltyMember.visits_count)}/8
+                      <span className="text-xs font-bold text-ink bg-silver/10 px-2 py-0.5 rounded-full">
+                        {loyaltyMember.points ?? 0} pts
                       </span>
                     </div>
-                    <p className="text-[10px] text-ink-soft mt-1.5">
-                      +1 tampon sera ajouté automatiquement à l'encaissement
-                    </p>
+                    {loyaltyConfig && total > 0 && (
+                      <p className="text-[10px] text-ink-soft">
+                        +{calculatePoints(total, loyaltyConfig)} points will be added at checkout
+                      </p>
+                    )}
+                    {loyaltyConfig && getBestReward(loyaltyMember.points ?? 0, loyaltyConfig.reward_tiers) && (
+                      <p className="text-[10px] text-silver-deep font-medium mt-1">
+                        🎁 Has a reward available!
+                      </p>
+                    )}
                   </div>
+                )}
+
+                {/* Phone error */}
+                {phoneError && (
+                  <p className="text-xs text-red-500 px-1">Invalid Oman number — 8 digits starting with 7 or 9.</p>
                 )}
 
                 {/* Not found */}
                 {loyaltyNotFound && customerPhone.replace(/[^0-9]/g, '').length >= 4 && (
                   <p className="text-xs text-ink-soft/70 px-1">
-                    Pas de compte fidélité avec ce numéro
+                    No loyalty account with this number
                   </p>
                 )}
 
@@ -427,7 +538,7 @@ export default function CashierPOS() {
                   <input
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="Nom du client (optionnel)"
+                    placeholder="Customer name (optional)"
                     className="w-full border border-ink/10 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40"
                   />
                 </div>
@@ -437,9 +548,18 @@ export default function CashierPOS() {
             {/* Total + bouton */}
             <div className="px-5 py-4 border-t border-ink/10">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-bold text-ink-soft uppercase tracking-wider">Total</span>
-                <span className="text-xl font-bold text-ink">{formatCurrency(total)}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-ink-soft">Total</span>
+                <span className="text-2xl font-serif text-ink">{formatCurrency(total)}</span>
               </div>
+              {stockError && (
+                <div className="mb-2 flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                  <PackageX className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-600 font-medium">{stockError}</p>
+                </div>
+              )}
+              {orderError && (
+                <p className="text-xs text-red-500 mb-2">Error saving. Please try again.</p>
+              )}
               <button
                 onClick={submitOrder}
                 disabled={cart.length === 0 || submitting}
@@ -450,7 +570,7 @@ export default function CashierPOS() {
                 ) : (
                   <CheckCircle className="w-4 h-4" />
                 )}
-                {submitting ? 'Enregistrement...' : 'Encaisser la vente'}
+                {submitting ? 'Saving...' : 'Complete Sale'}
               </button>
             </div>
           </div>

@@ -4,7 +4,7 @@ export function StarRating({ rating, max = 5, showValue = false, className = '' 
   if (rating == null) return null;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
-  const emptyStars = max - Math.ceil(rating);
+  const emptyStars = Math.max(0, max - Math.ceil(rating));
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>

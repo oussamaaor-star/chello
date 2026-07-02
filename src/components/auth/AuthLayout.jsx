@@ -125,15 +125,15 @@ function OrbitItem({ name, size, radius, duration, startAngle, cw, showPath }) {
               width: '100%', height: '100%',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #f5f0e8, #ece5d8)',
-              border: '1px solid rgba(158,158,158,0.35)',
+              background: 'linear-gradient(135deg, #faf8f4, #f1ece2)',
+              border: '1px solid rgba(110,110,110,0.28)',
               boxShadow: '0 4px 16px rgba(0,0,0,0.06), 0 0 12px rgba(158,158,158,0.08)',
             }}>
               <span style={{
                 fontSize: size >= 52 ? '11px' : '10px',
                 fontWeight: 700,
-                color: '#8f6c3e',
-                letterSpacing: '0.08em',
+                color: '#4a443c',
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 textAlign: 'center',
                 lineHeight: 1.25,
@@ -151,20 +151,22 @@ function OrbitItem({ name, size, radius, duration, startAngle, cw, showPath }) {
 
 // ─── Marques en orbite ────────────────────────────────────────────────────────
 
+// Motifs Chello : nos propres univers produits + ancrage Mascate, pas de
+// noms de concurrents (off-brand). Les couleurs restent dans le système ink/silver.
 const BRANDS = [
   // Orbite 1 — r=95, 14s, horaire
-  { name: 'CHELLO', size: 54, radius: 95,  duration: 14, startAngle: 0,   cw: true,  showPath: true  },
-  { name: 'ZARA',   size: 48, radius: 95,  duration: 14, startAngle: 180, cw: true,  showPath: false },
+  { name: 'Abayas',        size: 54, radius: 95,  duration: 14, startAngle: 0,   cw: true,  showPath: true  },
+  { name: 'Ready-to-wear', size: 48, radius: 95,  duration: 14, startAngle: 180, cw: true,  showPath: false },
   // Orbite 2 — r=160, 22s, anti-horaire
-  { name: 'MANGO',  size: 60, radius: 160, duration: 22, startAngle: 90,  cw: false, showPath: true  },
-  { name: 'H&M',    size: 52, radius: 160, duration: 22, startAngle: 270, cw: false, showPath: false },
+  { name: 'Bags',          size: 60, radius: 160, duration: 22, startAngle: 90,  cw: false, showPath: true  },
+  { name: 'Shoes',         size: 52, radius: 160, duration: 22, startAngle: 270, cw: false, showPath: false },
   // Orbite 3 — r=230, 30s, horaire
-  { name: 'SHEIN',  size: 56, radius: 230, duration: 30, startAngle: 45,  cw: true,  showPath: true  },
-  { name: 'ZARA',   size: 50, radius: 230, duration: 30, startAngle: 165, cw: true,  showPath: false },
-  { name: 'MANGO',  size: 50, radius: 230, duration: 30, startAngle: 285, cw: true,  showPath: false },
+  { name: 'Perfumes',      size: 56, radius: 230, duration: 30, startAngle: 45,  cw: true,  showPath: true  },
+  { name: 'Jewelry',       size: 50, radius: 230, duration: 30, startAngle: 165, cw: true,  showPath: false },
+  { name: 'Muscat · Oman', size: 50, radius: 230, duration: 30, startAngle: 285, cw: true,  showPath: false },
   // Orbite 4 — r=300, 42s, anti-horaire
-  { name: 'CHELLO', size: 56, radius: 300, duration: 42, startAngle: 315, cw: false, showPath: true  },
-  { name: 'H&M',    size: 50, radius: 300, duration: 42, startAngle: 135, cw: false, showPath: false },
+  { name: 'Abayas',        size: 56, radius: 300, duration: 42, startAngle: 315, cw: false, showPath: true  },
+  { name: 'Bags',          size: 50, radius: 300, duration: 42, startAngle: 135, cw: false, showPath: false },
 ];
 
 // ─── Ripple ──────────────────────────────────────────────────────────────────
@@ -196,7 +198,13 @@ function Ripple() {
 // ─── Panneau animé ────────────────────────────────────────────────────────────
 
 function AnimatedPanel({ side = 'left' }) {
+  const { lang } = useLanguage();
+  const isAr = lang === 'ar';
   const logoCorner = { position: 'absolute', top: 28, [side]: 28, zIndex: 20 };
+
+  const reassurance = isAr
+    ? ['الدفع عند الاستلام', 'تصاميم أصلية', 'برنامج ولاء بمكافآت']
+    : ['Cash on delivery', 'Original designs', 'Rewarding loyalty program'];
 
   return (
     <div
@@ -210,7 +218,7 @@ function AnimatedPanel({ side = 'left' }) {
       {/* Logo dans le coin extérieur du panneau */}
       <div style={logoCorner}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 16, color: '#b8915a' }}>
+          <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 16, color: '#18140f' }}>
             Chello
           </span>
         </Link>
@@ -226,20 +234,20 @@ function AnimatedPanel({ side = 'left' }) {
           <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '3.2rem', fontWeight: 700, lineHeight: 1.1, background: 'linear-gradient(to bottom, rgba(24,20,15,0.6), rgba(24,20,15,0.15))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', margin: 0 }}>
             Chello
           </p>
-          <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(143,108,62,0.6)', marginTop: 10 }}>
+          <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(110,110,110,0.7)', marginTop: 10 }}>
             Women's Fashion
           </p>
         </div>
       </div>
 
       {/* Bullets de réassurance */}
-      <div style={{ position: 'absolute', bottom: 52, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20, pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', bottom: 52, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20, pointerEvents: 'none' }} dir={isAr ? 'rtl' : 'ltr'}>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: 12, listStyle: 'none', margin: 0, padding: 0 }}>
-          {['الدفع عند الاستلام', 'تصاميم أصلية', 'برنامج ولاء بمكافآت'].map((label) => (
+          {reassurance.map((label) => (
             <li key={label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, borderRadius: '50%', flexShrink: 0, border: '1px solid rgba(158,158,158,0.4)', background: 'rgba(158,158,158,0.08)' }}>
                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden>
-                  <path d="M2 6l3 3 5-5" stroke="#b8915a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M2 6l3 3 5-5" stroke="#18140f" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
               <span style={{ fontSize: 12.5, letterSpacing: '0.04em', color: 'rgba(24,20,15,0.55)' }}>{label}</span>

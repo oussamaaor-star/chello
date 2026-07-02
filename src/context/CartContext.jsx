@@ -5,7 +5,7 @@ export const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   // Utilise notre hook personnalisé pour la persistance dans localStorage
-  const [items, setItems] = useLocalStorage('pm-cart-items', []);
+  const [items, setItems] = useLocalStorage('chello-cart-items', []);
 
   const addToCart = (product, selectedSize = null, qty = 1, selectedColor = null) => {
     setItems((prevItems) => {
@@ -63,18 +63,18 @@ export function CartProvider({ children }) {
     return items.reduce((total, item) => total + (item.product.price || 0) * item.quantity, 0);
   }, [items]);
 
+  const value = useMemo(() => ({
+    items,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    totalItems,
+    totalPrice,
+  }), [items, totalItems, totalPrice]);
+
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        totalItems,
-        totalPrice,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

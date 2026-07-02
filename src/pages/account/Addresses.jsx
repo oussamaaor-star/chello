@@ -9,7 +9,7 @@ const ALL_CITIES = ['مسقط', 'السيب', 'صلالة', 'صحار', 'نزو�
 
 // ─── CityPicker ───────────────────────────────────────────────────
 function CityPicker({ value, onChange, error }) {
-  const { t }                         = useLanguage();
+  const { t, lang }                   = useLanguage();
   const [open, setOpen]               = useState(false);
   const [input, setInput]             = useState(value ?? '');
   const [highlighted, setHighlighted] = useState(-1);
@@ -50,20 +50,20 @@ function CityPicker({ value, onChange, error }) {
     <div ref={ref}>
       <label className="block text-sm font-medium text-ink mb-1.5">{t('addressVille')}</label>
       <div className="relative">
-        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft pointer-events-none" />
+        <MapPin className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft pointer-events-none" />
         <input
           type="text"
           value={input}
           onChange={(e) => { setInput(e.target.value); setOpen(true); setHighlighted(-1); onChange(e.target.value); }}
           onFocus={() => { setOpen(true); setHighlighted(-1); }}
           onKeyDown={handleKeyDown}
-          placeholder="مسقط"
+          placeholder={lang === 'ar' ? 'مسقط' : 'Muscat'}
           autoComplete="off"
-          className={`w-full pl-10 pr-9 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${
+          className={`w-full ps-10 pe-9 py-3 rounded-xl border text-sm text-ink placeholder-ink-soft/50 focus:outline-none focus:ring-2 transition-all ${
             error ? 'border-red-500 bg-red-50 focus:ring-red-500/30' : 'border-ink/10 bg-cream focus:ring-silver/30 hover:border-ink/20'
           }`}
         />
-        <ChevronDown className={`absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft pointer-events-none transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`absolute end-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft pointer-events-none transition-transform ${open ? 'rotate-180' : ''}`} />
         {open && filtered.length > 0 && (
           <ul ref={listRef} className="absolute z-50 mt-1 w-full bg-cream border border-ink/10 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
             {filtered.map((city, idx) => (
@@ -141,7 +141,7 @@ function FormField({ label, error, ...props }) {
 }
 
 function AddressModal({ initial, onSave, onClose }) {
-  const { t }                 = useLanguage();
+  const { t, lang }           = useLanguage();
   const [form,    setForm]    = useState(initial ?? EMPTY_FORM);
   const [errors,  setErrors]  = useState({});
   const [saving,  setSaving]  = useState(false);
@@ -228,11 +228,11 @@ function AddressModal({ initial, onSave, onClose }) {
           <FormField label={t('addressLibelle')} name="label" placeholder={t('addressLibellePh')} value={form.label} onChange={set('label')} />
 
           <div className="grid grid-cols-2 gap-3">
-            <FormField label={t('addressPrenom')} name="firstName" placeholder="محمد" value={form.firstName} onChange={set('firstName')} error={errors.firstName} autoComplete="given-name" />
-            <FormField label={t('addressNom')} name="lastName" placeholder="البلوشي" value={form.lastName} onChange={set('lastName')} error={errors.lastName} autoComplete="family-name" />
+            <FormField label={t('addressPrenom')} name="firstName" placeholder={lang === 'ar' ? 'محمد' : 'Mohammed'} value={form.firstName} onChange={set('firstName')} error={errors.firstName} autoComplete="given-name" />
+            <FormField label={t('addressNom')} name="lastName" placeholder={lang === 'ar' ? 'البلوشي' : 'Al Balushi'} value={form.lastName} onChange={set('lastName')} error={errors.lastName} autoComplete="family-name" />
           </div>
 
-          <FormField label={t('addressAdresse')} name="address" placeholder="شارع السلطان قابوس" value={form.address} onChange={set('address')} error={errors.address} autoComplete="street-address" />
+          <FormField label={t('addressAdresse')} name="address" placeholder={lang === 'ar' ? 'شارع السلطان قابوس' : 'Sultan Qaboos Street'} value={form.address} onChange={set('address')} error={errors.address} autoComplete="street-address" />
 
           <div className="grid grid-cols-2 gap-3">
             <CityPicker value={form.city} onChange={handleCityChange} error={errors.city} />
@@ -315,11 +315,6 @@ export default function Addresses() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing]     = useState(null);
 
-  useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    loadAddresses();
-  }, [user?.id]);
-
   const loadAddresses = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -330,6 +325,11 @@ export default function Addresses() {
     if (!error && data) setAddresses(data.map(dbToForm));
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    loadAddresses();
+  }, [user?.id]);
 
   const openAdd    = ()        => { setEditing(null);    setModalOpen(true); };
   const openEdit   = (address) => { setEditing(address); setModalOpen(true); };

@@ -1,26 +1,36 @@
 import { useEffect, useState } from 'react';
-import { Search, Clock, CheckCircle, Truck, XCircle, Loader2, RefreshCw, Gift } from 'lucide-react';
+import { Search, Clock, CheckCircle, Truck, XCircle, Loader2, RefreshCw, Gift, Download } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { addLoyaltyVisitByPhone } from '../../utils/loyalty';
+import { findMemberByPhone, addPointsFromPurchase, getLoyaltyConfig } from '../../utils/loyalty';
+import { formatCurrency, shortRef } from '../../utils/cashierFormat';
+
+// In-store POS sales are already paid AND credited with loyalty points at the
+// till (see CashierPOS.submitOrder). Re-crediting them when they later move to
+// "delivered" would double-count, so we detect and skip them here. Online
+// orders (created from the storefront, not paid at the register) earn their
+// points once, on delivery.
+function wasCreditedAtTill(order) {
+  return order?.payment_method === 'cash' && order?.payment_status === 'paid';
+}
+
+async function downloadInvoice(order) {
+  try {
+    const { generateInvoice } = await import('../../utils/generateInvoice');
+    generateInvoice(order);
+  } catch (err) {
+    console.error('[Invoice]', err.message);
+  }
+}
 
 const STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
 const STATUS_CFG = {
-  pending:    { label: 'En attente',   classes: 'bg-amber-50 text-amber-600',     icon: Clock },
-  confirmed:  { label: 'Confirmée',    classes: 'bg-blue-50 text-blue-700',       icon: CheckCircle },
-  processing: { label: 'En cours',     classes: 'bg-amber-50 text-amber-700',     icon: Clock },
-  shipped:    { label: 'En livraison', classes: 'bg-indigo-50 text-indigo-700',   icon: Truck },
-  delivered:  { label: 'Livrée',       classes: 'bg-emerald-50 text-emerald-700', icon: CheckCircle },
-  cancelled:  { label: 'Annulée',      classes: 'bg-red-50 text-red-500',         icon: XCircle },
+  pending:    { label: 'Pending',    classes: 'bg-amber-50 text-amber-600',     icon: Clock },
+  confirmed:  { label: 'Confirmed',  classes: 'bg-blue-50 text-blue-700',       icon: CheckCircle },
+  processing: { label: 'Processing', classes: 'bg-amber-50 text-amber-700',     icon: Clock },
+  shipped:    { label: 'Shipping',   classes: 'bg-indigo-50 text-indigo-700',   icon: Truck },
+  delivered:  { label: 'Delivered',  classes: 'bg-emerald-50 text-emerald-700', icon: CheckCircle },
+  cancelled:  { label: 'Cancelled',  classes: 'bg-red-50 text-red-500',         icon: XCircle },
 };
-
-function formatCurrency(amount) {
-  if (amount == null) return '—';
-  return new Intl.NumberFormat('ar-OM', { minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(amount) + ' ر.ع.';
-}
-
-function shortRef(id) {
-  return id.replace(/-/g, '').slice(0, 8).toUpperCase();
-}
 
 export default function CashierOrders() {
   const [orders, setOrders] = useState([]);
@@ -39,21 +49,63 @@ export default function CashierOrders() {
     setLoading(false);
   };
 
-  useEffect(() => { loadOrders(); }, []);
+  const [loyaltyConfig, setLoyaltyConfig] = useState(null);
+
+  useEffect(() => {
+    loadOrders();
+    getLoyaltyConfig().then(setLoyaltyConfig);
+    // Rafraîchit la liste automatiquement quand une commande est créée/modifiée
+    // (commande en ligne entrante, vente POS…) — plus besoin du bouton « Refresh ».
+    let channel;
+    try {
+      channel = supabase
+        .channel('cashier-orders-list')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => loadOrders())
+        .subscribe();
+    } catch (err) {
+      if (import.meta.env.DEV) console.warn('[realtime caisse-liste] indisponible:', err);
+    }
+    return () => { if (channel) supabase.removeChannel(channel); };
+  }, []);
 
   const [loyaltyToast, setLoyaltyToast] = useState(null);
 
   const updateStatus = async (id, newStatus) => {
     const order = orders.find((o) => o.id === id);
-    const wasDelivered = order?.status === 'delivered';
+    const oldStatus = order?.status;
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o)));
-    await supabase.from('orders').update({ status: newStatus }).eq('id', id);
+    const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', id);
+    if (error) {
+      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: oldStatus } : o)));
+      return;
+    }
 
-    if (newStatus === 'delivered' && !wasDelivered && order?.phone) {
-      const result = await addLoyaltyVisitByPhone(order.phone);
-      if (result) {
-        setLoyaltyToast(result);
-        setTimeout(() => setLoyaltyToast(null), 5000);
+    // Credit loyalty points ONCE, when an *online* order is delivered.
+    // Garde anti double-crédit : on se base sur le flag PERSISTANT `loyalty_credited`
+    // (pas sur le statut courant — sinon rebasculer "delivered" re-créditerait).
+    // Les ventes POS sont déjà créditées au comptoir (wasCreditedAtTill) → skip.
+    if (
+      newStatus === 'delivered' &&
+      !order?.loyalty_credited &&
+      !wasCreditedAtTill(order) &&
+      order?.phone &&
+      loyaltyConfig
+    ) {
+      const member = await findMemberByPhone(order.phone);
+      if (member) {
+        const { points, newTotal } = await addPointsFromPurchase(member.id, order.total ?? 0, loyaltyConfig, 'online');
+        if (points > 0) {
+          // Marque la commande comme créditée (persistant) → plus aucun re-crédit possible.
+          await supabase.from('orders').update({ loyalty_credited: true }).eq('id', id);
+          setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, loyalty_credited: true } : o)));
+          // Use the authoritative balance returned by the RPC, not a local sum.
+          setLoyaltyToast({
+            name: member.full_name,
+            pointsEarned: points,
+            newBalance: newTotal ?? (member.points ?? 0) + points,
+          });
+          setTimeout(() => setLoyaltyToast(null), 5000);
+        }
       }
     }
   };
@@ -77,23 +129,26 @@ export default function CashierOrders() {
         <div className="fixed top-4 right-4 z-50 bg-white border border-silver/30 shadow-xl rounded-2xl p-4 max-w-xs animate-[slideIn_0.3s_ease-out]">
           <div className="flex items-center gap-2 mb-1">
             <Gift className="w-4 h-4 text-silver" />
-            <p className="text-sm font-bold text-ink">Fidélité +1</p>
+            <p className="text-sm font-bold text-ink">+{loyaltyToast.pointsEarned} points</p>
           </div>
           <p className="text-xs text-ink-soft">
-            {loyaltyToast.name} — {loyaltyToast.stamps}/8 tampons
-            {loyaltyToast.rewardReady && ' 🎁 Récompense !'}
+            {loyaltyToast.name} — {loyaltyToast.newBalance} pts total
           </p>
         </div>
       )}
 
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-serif text-ink">Commandes</h1>
+        <div>
+          <h1 className="text-2xl font-serif text-ink">Orders</h1>
+          <p className="text-sm text-ink-soft mt-0.5">In-store and online orders</p>
+        </div>
         <button
           onClick={loadOrders}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 bg-white border border-ink/10 rounded-xl text-sm font-medium text-ink-soft hover:bg-cream-deep disabled:opacity-50 transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <span className="hidden sm:inline">Refresh</span>
         </button>
       </div>
 
@@ -104,7 +159,7 @@ export default function CashierOrders() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Chercher par ref, nom ou téléphone..."
+            placeholder="Search by ref, name or phone..."
             className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 bg-white"
           />
         </div>
@@ -113,7 +168,7 @@ export default function CashierOrders() {
           onChange={(e) => setFilter(e.target.value)}
           className="border border-ink/15 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-silver/40"
         >
-          <option value="all">Tous les statuts</option>
+          <option value="all">All statuses</option>
           {STATUSES.map((s) => (
             <option key={s} value={s}>{STATUS_CFG[s].label}</option>
           ))}
@@ -125,20 +180,26 @@ export default function CashierOrders() {
           <Loader2 className="w-6 h-6 text-ink-soft animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-ink-soft text-center py-12">Aucune commande trouvée.</p>
+        <div className="bg-white rounded-2xl border border-ink/8 shadow-sm flex flex-col items-center justify-center py-14 text-center px-6">
+          <div className="w-12 h-12 rounded-2xl bg-cream-deep flex items-center justify-center mb-4">
+            <Search className="w-6 h-6 text-silver" />
+          </div>
+          <p className="text-sm font-semibold text-ink">No orders found</p>
+          <p className="text-xs text-ink-soft mt-1">Try a different search or status filter.</p>
+        </div>
       ) : (
         <div className="space-y-4">
           {filtered.map((order) => (
-            <div key={order.id} className="bg-white rounded-2xl border border-ink/10 shadow-sm p-5">
+            <div key={order.id} className="bg-white rounded-2xl border border-ink/8 shadow-sm p-5">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1.5">
                     <p className="font-mono text-xs font-bold text-ink tracking-wider">#{shortRef(order.id)}</p>
                     <StatusBadge status={order.status} />
                   </div>
-                  <p className="font-semibold text-ink">{order.full_name}</p>
+                  <p className="font-serif text-lg text-ink leading-tight">{order.full_name}</p>
                   <p className="text-sm text-ink-soft">{order.phone} — {order.city}</p>
-                  <p className="text-xs text-ink-soft/60 mt-1">{new Date(order.created_at).toLocaleString('fr-FR')}</p>
+                  <p className="text-xs text-ink-soft/60 mt-1">{new Date(order.created_at).toLocaleString('en-US')}</p>
                 </div>
                 <select
                   value={order.status}
@@ -162,9 +223,17 @@ export default function CashierOrders() {
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between font-semibold text-ink mt-2 pt-2 border-t border-ink/5">
-                <span>Total</span>
-                <span>{formatCurrency(order.total)}</span>
+              <div className="flex justify-between items-center mt-2 pt-3 border-t border-ink/5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-ink-soft">Total</span>
+                <span className="text-lg font-serif text-ink">{formatCurrency(order.total)}</span>
+              </div>
+              <div className="mt-3 flex justify-end">
+                <button
+                  onClick={() => downloadInvoice(order)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-ink/15 text-sm font-medium text-ink-soft hover:bg-cream-deep transition-colors"
+                >
+                  <Download className="w-4 h-4" /> Invoice PDF
+                </button>
               </div>
             </div>
           ))}

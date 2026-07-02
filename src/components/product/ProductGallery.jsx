@@ -8,7 +8,7 @@ const PLACEHOLDER = '/products/fallback.svg';
 
 // ─── Lightbox (images only) ───────────────────────────────────────────────────
 
-function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect }) {
+function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect, productName = '' }) {
   const [zoomed, setZoomed]   = useState(false);
   const [origin, setOrigin]   = useState({ x: 50, y: 50 });
   const containerRef          = useRef(null);
@@ -73,7 +73,7 @@ function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect }) {
         className="bg-white w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl relative flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="absolute top-0 right-0 z-20 p-3 sm:p-5">
+        <div className="absolute top-0 end-0 z-20 p-3 sm:p-5">
           <button
             onClick={onClose}
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-cream-deep transition-colors"
@@ -89,7 +89,7 @@ function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect }) {
           onMouseLeave={() => setZoomed(false)}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className={`flex-grow flex items-center justify-center relative p-4 sm:p-12 overflow-hidden select-none ${zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+          className={`flex-grow flex items-center justify-center relative p-2 sm:p-12 overflow-hidden select-none ${zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
         >
           <p className="absolute top-4 left-1/2 -translate-x-1/2 text-ink-soft text-xs select-none z-10 pointer-events-none">
             {zoomed ? t('galleryZoomOut') : t('galleryZoomIn')}
@@ -98,18 +98,18 @@ function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect }) {
           {total > 1 && (
             <button
               onClick={(e) => { e.stopPropagation(); onPrev(); }}
-              className="absolute left-2 sm:left-6 w-10 h-10 sm:w-14 sm:h-14 bg-white border border-ink/15 shadow-lg rounded-full flex items-center justify-center hover:bg-cream-deep hover:scale-105 transition-all z-10"
+              className="absolute start-2 sm:start-6 w-10 h-10 sm:w-14 sm:h-14 bg-white border border-ink/15 shadow-lg rounded-full flex items-center justify-center hover:bg-cream-deep hover:scale-105 transition-all z-10"
             >
-              <ChevronLeft className="w-6 h-6 text-ink" />
+              <ChevronLeft className="w-6 h-6 text-ink rtl:rotate-180" />
             </button>
           )}
 
           <img
             key={activeIndex}
             src={imgs[activeIndex] || PLACEHOLDER}
-            alt=""
+            alt={`${productName}${total > 1 ? ` — ${activeIndex + 1}/${total}` : ''}`}
             draggable={false}
-            className="max-w-full max-h-[50vh] sm:max-h-[65vh] object-contain transition-transform duration-200 ease-out"
+            className="max-w-full max-h-[68vh] sm:max-h-[72vh] object-contain transition-transform duration-200 ease-out"
             style={{
               transform: zoomed ? 'scale(2.5)' : 'scale(1)',
               transformOrigin: `${origin.x}% ${origin.y}%`,
@@ -119,9 +119,9 @@ function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect }) {
           {total > 1 && (
             <button
               onClick={(e) => { e.stopPropagation(); onNext(); }}
-              className="absolute right-2 sm:right-6 w-10 h-10 sm:w-14 sm:h-14 bg-white border border-ink/15 shadow-lg rounded-full flex items-center justify-center hover:bg-cream-deep hover:scale-105 transition-all z-10"
+              className="absolute end-2 sm:end-6 w-10 h-10 sm:w-14 sm:h-14 bg-white border border-ink/15 shadow-lg rounded-full flex items-center justify-center hover:bg-cream-deep hover:scale-105 transition-all z-10"
             >
-              <ChevronRight className="w-6 h-6 text-ink" />
+              <ChevronRight className="w-6 h-6 text-ink rtl:rotate-180" />
             </button>
           )}
         </div>
@@ -140,7 +140,7 @@ function Lightbox({ imgs, activeIndex, onClose, onPrev, onNext, onSelect }) {
               >
                 <img
                   src={imgUrl(img, { w: 120, q: 70 }) || PLACEHOLDER}
-                  alt=""
+                  alt={`${productName} ${i + 1}`}
                   loading="lazy"
                   decoding="async"
                   className="w-full h-full object-cover"
@@ -217,7 +217,7 @@ export function ProductGallery({ images = [], productName = '' }) {
         {/* ── Main area ── */}
         <div
           ref={galleryRef}
-          className="relative w-full aspect-square max-h-[350px] sm:max-h-none sm:aspect-[4/5] bg-white sm:rounded-3xl rounded-2xl overflow-hidden group flex items-center justify-center cursor-zoom-in"
+          className="relative w-full aspect-[4/5] bg-white sm:rounded-3xl rounded-2xl overflow-hidden group flex items-center justify-center cursor-zoom-in"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onClick={() => { if (swipedRef.current) { swipedRef.current = false; return; } setLightbox(true); }}
@@ -229,12 +229,12 @@ export function ProductGallery({ images = [], productName = '' }) {
               <img
                 key={activeIndex}
                 src={imgUrl(imgs[activeIndex], { w: 900, q: 80 }) || PLACEHOLDER}
-                alt={`${productName}${totalItems > 1 ? ` — vue ${activeIndex + 1}` : ''}`}
+                alt={`${productName}${totalItems > 1 ? ` — view ${activeIndex + 1}` : ''}`}
                 loading={activeIndex === 0 ? 'eager' : 'lazy'}
                 fetchPriority={activeIndex === 0 ? 'high' : 'auto'}
                 decoding="async"
                 onError={(e) => { e.target.src = PLACEHOLDER; e.target.onerror = null; }}
-                className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover gallery-enter mix-blend-multiply transition-transform duration-200 ease-out"
+                className="w-full h-full object-cover gallery-enter transition-transform duration-200 ease-out"
                 style={{
                   transform: isHoverZooming ? 'scale(2.5)' : 'scale(1)',
                   transformOrigin: `${hoverPos.x}% ${hoverPos.y}%`,
@@ -258,17 +258,17 @@ export function ProductGallery({ images = [], productName = '' }) {
                     type="button"
                     onClick={(e) => { e.stopPropagation(); prev(); }}
                     aria-label={t('galleryPrev')}
-                    className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/85 backdrop-blur rounded-full items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white active:scale-95 z-10"
+                    className="hidden sm:flex absolute start-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/85 backdrop-blur rounded-full items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white active:scale-95 z-10"
                   >
-                    <ChevronLeft className="w-5 h-5 text-gray-700" />
+                    <ChevronLeft className="w-5 h-5 text-gray-700 rtl:rotate-180" />
                   </button>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); next(); }}
                     aria-label={t('galleryNext')}
-                    className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/85 backdrop-blur rounded-full items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white active:scale-95 z-10"
+                    className="hidden sm:flex absolute end-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/85 backdrop-blur rounded-full items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white active:scale-95 z-10"
                   >
-                    <ChevronRight className="w-5 h-5 text-gray-700" />
+                    <ChevronRight className="w-5 h-5 text-gray-700 rtl:rotate-180" />
                   </button>
                 </>
               )}
@@ -276,7 +276,7 @@ export function ProductGallery({ images = [], productName = '' }) {
               {/* Counter */}
               {totalItems > 1 && (
                 <div className="absolute top-4 left-4 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full z-10">
-                  <span className="text-white text-[10px] sm:text-[11px] font-semibold tabular-nums">
+                  <span dir="ltr" className="text-white text-[10px] sm:text-[11px] font-semibold tabular-nums">
                     {activeIndex + 1} / {totalItems}
                   </span>
                 </div>
@@ -316,7 +316,7 @@ export function ProductGallery({ images = [], productName = '' }) {
               >
                 <img
                   src={img || PLACEHOLDER}
-                  alt={`${productName} vue ${i + 1}`}
+                  alt={`${productName} view ${i + 1}`}
                   loading="lazy"
                   decoding="async"
                   onError={(e) => { e.target.src = PLACEHOLDER; e.target.onerror = null; }}
@@ -338,6 +338,7 @@ export function ProductGallery({ images = [], productName = '' }) {
           onPrev={lbPrev}
           onNext={lbNext}
           onSelect={(i) => setActiveIndex(i)}
+          productName={productName}
         />,
         document.body
       )}

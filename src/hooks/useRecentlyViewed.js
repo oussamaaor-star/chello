@@ -20,7 +20,7 @@ export function useRecentlyViewed() {
       id:           product.id,
       slug:         product.slug,
       name:         product.name,
-      brand:        product.brand,
+      price:        product.price ?? null,
       images:       product.images ?? [],
       originalPrice: product.originalPrice ?? null,
       sizes:        product.sizes ?? [],

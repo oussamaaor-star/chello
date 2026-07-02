@@ -1,4 +1,4 @@
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowRight, Truck, Banknote, ShieldCheck, MessageCircle } from 'lucide-react';
 import { SHOP_CONFIG } from '../../utils/config';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -25,7 +25,26 @@ function InstagramIcon() {
 }
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Le scroll global (Lenis dans App.jsx) force scrollTo(0) à chaque changement
+  // de pathname et n'écoute pas le hash → on gère l'ancre #newsletter à la main.
+  const scrollToNewsletter = (e) => {
+    e.preventDefault();
+    const go = () => {
+      const el = document.getElementById('newsletter');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    if (location.pathname === '/') {
+      go();
+    } else {
+      navigate('/');
+      // Laisse le temps à la Home (et au reset scrollTo(0)) de se monter.
+      setTimeout(go, 400);
+    }
+  };
 
   const serviceLinks = [
     { key: 'footerAPropos',   to: '/a-propos'          },
@@ -38,7 +57,7 @@ export function Footer() {
 
   const categoryLinks = categoriesData.map((cat) => ({
     key: cat.slug,
-    label: cat.label,
+    label: lang === 'ar' ? cat.label : (cat.labelEn ?? cat.label),
     to: `/categorie/${cat.slug}`,
   }));
 
@@ -154,7 +173,7 @@ export function Footer() {
               {t('footerNlDesc')}
               <span className="block mt-1 text-silver-light font-medium">{t('footerNlDiscount')}</span>
             </p>
-            <Link to="/#newsletter"
+            <Link to="/#newsletter" onClick={scrollToNewsletter}
               className="inline-flex items-center gap-2 px-4 py-2.5 border border-cream/30 hover:border-cream text-cream text-xs sm:text-sm font-medium uppercase tracking-wide rounded-full transition-colors">
               {t('footerNlBtn')}
               <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />

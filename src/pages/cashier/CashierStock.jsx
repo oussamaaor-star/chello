@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, PackageX, Package, RefreshCw } from 'lucide-react';
+import { Search, Loader2, PackageX, Package, RefreshCw, Boxes, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 export default function CashierStock() {
@@ -51,29 +51,45 @@ export default function CashierStock() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-serif text-ink">Stock</h1>
+        <div>
+          <h1 className="text-2xl font-serif text-ink">Stock</h1>
+          <p className="text-sm text-ink-soft mt-0.5">Live inventory across the catalogue</p>
+        </div>
         <button
           onClick={loadData}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 bg-white border border-ink/10 rounded-xl text-sm font-medium text-ink-soft hover:bg-cream-deep disabled:opacity-50 transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <span className="hidden sm:inline">Refresh</span>
         </button>
       </div>
 
       {/* Stats rapides */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white rounded-2xl border border-ink/10 shadow-sm p-4 text-center">
-          <p className="text-2xl font-bold text-ink">{products.length}</p>
-          <p className="text-[10px] text-ink-soft font-medium uppercase tracking-wider mt-1">Produits actifs</p>
-        </div>
-        <div className="bg-white rounded-2xl border border-ink/10 shadow-sm p-4 text-center">
-          <p className="text-2xl font-bold text-amber-600">{lowStockCount}</p>
-          <p className="text-[10px] text-ink-soft font-medium uppercase tracking-wider mt-1">Stock faible</p>
-        </div>
-        <div className="bg-white rounded-2xl border border-ink/10 shadow-sm p-4 text-center">
-          <p className="text-2xl font-bold text-red-500">{outOfStockCount}</p>
-          <p className="text-[10px] text-ink-soft font-medium uppercase tracking-wider mt-1">Rupture</p>
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-ink-soft mb-3">Inventory summary</p>
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="bg-white rounded-2xl border border-ink/8 shadow-sm p-5">
+            <div className="w-11 h-11 rounded-xl bg-ink flex items-center justify-center mb-4">
+              <Boxes className="w-5 h-5 text-cream" />
+            </div>
+            <p className="text-2xl font-serif text-ink leading-none">{products.length}</p>
+            <p className="text-[10px] text-ink-soft font-bold uppercase tracking-widest mt-2">Active Products</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-ink/8 shadow-sm p-5">
+            <div className="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center mb-4">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+            </div>
+            <p className="text-2xl font-serif text-amber-600 leading-none">{lowStockCount}</p>
+            <p className="text-[10px] text-ink-soft font-bold uppercase tracking-widest mt-2">Low Stock</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-ink/8 shadow-sm p-5">
+            <div className="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center mb-4">
+              <PackageX className="w-5 h-5 text-red-500" />
+            </div>
+            <p className="text-2xl font-serif text-red-500 leading-none">{outOfStockCount}</p>
+            <p className="text-[10px] text-ink-soft font-bold uppercase tracking-widest mt-2">Out of Stock</p>
+          </div>
         </div>
       </div>
 
@@ -84,7 +100,7 @@ export default function CashierStock() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Chercher un produit..."
+            placeholder="Search for a product..."
             className="w-full border border-ink/15 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 bg-white"
           />
         </div>
@@ -93,10 +109,10 @@ export default function CashierStock() {
           onChange={(e) => setFilter(e.target.value)}
           className="border border-ink/15 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-silver/40"
         >
-          <option value="all">Tous</option>
-          <option value="in_stock">En stock</option>
-          <option value="low_stock">Stock faible (≤5)</option>
-          <option value="out_of_stock">Rupture</option>
+          <option value="all">All</option>
+          <option value="in_stock">In Stock</option>
+          <option value="low_stock">Low Stock (≤5)</option>
+          <option value="out_of_stock">Out of Stock</option>
         </select>
       </div>
 
@@ -106,17 +122,23 @@ export default function CashierStock() {
           <Loader2 className="w-6 h-6 text-ink-soft animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-ink-soft text-center py-8">Aucun produit trouvé.</p>
+        <div className="bg-white rounded-2xl border border-ink/8 shadow-sm flex flex-col items-center justify-center py-14 text-center px-6">
+          <div className="w-12 h-12 rounded-2xl bg-cream-deep flex items-center justify-center mb-4">
+            <Package className="w-6 h-6 text-silver" />
+          </div>
+          <p className="text-sm font-semibold text-ink">No products found</p>
+          <p className="text-xs text-ink-soft mt-1">Try a different search or stock filter.</p>
+        </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-ink/8 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-ink/10 text-left text-ink-soft">
-                  <th className="px-5 py-3 font-medium">Produit</th>
-                  <th className="px-5 py-3 font-medium">Catégorie</th>
-                  <th className="px-5 py-3 font-medium text-center">Stock</th>
-                  <th className="px-5 py-3 font-medium text-center">Statut</th>
+                <tr className="border-b border-ink/10 bg-cream-deep/40 text-left">
+                  <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft">Product</th>
+                  <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft">Category</th>
+                  <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft text-center">Stock</th>
+                  <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft text-center">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-ink/5">
@@ -124,6 +146,7 @@ export default function CashierStock() {
                   const stock = getStock(p.id);
                   const isOut = stock === 0;
                   const isLow = stock != null && stock > 0 && stock <= 5;
+                  const isUntracked = stock == null; // la vue product_stock ne suit pas la quantité
 
                   return (
                     <tr key={p.id} className="hover:bg-cream-deep/60 transition-colors">
@@ -153,15 +176,19 @@ export default function CashierStock() {
                       <td className="px-5 py-3 text-center">
                         {isOut ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-500">
-                            <PackageX className="w-2.5 h-2.5" /> Rupture
+                            <PackageX className="w-2.5 h-2.5" /> Out of Stock
                           </span>
                         ) : isLow ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-600">
-                            <Package className="w-2.5 h-2.5" /> Faible
+                            <Package className="w-2.5 h-2.5" /> Low
+                          </span>
+                        ) : isUntracked ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-ink/5 text-ink-soft">
+                            <Package className="w-2.5 h-2.5" /> Not tracked
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700">
-                            <Package className="w-2.5 h-2.5" /> OK
+                            <Package className="w-2.5 h-2.5" /> In Stock
                           </span>
                         )}
                       </td>

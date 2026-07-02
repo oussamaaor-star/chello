@@ -1,25 +1,17 @@
 import { useCart } from '../../hooks/useCart';
 import { Package, Tag } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { SHOP_CONFIG } from '../../utils/config';
-
-const FREE_SHIPPING_AT = 30;
+import { SHOP_CONFIG, getShippingCost } from '../../utils/config';
 const PLACEHOLDER = '/products/placeholder-dresses.svg';
 
-const SHIPPING_COST_STANDARD = 1.5;
-
-function getShippingCost(subtotal, _shippingMethod = 'standard') {
-  return subtotal >= FREE_SHIPPING_AT ? 0 : SHIPPING_COST_STANDARD;
-}
-
-export function OrderSummary({ shippingMethod = 'standard', promoDiscount = null }) {
+export function OrderSummary({ promoDiscount = null }) {
   const { items, totalPrice } = useCart();
   const { t } = useLanguage();
   const CUR = SHOP_CONFIG.currency;
 
-  const shippingCost   = getShippingCost(totalPrice, shippingMethod);
+  const shippingCost   = getShippingCost(totalPrice);
   const discountAmount = promoDiscount
-    ? parseFloat((totalPrice * promoDiscount.discount_percent / 100).toFixed(2))
+    ? parseFloat((totalPrice * promoDiscount.discount_percent / 100).toFixed(3))
     : 0;
   const total = totalPrice + shippingCost - discountAmount;
 
@@ -69,7 +61,7 @@ export function OrderSummary({ shippingMethod = 'standard', promoDiscount = null
                 )}
               </div>
               <p className="text-sm font-semibold text-ink flex-shrink-0" dir="ltr">
-                {(price * item.quantity).toFixed(2)} {CUR}
+                {(price * item.quantity).toFixed(3)} {CUR}
               </p>
             </div>
           );
@@ -80,12 +72,12 @@ export function OrderSummary({ shippingMethod = 'standard', promoDiscount = null
       <div className="px-5 py-4 border-t border-ink/10 space-y-2.5">
         <div className="flex justify-between text-sm">
           <span className="text-ink-soft">{t('cartSousTotal')}</span>
-          <span className="font-semibold text-ink" dir="ltr">{totalPrice.toFixed(2)} {CUR}</span>
+          <span className="font-semibold text-ink" dir="ltr">{totalPrice.toFixed(3)} {CUR}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-ink-soft">{t('summaryLivraison')}</span>
           <span className={`font-semibold ${shippingCost === 0 ? 'text-emerald-700' : 'text-ink'}`} dir="ltr">
-            {shippingCost === 0 ? t('summaryGratuit') : `${shippingCost} ${CUR}`}
+            {shippingCost === 0 ? t('summaryGratuit') : `${shippingCost.toFixed(3)} ${CUR}`}
           </span>
         </div>
         {promoDiscount && (
@@ -95,16 +87,14 @@ export function OrderSummary({ shippingMethod = 'standard', promoDiscount = null
               Code <span className="font-mono font-semibold">{promoDiscount.code}</span>
               <span className="text-xs">(-{promoDiscount.discount_percent}%)</span>
             </span>
-            <span className="font-semibold">−{discountAmount.toFixed(2)} {CUR}</span>
+            <span className="font-semibold">−{discountAmount.toFixed(3)} {CUR}</span>
           </div>
         )}
         <div className="flex justify-between items-center pt-3 border-t border-ink/10">
           <span className="text-sm font-semibold text-ink">{t('summaryTotal')}</span>
-          <span className="text-xl font-semibold text-ink" dir="ltr">{total.toFixed(2)} {CUR}</span>
+          <span className="text-xl font-semibold text-ink" dir="ltr">{total.toFixed(3)} {CUR}</span>
         </div>
       </div>
     </div>
   );
 }
-
-export { getShippingCost };

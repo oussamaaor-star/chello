@@ -42,20 +42,19 @@ function SentryFallback({ error }) {
       <div className="max-w-md text-center">
         <p className="text-4xl mb-4">😕</p>
         <h1 className="text-xl font-bold text-ink mb-2">
-          Une erreur inattendue s'est produite
+          Something went wrong
         </h1>
         <p className="text-sm text-ink-soft mb-6">
-          Notre équipe a été prévenue. Veuillez rafraîchir la page ou revenir
-          à l'accueil.
+          Our team has been notified. Please refresh the page or go back to the homepage.
         </p>
         <p className="text-xs font-mono text-red-400 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-6 text-left break-all">
-          {error?.message ?? 'Erreur inconnue'}
+          ERR_UNEXPECTED
         </p>
         <button
           onClick={() => window.location.href = '/'}
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-ink text-cream rounded-xl text-sm font-semibold hover:bg-ink/90 transition-colors"
         >
-          Retour à l'accueil
+          Back to homepage
         </button>
       </div>
     </div>
@@ -90,7 +89,7 @@ if (SENTRY_DSN) {
         release: import.meta.env.VITE_APP_VERSION,
         integrations: [
           Sentry.browserTracingIntegration(),
-          Sentry.replayIntegration({ maskAllText: false, blockAllMedia: false }),
+          Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
         ],
         tracesSampleRate: import.meta.env.MODE === 'production' ? 0.2 : 1.0,
         replaysSessionSampleRate: 0.1,

@@ -4,6 +4,7 @@ import { X, ShoppingBag, Gift, Truck } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useCartDrawer } from '../../hooks/useCartDrawer';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { SHOP_CONFIG, FREE_SHIPPING_AT } from '../../utils/config';
 
 const EXCLUDED_PATHS = ['/commande', '/confirmation', '/connexion', '/inscription', '/admin'];
 const SESSION_KEY    = 'exitIntentShown';
@@ -68,7 +69,7 @@ export function ExitIntentPopup() {
   const close      = () => setVisible(false);
   const handleCart = () => { close(); openCart(); };
 
-  const remaining  = Math.max(0, 100 - totalPrice);
+  const remaining  = Math.max(0, FREE_SHIPPING_AT - totalPrice);
   const hasItems   = items.length > 0;
 
   return (
@@ -119,7 +120,7 @@ export function ExitIntentPopup() {
                 <span className="text-silver font-bold">
                   {items.length} {t('cartArticles')}
                 </span>{' '}
-                (<span dir="ltr">{totalPrice} DH</span>)
+                (<span dir="ltr">{totalPrice} {SHOP_CONFIG.currency}</span>)
               </p>
 
               {/* Barre livraison gratuite */}
@@ -136,7 +137,7 @@ export function ExitIntentPopup() {
                   <div className="h-1.5 bg-ink/10 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-silver rounded-full transition-all"
-                      style={{ width: `${Math.min(100, (totalPrice / 100) * 100)}%` }}
+                      style={{ width: `${Math.min(100, (totalPrice / FREE_SHIPPING_AT) * 100)}%` }}
                     />
                   </div>
                 )}
@@ -146,7 +147,7 @@ export function ExitIntentPopup() {
             <div className="flex items-start gap-3 p-3.5 bg-cream-deep rounded-2xl border border-ink/10">
               <Gift className="w-4 h-4 text-silver flex-shrink-0 mt-0.5" />
               <p className="text-xs text-ink-soft leading-relaxed">
-                {t('exitPerks3')} 🇲🇦. {t('exitPerks1')}.
+                {t('exitPerks3')} 🇴🇲. {t('exitPerks1')}.
               </p>
             </div>
           )}
@@ -156,7 +157,7 @@ export function ExitIntentPopup() {
             onClick={handleCart}
             className="w-full py-3.5 bg-ink hover:bg-ink/90 text-cream font-bold rounded-xl text-sm transition-all active:scale-[0.98] shadow-lg shadow-ink/15"
           >
-            {hasItems ? `${t('exitVoirPanier')} · ${totalPrice} DH` : t('exitVoirPanier')}
+            {hasItems ? `${t('exitVoirPanier')} · ${totalPrice} ${SHOP_CONFIG.currency}` : t('exitVoirPanier')}
           </button>
 
           <button

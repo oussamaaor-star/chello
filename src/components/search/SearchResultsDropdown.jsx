@@ -115,7 +115,7 @@ export function SearchResultsDropdown({
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span className="text-sm font-semibold text-silver-deep">
-                        {price != null ? `${Number(price).toFixed(2)} ${SHOP_CONFIG.currency}` : ''}
+                        {price != null ? `${Number(price).toFixed(3)} ${SHOP_CONFIG.currency}` : ''}
                       </span>
                       <ChevronRight className="w-4 h-4 text-ink-soft/40 rtl:rotate-180" />
                     </div>

@@ -8,7 +8,7 @@ export function ProductGrid({ products = [], loading = false, onReset, preferred
   const { t } = useLanguage();
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
         {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}
@@ -39,7 +39,7 @@ export function ProductGrid({ products = [], loading = false, onReset, preferred
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-6 sm:gap-y-12">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
       {products.map((product, index) => (
         <ProductCard key={product.id} product={product} priority={index < 8} preferredFormat={preferredFormat} />
       ))}

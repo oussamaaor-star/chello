@@ -17,6 +17,7 @@ export default function ResetPassword() {
   useSEO({
     title:       buildTitle(t('resetTitle')),
     description: t('resetSubtitle'),
+    robots:      'noindex,nofollow',
   });
 
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ export default function ResetPassword() {
     setIsLoading(false);
 
     if (error) {
-      setGlobalError(error.message ?? t('registerErrGlobal'));
+      setGlobalError(t('registerErrGlobal') || 'An error occurred. Please try again.');
     } else {
       setDone(true);
       setTimeout(() => navigate('/connexion', { replace: true }), 3000);

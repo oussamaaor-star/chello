@@ -1,0 +1,66 @@
+<!-- ════════════════════════════════════════════════════════════════════════
+     SUPABASE · Authentication → Emails → Templates → "Magic Link"
+     Sujet :  رابط الدخول إلى حسابكِ · Your login link — Chello
+     Variable OBLIGATOIRE (ne pas supprimer) :  {{ .ConfirmationURL }}
+     ════════════════════════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>Chello</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f1ec;-webkit-font-smoothing:antialiased;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">رابط الدخول السريع إلى حسابكِ في Chello. Your magic login link.</div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1ec;padding:48px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #e9e2d7;border-radius:20px;overflow:hidden;">
+
+        <!-- Header -->
+        <tr><td style="background:#18140f;padding:38px 40px 30px;text-align:center;">
+          <p style="margin:0 0 10px;font-size:10px;letter-spacing:0.34em;text-transform:uppercase;color:#b9ab95;">Women's Fashion · Oman</p>
+          <h1 style="margin:0;font-size:34px;line-height:1;color:#faf8f4;font-weight:500;font-style:italic;font-family:Georgia,'Times New Roman',serif;">Chello</h1>
+          <div style="width:38px;height:1px;background:#b9ab95;margin:16px auto 0;"></div>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:44px 48px 8px;text-align:center;">
+          <h2 style="margin:0 0 4px;font-size:24px;color:#18140f;font-weight:400;font-family:Georgia,serif;font-style:italic;">رابط الدخول السريع</h2>
+          <p style="margin:0 0 26px;font-size:13px;letter-spacing:0.04em;color:#9b9286;">Your login link</p>
+
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.9;color:#4a443c;">اضغطي على الزر للدخول إلى حسابكِ — بدون كلمة مرور.</p>
+          <p style="margin:0 0 32px;font-size:13px;line-height:1.7;color:#8a857e;" dir="ltr">Tap the button to log in to your account — no password needed.</p>
+
+          <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto;">
+            <tr><td style="border-radius:30px;background:#18140f;">
+              <a href="{{ .ConfirmationURL }}" target="_blank"
+                 style="display:inline-block;padding:16px 46px;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#faf8f4;text-decoration:none;border-radius:30px;">
+                تسجيل الدخول &nbsp;·&nbsp; Log in
+              </a>
+            </td></tr>
+          </table>
+
+          <p style="margin:26px 0 0;font-size:11px;line-height:1.7;color:#b3a99c;" dir="ltr">
+            Button not working? Copy &amp; paste this link:<br>
+            <a href="{{ .ConfirmationURL }}" style="color:#8a7d6a;word-break:break-all;">{{ .ConfirmationURL }}</a>
+          </p>
+        </td></tr>
+
+        <tr><td style="padding:30px 48px 0;"><div style="height:1px;background:#efe9df;"></div></td></tr>
+
+        <!-- Footer -->
+        <tr><td style="background:#faf8f4;border-top:1px solid #efe9df;padding:26px 40px 28px;text-align:center;">
+          <p style="margin:0 0 8px;font-size:11px;color:#9b9286;line-height:1.7;">
+            هذا الرابط صالح لمرة واحدة ولفترة محدودة. إذا لم تطلبيه، تجاهلي هذا البريد.<br>
+            <span dir="ltr">This link is single-use and expires soon. Didn't request it? Ignore this email.</span>
+          </p>
+          <p style="margin:12px 0 0;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#b3a99c;">© 2026 Chello · Al Araimi Boulevard, Seeb, Muscat</p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

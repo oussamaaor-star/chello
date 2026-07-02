@@ -60,8 +60,8 @@ export default function Contact() {
   const { t } = useLanguage();
 
   useSEO({
-    title:       buildTitle('Contact'),
-    description: "Contact Chello customer service — contact form, phone and opening hours.",
+    title:       buildTitle(t('contactTitle') ?? 'Contact'),
+    description: t('contactSeoDesc') ?? 'Contact Chello customer service.',
     canonical:   'https://chello-nine.vercel.app/contact',
   });
 
@@ -124,7 +124,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-1.5 text-xs text-ink-soft uppercase tracking-widest mb-5">
             <Link to="/" className="hover:text-ink transition-colors">{t('breadcrumbAccueil')}</Link>
-            <ChevronRight className="w-3 h-3 opacity-50" />
+            <ChevronRight className="w-3 h-3 opacity-50 rtl:rotate-180" />
             <span className="text-silver">{t('contactTitle')}</span>
           </nav>
           <h1 className="text-3xl sm:text-4xl font-serif italic text-ink mb-3 leading-tight">
@@ -280,7 +280,7 @@ export default function Contact() {
                   <p className="text-sm font-semibold text-ink mt-0.5">+{SHOP_CONFIG.wa_number}</p>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-ink-soft group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-ink-soft group-hover:translate-x-0.5 transition-transform rtl:rotate-180" />
             </a>
 
             {/* Horaires détaillés */}
@@ -317,7 +317,7 @@ export default function Contact() {
                 <p className="text-sm font-semibold text-silver-deep">{t('faqContactBtn')}</p>
                 <p className="text-xs text-silver mt-0.5">{t('faqContact')}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-silver group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-silver group-hover:translate-x-0.5 transition-transform rtl:rotate-180" />
             </Link>
 
           </div>

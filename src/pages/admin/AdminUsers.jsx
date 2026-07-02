@@ -10,12 +10,16 @@ import { useAuth } from '../../hooks/useAuth';
 
 function formatDate(iso) {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('fr-FR', {
+  return new Date(iso).toLocaleDateString('en-US', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 }
 
 const PAGE_SIZE = 20;
+
+// Cycle des rôles : customer → cashier → admin → customer.
+// Libellé du PROCHAIN rôle, affiché sur le bouton et son title.
+const NEXT_ROLE_LABEL = { customer: 'Cashier', cashier: 'Admin', admin: 'User' };
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
@@ -50,7 +54,8 @@ export default function AdminUsers() {
       .range(from, to);
 
     if (q) {
-      builder = builder.or(`full_name.ilike.%${q}%,email.ilike.%${q}%`);
+      const safe = q.replace(/[.,()]/g, '');
+      builder = builder.or(`full_name.ilike.%${safe}%,email.ilike.%${safe}%`);
     }
 
     const { data, error, count } = await builder;
@@ -75,22 +80,35 @@ export default function AdminUsers() {
 
   // ── Toggle role ──────────────────────────────────────────────────────
   const toggleRole = async (u) => {
-    const newRole = u.role === 'admin' ? 'customer' : 'admin';
+    const ROLE_CYCLE = { customer: 'cashier', cashier: 'admin', admin: 'customer' };
+    const newRole = ROLE_CYCLE[u.role] ?? 'customer';
     // Empêche un admin de se retirer lui-même les droits (risque de se verrouiller dehors).
     if (u.id === currentUser?.id && newRole === 'customer') {
-      return showToast('Vous ne pouvez pas retirer vos propres droits admin.', 'error');
+      return showToast('You cannot remove your own admin privileges.', 'error');
     }
+    // Confirmation : changer un rôle (surtout promotion admin / rétrogradation) est sensible.
+    const ROLE_LABELS = { admin: 'Admin', cashier: 'Cashier', customer: 'User' };
+    const who = u.full_name || u.email;
+    if (!window.confirm(`Change ${who}'s role to ${ROLE_LABELS[newRole] ?? newRole}?`)) return;
     setToggling(u.id);
-    const { error } = await supabase
+    // .select() renvoie les lignes effectivement modifiées. Si une policy RLS
+    // bloque l'UPDATE, Supabase renvoie error=null + data=[] (0 ligne) — c'est
+    // un ÉCHEC silencieux, pas un succès. On vérifie donc explicitement data.
+    const { data, error } = await supabase
       .from('profiles')
       .update({ role: newRole })
-      .eq('id', u.id);
+      .eq('id', u.id)
+      .select('id, role');
     setToggling(null);
-    if (error) return showToast('Erreur lors de la mise à jour du rôle.', 'error');
+    if (error) return showToast('Error updating role.', 'error');
+    if (!data || data.length === 0) {
+      return showToast('Update refused — you may not have permission to change this role.', 'error');
+    }
+    const updated = data[0];
     setUsers((prev) =>
-      prev.map((x) => x.id === u.id ? { ...x, role: newRole } : x)
+      prev.map((x) => x.id === u.id ? { ...x, role: updated.role } : x)
     );
-    showToast(`${u.full_name || u.email} → ${newRole === 'admin' ? 'Admin' : 'Utilisateur'}.`);
+    showToast(`${who} → ${ROLE_LABELS[updated.role] ?? updated.role}.`);
   };
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -102,9 +120,9 @@ export default function AdminUsers() {
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif text-ink">Utilisateurs</h1>
+          <h1 className="text-2xl font-serif text-ink">Users</h1>
           <p className="text-sm text-ink-soft mt-0.5">
-            {total} membre{total !== 1 ? 's' : ''} enregistré{total !== 1 ? 's' : ''}
+            {total} registered member{total !== 1 ? 's' : ''}
           </p>
         </div>
         <button
@@ -123,7 +141,7 @@ export default function AdminUsers() {
           type="text"
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
-          placeholder="Rechercher par nom ou email…"
+          placeholder="Search by name or email..."
           className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
         />
       </div>
@@ -138,17 +156,17 @@ export default function AdminUsers() {
           <div className="flex flex-col items-center justify-center py-16 text-center px-6">
             <Users className="w-10 h-10 text-ink-soft/30 mb-3" />
             <p className="text-sm text-ink-soft">
-              {query ? 'Aucun résultat pour cette recherche.' : 'Aucun utilisateur.'}
+              {query ? 'No results for this search.' : 'No users.'}
             </p>
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-ink/10 bg-cream-deep">
-                <th className="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft">Nom</th>
+                <th className="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft">Name</th>
                 <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft hidden sm:table-cell">Email</th>
-                <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft hidden md:table-cell">Inscription</th>
-                <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft">Rôle</th>
+                <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft hidden md:table-cell">Registered</th>
+                <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-ink-soft">Role</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -170,9 +188,13 @@ export default function AdminUsers() {
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-silver/10 text-silver-deep rounded-full text-[10px] font-semibold">
                         <ShieldCheck className="w-3 h-3" />Admin
                       </span>
+                    ) : u.role === 'cashier' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-[10px] font-semibold">
+                        <CheckCircle className="w-3 h-3" />Cashier
+                      </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-cream-deep text-ink-soft rounded-full text-[10px] font-semibold">
-                        <CheckCircle className="w-3 h-3" />Utilisateur
+                        <CheckCircle className="w-3 h-3" />User
                       </span>
                     )}
                   </td>
@@ -181,7 +203,7 @@ export default function AdminUsers() {
                       <button
                         onClick={() => toggleRole(u)}
                         disabled={toggling === u.id}
-                        title={u.role === 'admin' ? 'Rétrograder en utilisateur' : 'Promouvoir en admin'}
+                        title={`Change role (next: ${NEXT_ROLE_LABEL[u.role] ?? 'User'})`}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 ${
                           u.role === 'admin'
                             ? 'text-silver-deep bg-silver/10 hover:bg-silver/20'
@@ -191,9 +213,9 @@ export default function AdminUsers() {
                         {toggling === u.id ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : u.role === 'admin' ? (
-                          <><ShieldOff className="w-3.5 h-3.5" />Rétrograder</>
+                          <><ShieldOff className="w-3.5 h-3.5" />→ {NEXT_ROLE_LABEL.admin}</>
                         ) : (
-                          <><ShieldCheck className="w-3.5 h-3.5" />Promouvoir</>
+                          <><ShieldCheck className="w-3.5 h-3.5" />→ {NEXT_ROLE_LABEL[u.role] ?? 'User'}</>
                         )}
                       </button>
                     </div>
@@ -209,7 +231,7 @@ export default function AdminUsers() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm text-ink-soft">
           <span>
-            Page {page + 1} sur {totalPages} · {total} résultat{total !== 1 ? 's' : ''}
+            Page {page + 1} of {totalPages} · {total} result{total !== 1 ? 's' : ''}
           </span>
           <div className="flex items-center gap-2">
             <button

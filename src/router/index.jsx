@@ -1,8 +1,21 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy as reactLazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { PageLoader } from '../components/ui/PageLoader';
 import { RouteErrorBoundary } from '../components/ui/RouteErrorBoundary';
 import { usePageTracking } from '../hooks/useAnalytics';
+
+// ─── import() dynamique résilient ─────────────────────────────────────────────
+// Réseau mobile instable ou chunk périmé après un redeploy → l'import() peut
+// échouer et déclencher l'écran d'erreur (cas observé au clic sur /admin).
+// On réessaie quelques fois avant d'abandonner ; toutes les routes ci-dessous
+// passent par ce `lazy` durci (rien d'autre à changer).
+function retryImport(factory, retries = 3, delay = 400) {
+  return factory().catch((err) => {
+    if (retries <= 0) throw err;
+    return new Promise((res) => setTimeout(res, delay)).then(() => retryImport(factory, retries - 1, delay));
+  });
+}
+const lazy = (factory) => reactLazy(() => retryImport(factory));
 
 // ─── Lazy loading de toutes les pages ────────────────────────────────────────
 // Chaque import() crée un chunk JS séparé chargé uniquement quand la route est visitée.
@@ -24,7 +37,6 @@ const Profile       = lazy(() => import('../pages/account/Profile'));
 const Orders        = lazy(() => import('../pages/account/Orders'));
 const OrderDetail   = lazy(() => import('../pages/account/OrderDetail'));
 const Addresses     = lazy(() => import('../pages/account/Addresses'));
-const StockAlerts   = lazy(() => import('../pages/account/StockAlerts'));
 
 // Legal pages
 const MentionsLegales          = lazy(() => import('../pages/legal/MentionsLegales'));
@@ -62,7 +74,6 @@ const AdminPromos    = lazy(() => import('../pages/admin/AdminPromos'));
 const AdminUsers     = lazy(() => import('../pages/admin/AdminUsers'));
 const AdminReviews   = lazy(() => import('../pages/admin/AdminReviews'));
 const AdminLoyalty   = lazy(() => import('../pages/admin/AdminLoyalty'));
-const AdminAlerts    = lazy(() => import('../pages/admin/AdminAlerts'));
 
 // Cashier
 const CashierLayout    = lazy(() => import('../pages/cashier/CashierLayout'));
@@ -123,7 +134,6 @@ export function AppRoutes() {
           <Route path="commandes"     element={<Orders />} />
           <Route path="commandes/:id" element={<OrderDetail />} />
           <Route path="adresses"      element={<Addresses />} />
-          <Route path="alertes"       element={<StockAlerts />} />
         </Route>
 
         {/* Admin */}
@@ -135,7 +145,6 @@ export function AppRoutes() {
           <Route path="users"    element={<AdminUsers />} />
           <Route path="reviews"  element={<AdminReviews />} />
           <Route path="loyalty"  element={<AdminLoyalty />} />
-          <Route path="alerts"   element={<AdminAlerts />} />
         </Route>
 
         {/* Cashier */}

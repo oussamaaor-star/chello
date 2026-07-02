@@ -49,7 +49,9 @@ function buildInvoicePDF(order) {
 
     const ref        = shortRef(order.id);
     const snap       = order.shipping_address_snapshot ?? {};
-    const orderItems = order.order_items ?? [];
+    // Les articles sont stockés dans la colonne JSONB `orders.items`
+    // (pas de table `order_items`) : { product_id, name, size, color, quantity, price }
+    const orderItems = Array.isArray(order.items) ? order.items : [];
 
     // ── HEADER ────────────────────────────────────────────────────────────────
 
@@ -179,15 +181,20 @@ function buildInvoicePDF(order) {
       const bgColor = idx % 2 === 0 ? '#fafaf9' : C.white;
       doc.rect(margin, y, contentW, rowH).fill(bgColor);
 
+      // Champs JSONB : name, size, color, quantity, price
+      const qty       = Number(item.quantity) || 1;
+      const unitPrice = Number(item.price) || 0;
+      const lineTotal = unitPrice * qty;
+
       // Product name
       doc
         .font('Helvetica-Bold')
         .fontSize(9)
         .fillColor(C.black)
-        .text(item.product_name ?? '', colProduct, y + 5, { width: contentW * 0.50, ellipsis: true });
+        .text(item.name ?? '', colProduct, y + 5, { width: contentW * 0.50, ellipsis: true });
 
-      if (item.brand || item.selected_size) {
-        const sub = [item.brand, item.selected_size].filter(Boolean).join(' — ');
+      if (item.size || item.color) {
+        const sub = [item.size, item.color].filter(Boolean).join(' — ');
         doc
           .font('Helvetica')
           .fontSize(8)
@@ -199,9 +206,9 @@ function buildInvoicePDF(order) {
         .font('Helvetica')
         .fontSize(9)
         .fillColor(C.black)
-        .text(String(item.quantity),                   colQty,   y + 10)
-        .text(formatOMR(item.unit_price),              colUnit,  y + 10)
-        .text(formatOMR(item.line_total),              colTotal, y + 10);
+        .text(String(qty),               colQty,   y + 10)
+        .text(formatOMR(unitPrice),      colUnit,  y + 10)
+        .text(formatOMR(lineTotal),      colTotal, y + 10);
 
       y += rowH;
     });
@@ -366,9 +373,10 @@ export default async function handler(req, res) {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
+  // Les articles vivent dans la colonne JSONB `orders.items` (pas de table `order_items`).
   const { data: order, error: orderError } = await supabase
     .from('orders')
-    .select('*, order_items(*)')
+    .select('*')
     .eq('id', orderId)
     .eq('user_id', user.id)   // Security: only the owner can generate the invoice
     .maybeSingle();

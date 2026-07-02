@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { translations } from '../i18n/translations';
 
 const LanguageContext = createContext(null);
@@ -12,14 +12,6 @@ export function LanguageProvider({ children }) {
     document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
     document.body.style.fontFamily = isAr ? "'Cairo', Georgia, serif" : '';
-    // La police Cairo ne sert qu'à l'arabe → on ne la charge qu'à ce moment-là.
-    if (isAr && !document.getElementById('cairo-font')) {
-      const link = document.createElement('link');
-      link.id   = 'cairo-font';
-      link.rel  = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap';
-      document.head.appendChild(link);
-    }
   }, [lang]);
 
   // Langue officielle : arabe. L'anglais est une option ; toute clé pas encore
@@ -34,8 +26,10 @@ export function LanguageProvider({ children }) {
 
   const toggleLang = () => setLang((l) => (l === 'ar' ? 'en' : 'ar'));
 
+  const value = useMemo(() => ({ lang, t, toggleLang }), [lang]);
+
   return (
-    <LanguageContext.Provider value={{ lang, t, toggleLang }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

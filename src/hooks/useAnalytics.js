@@ -11,7 +11,7 @@
  * Le script Plausible est injecté une seule fois, de manière asynchrone.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // ─── Injection du script ──────────────────────────────────────────────────────
@@ -75,46 +75,45 @@ export function useAnalytics() {
   return {
     /**
      * Page produit vue.
-     * @param {{ name: string, brand: string, categorySlug?: string }} product
+     * @param {{ name: string, category?: string }} product
      */
     trackProductView(product) {
       fire('Product View', {
         product:  product.name,
-        brand:    product.brand,
-        category: product.categorySlug ?? '',
+        category: product.category ?? '',
       });
     },
 
     /**
      * Produit ajouté au panier.
-     * @param {{ name: string, brand: string }} product
+     * @param {{ name: string }} product
      * @param {number} quantity
      */
     trackAddToCart(product, quantity = 1) {
       fire('Add to Cart', {
         product:  product.name,
-        brand:    product.brand,
         quantity: String(quantity),
       });
     },
 
     /**
-     * Checkout lancé (clic sur "Confirmer et payer").
-     * @param {number} total en euros
+     * Checkout lancé (clic sur "Confirmer la commande").
+     * @param {number} total en OMR (rial omanais, 3 décimales)
      */
     trackCheckoutStarted(total) {
-      fire('Checkout Started', { revenue: total.toFixed(2) });
+      fire('Checkout Started', { revenue: Number(total).toFixed(3), currency: 'OMR' });
     },
 
     /**
-     * Achat confirmé (paiement Stripe reçu).
+     * Commande confirmée (paiement à la livraison — COD).
      * @param {string} orderId
-     * @param {number} total en euros
+     * @param {number} total en OMR (rial omanais, 3 décimales)
      */
     trackPurchase(orderId, total) {
       fire('Purchase', {
         order_id: orderId,
-        revenue:  Number(total).toFixed(2),
+        revenue:  Number(total).toFixed(3),
+        currency: 'OMR',
       });
     },
   };

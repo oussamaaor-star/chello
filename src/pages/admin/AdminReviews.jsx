@@ -9,7 +9,7 @@ import { supabase } from '../../lib/supabase';
 
 function formatDate(iso) {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('fr-FR', {
+  return new Date(iso).toLocaleDateString('en-US', {
     day: '2-digit', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   });
@@ -21,7 +21,7 @@ function Stars({ rating }) {
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
-          className={`w-3 h-3 ${n <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`}
+          className={`w-3 h-3 ${n <= rating ? 'fill-amber-400 text-amber-400' : 'text-ink/15'}`}
         />
       ))}
     </div>
@@ -58,7 +58,7 @@ export default function AdminReviews() {
 
     let builder = supabase
       .from('reviews')
-      .select('id, rating, comment, display_name, created_at, approved, product_id, products(name, brand)', { count: 'exact' })
+      .select('id, rating, comment, display_name, created_at, approved, product_id, products(name)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(from, to);
 
@@ -71,7 +71,7 @@ export default function AdminReviews() {
     const { data, error, count } = await builder;
 
     if (error) {
-      showToast('Erreur de chargement des avis.', 'error');
+      showToast('Error loading reviews.', 'error');
     } else {
       setReviews(data ?? []);
       setTotal(count ?? 0);
@@ -95,41 +95,43 @@ export default function AdminReviews() {
     setPage(0);
   };
 
+  // .select() : un UPDATE/DELETE bloqué par RLS renvoie error=null + 0 ligne.
+  // On traite donc « 0 ligne affectée » comme un échec (pas de faux succès).
   const approve = async (id) => {
     setActing(id);
-    const { error } = await supabase.from('reviews').update({ approved: true }).eq('id', id);
+    const { data, error } = await supabase.from('reviews').update({ approved: true }).eq('id', id).select('id');
     setActing(null);
-    if (error) return showToast('Erreur lors de l\'approbation.', 'error');
-    showToast('Avis approuvé et publié.');
+    if (error || !data || data.length === 0) return showToast('Error approving — no change saved.', 'error');
+    showToast('Review approved and published.');
     load(page, query, filter);
   };
 
   const reject = async (id) => {
     setActing(id);
-    const { error } = await supabase.from('reviews').update({ approved: false }).eq('id', id);
+    const { data, error } = await supabase.from('reviews').update({ approved: false }).eq('id', id).select('id');
     setActing(null);
-    if (error) return showToast('Erreur lors du rejet.', 'error');
-    showToast('Avis rejeté.');
+    if (error || !data || data.length === 0) return showToast('Error rejecting — no change saved.', 'error');
+    showToast('Review rejected.');
     load(page, query, filter);
   };
 
   const remove = async (id) => {
-    if (!window.confirm('Supprimer définitivement cet avis ?')) return;
+    if (!window.confirm('Permanently delete this review? This action cannot be undone.')) return;
     setActing(id);
-    const { error } = await supabase.from('reviews').delete().eq('id', id);
+    const { data, error } = await supabase.from('reviews').delete().eq('id', id).select('id');
     setActing(null);
-    if (error) return showToast('Erreur lors de la suppression.', 'error');
-    showToast('Avis supprimé.');
+    if (error || !data || data.length === 0) return showToast('Error deleting — the review was not removed.', 'error');
+    showToast('Review deleted.');
     load(page, query, filter);
   };
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   const FILTERS = [
-    { key: 'pending',  label: 'En attente' },
-    { key: 'approved', label: 'Approuvés'  },
-    { key: 'rejected', label: 'Rejetés'    },
-    { key: 'all',      label: 'Tous'       },
+    { key: 'pending',  label: 'Pending'  },
+    { key: 'approved', label: 'Approved' },
+    { key: 'rejected', label: 'Rejected' },
+    { key: 'all',      label: 'All'      },
   ];
 
   return (
@@ -138,9 +140,9 @@ export default function AdminReviews() {
       {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-serif text-ink">Avis clients</h1>
+          <h1 className="text-2xl font-serif text-ink">Customer Reviews</h1>
           <p className="text-sm text-ink-soft mt-0.5">
-            {total} avis · Modérez avant publication
+            {total} reviews · Moderate before publishing
           </p>
         </div>
         <button
@@ -175,7 +177,7 @@ export default function AdminReviews() {
             type="text"
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Rechercher dans les commentaires…"
+            placeholder="Search in comments..."
             className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-ink/10 text-sm focus:outline-none focus:ring-2 focus:ring-silver/40 transition-all"
           />
         </div>
@@ -191,7 +193,7 @@ export default function AdminReviews() {
           <div className="flex flex-col items-center justify-center py-16 text-center px-6">
             <Star className="w-10 h-10 text-ink-soft/30 mb-3" />
             <p className="text-sm text-ink-soft">
-              {query ? 'Aucun avis pour cette recherche.' : 'Aucun avis dans cette catégorie.'}
+              {query ? 'No reviews for this search.' : 'No reviews in this category.'}
             </p>
           </div>
         ) : (
@@ -199,10 +201,10 @@ export default function AdminReviews() {
             {reviews.map((r) => {
               const isActing = acting === r.id;
               const statusBadge = r.approved === true
-                ? <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-semibold"><CheckCircle className="w-3 h-3" />Approuvé</span>
+                ? <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-semibold"><CheckCircle className="w-3 h-3" />Approved</span>
                 : r.approved === false
-                ? <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-50 text-red-600 rounded-full text-[10px] font-semibold"><XCircle className="w-3 h-3" />Rejeté</span>
-                : <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full text-[10px] font-semibold"><Loader2 className="w-3 h-3" />En attente</span>;
+                ? <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-50 text-red-600 rounded-full text-[10px] font-semibold"><XCircle className="w-3 h-3" />Rejected</span>
+                : <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full text-[10px] font-semibold"><Loader2 className="w-3 h-3" />Pending</span>;
 
               return (
                 <div key={r.id} className="p-5 hover:bg-cream-deep/50 transition-colors">
@@ -216,14 +218,14 @@ export default function AdminReviews() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <span className="font-semibold text-ink text-sm">
-                          {r.display_name ?? 'Anonyme'}
+                          {r.display_name ?? 'Anonymous'}
                         </span>
                         <Stars rating={r.rating} />
                         {statusBadge}
                       </div>
                       {r.products && (
                         <p className="text-xs text-ink-soft mb-1.5">
-                          {r.products.brand} — {r.products.name}
+                          {r.products.name}
                         </p>
                       )}
                       <p className="text-sm text-ink leading-relaxed line-clamp-3">
@@ -238,7 +240,7 @@ export default function AdminReviews() {
                         <button
                           onClick={() => approve(r.id)}
                           disabled={isActing}
-                          title="Approuver"
+                          title="Approve"
                           className="w-8 h-8 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 disabled:opacity-50 transition-colors"
                         >
                           {isActing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eye className="w-3.5 h-3.5" />}
@@ -248,7 +250,7 @@ export default function AdminReviews() {
                         <button
                           onClick={() => reject(r.id)}
                           disabled={isActing}
-                          title="Rejeter"
+                          title="Reject"
                           className="w-8 h-8 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 disabled:opacity-50 transition-colors"
                         >
                           {isActing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -257,7 +259,7 @@ export default function AdminReviews() {
                       <button
                         onClick={() => remove(r.id)}
                         disabled={isActing}
-                        title="Supprimer définitivement"
+                        title="Permanently delete"
                         className="w-8 h-8 flex items-center justify-center rounded-xl bg-cream-deep text-ink-soft hover:bg-red-50 hover:text-red-500 disabled:opacity-50 transition-colors"
                       >
                         {isActing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
@@ -274,7 +276,7 @@ export default function AdminReviews() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm text-ink-soft">
-          <span>Page {page + 1} sur {totalPages} · {total} avis</span>
+          <span>Page {page + 1} of {totalPages} · {total} reviews</span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}

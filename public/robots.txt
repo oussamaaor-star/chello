@@ -18,6 +18,7 @@ Allow: /livraison-retours
 
 # Pages privées / transactionnelles — bloquées
 Disallow: /admin
+Disallow: /caisse
 Disallow: /checkout
 Disallow: /confirmation-commande
 Disallow: /compte

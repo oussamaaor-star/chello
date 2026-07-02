@@ -72,7 +72,7 @@ export default function Wishlist() {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-ink-soft mb-5 uppercase tracking-wider">
             <Link to="/" className="hover:text-ink transition-colors">{t('breadcrumbAccueil')}</Link>
-            <ChevronRight className="w-3 h-3 opacity-60" />
+            <ChevronRight className="w-3 h-3 opacity-60 rtl:rotate-180" />
             <span className="text-silver">{t('wishlistTitle')}</span>
           </nav>
 
@@ -147,7 +147,7 @@ export default function Wishlist() {
                 className="flex items-center gap-1 text-sm text-ink-soft hover:text-ink transition-colors"
               >
                 {t('navCatalogue')}
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 rtl:rotate-180" />
               </Link>
             </div>
 

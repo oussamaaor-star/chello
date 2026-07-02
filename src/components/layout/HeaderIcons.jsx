@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { User, Heart, ShoppingBag, LayoutDashboard } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useWishlist } from '../../hooks/useWishlist';
@@ -6,12 +7,12 @@ import { useAuth } from '../../hooks/useAuth';
 import { useCartDrawer } from '../../hooks/useCartDrawer';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-function IconButton({ children, badge, label, ...props }) {
+function IconButton({ children, badge, label, bump, ...props }) {
   return (
     <div className="relative group">
       <button
-        className="relative w-10 h-10 flex items-center justify-center rounded-full
-                   text-ink transition-colors duration-200 hover:bg-ink/5"
+        className={`relative w-10 h-10 flex items-center justify-center rounded-full
+                   text-ink transition-colors duration-200 hover:bg-ink/5 ${bump ? 'animate-cart-bump' : ''}`}
         aria-label={label}
         {...props}
       >
@@ -46,6 +47,19 @@ export function HeaderIcons() {
   const { open: openCart } = useCartDrawer();
   const { t } = useLanguage();
 
+  // Rebond du panier à chaque ajout (détecte l'augmentation de totalItems).
+  const [bump, setBump] = useState(false);
+  const prevCount = useRef(totalItems);
+  useEffect(() => {
+    if (totalItems > prevCount.current) {
+      setBump(true);
+      const id = setTimeout(() => setBump(false), 480);
+      prevCount.current = totalItems;
+      return () => clearTimeout(id);
+    }
+    prevCount.current = totalItems;
+  }, [totalItems]);
+
   const accountPath = isAuthenticated ? '/compte/profil' : '/connexion';
 
   return (
@@ -70,7 +84,7 @@ export function HeaderIcons() {
         </IconButton>
       </NavLink>
 
-      <IconButton label={t('headerPanier')} badge={totalItems} onClick={openCart}>
+      <IconButton label={t('headerPanier')} badge={totalItems} bump={bump} onClick={openCart}>
         <ShoppingBag className="w-5 h-5" />
       </IconButton>
     </div>
