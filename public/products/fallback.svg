@@ -1,30 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
-  <rect width="400" height="500" fill="#f7f6f4"/>
+  <rect width="400" height="500" fill="#faf8f4"/>
 
-  <!-- Bottle silhouette -->
-  <g transform="translate(200, 210)">
-    <!-- Cap -->
-    <rect x="-18" y="-95" width="36" height="14" rx="4" fill="#d6d3d1" fill-opacity="0.5"/>
-    <!-- Neck -->
-    <rect x="-10" y="-81" width="20" height="22" rx="2" fill="#d6d3d1" fill-opacity="0.35"/>
-    <!-- Body -->
-    <rect x="-34" y="-59" width="68" height="90" rx="14" fill="#d6d3d1" fill-opacity="0.3"/>
-    <rect x="-34" y="-59" width="68" height="90" rx="14" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-opacity="0.25"/>
-    <!-- Label line -->
-    <rect x="-22" y="-30" width="44" height="28" rx="6" fill="#ffffff" fill-opacity="0.35"/>
+  <!-- Minimal garment hanger (fashion placeholder) -->
+  <g transform="translate(200, 215)" fill="none" stroke="#a8a29e" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- hook -->
+    <path d="M0 -60 q0 -16 -14 -16 q-12 0 -12 11"/>
+    <!-- hanger bar -->
+    <path d="M0 -60 L-74 -6 q-6 5 2 5 L72 -1 q8 0 2 -5 Z"/>
   </g>
 
   <!-- Divider -->
-  <line x1="140" y1="350" x2="260" y2="350" stroke="#d6d3d1" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="150" y1="330" x2="250" y2="330" stroke="#d6d3d1" stroke-width="1" stroke-opacity="0.7"/>
 
-  <!-- Brand -->
-  <text x="200" y="378"
+  <!-- Brand wordmark -->
+  <text x="200" y="362"
     font-family="Georgia, 'Times New Roman', serif"
-    font-size="12"
+    font-size="15"
     fill="#78716c"
-    fill-opacity="0.6"
+    fill-opacity="0.65"
     text-anchor="middle"
-    letter-spacing="3">
-    MARWAN
+    letter-spacing="6">
+    CHELLO
   </text>
 </svg>
