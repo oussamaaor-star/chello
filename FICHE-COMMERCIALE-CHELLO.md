@@ -1,9 +1,7 @@
-# CHELLO — Fiche Commerciale du Site Web
+# CHELLO — Proposition Commerciale : Site Web E-Commerce
 
 **Boutique :** Chello — Women's Fashion
 **Adresse :** Al Araimi Boulevard, 1er étage, Seeb, Muscat, Oman
-**URL :** chello-nine.vercel.app
-**Technologie :** React 19, Supabase (base de données), Vercel (hébergement)
 
 ---
 
@@ -17,7 +15,7 @@
 - Section "Lookbook" avec mise en scène parallaxe
 - Bannière programme de fidélité
 - Section localisation avec lien direct Google Maps
-- Section Instagram avec lien vers @chello.om
+- Section Instagram
 
 ### Catalogue produits
 - Affichage grille responsive (2 colonnes mobile, 4 colonnes desktop)
@@ -40,7 +38,7 @@
 ### Panier & Commande
 - Panier latéral (drawer) avec aperçu rapide
 - Modification des quantités et suppression
-- Sous-total avec livraison gratuite à partir de 30 OMR
+- Sous-total avec livraison gratuite configurable
 - Formulaire de livraison complet (nom, téléphone, ville, adresse)
 - Paiement à la livraison (Cash on Delivery)
 - Page de confirmation de commande avec récapitulatif
@@ -82,7 +80,7 @@
 - Anti-fraude : pas de QR code libre-service, seul le caissier ou le système peut tamponner
 
 ### Inscription fidélité
-- Page publique d'inscription (/fidelite)
+- Page publique d'inscription
 - Champs : nom complet, numéro WhatsApp
 - Code unique généré automatiquement
 - Carte de fidélité digitale avec les 8 tampons visuels
@@ -90,7 +88,7 @@
 ### Tamponnage automatique
 - **En boutique** : le caissier recherche le client par téléphone dans le POS, le tampon est ajouté automatiquement après la vente
 - **En ligne** : quand une commande passe au statut "Livrée", le tampon est ajouté automatiquement si le numéro de téléphone correspond à un membre fidélité
-- Notification toast en temps réel quand un tampon est ajouté
+- Notification en temps réel quand un tampon est ajouté
 
 ### Retrouver sa carte
 - Page dédiée pour retrouver sa carte par numéro WhatsApp
@@ -100,7 +98,7 @@
 
 ## 4. DASHBOARD PROPRIETAIRE (Admin)
 
-**Accès :** /admin (rôle "admin" requis)
+**Accès sécurisé par rôle "admin"**
 
 ### Tableau de bord
 - Chiffre d'affaires total
@@ -118,7 +116,7 @@
 ### Gestion des produits
 - Ajout / modification / suppression de produits
 - Upload d'images
-- Gestion des tailles et du stock
+- Gestion des tailles, couleurs et du stock
 - Catégorisation (robes, abayas, sacs, chaussures, parfums)
 - Marquage "featured" pour les mettre en avant
 
@@ -151,7 +149,7 @@
 
 ## 5. DASHBOARD CAISSIER
 
-**Accès :** /caisse (rôle "cashier" requis)
+**Accès sécurisé par rôle "cashier"**
 
 ### Tableau de bord caisse
 - Ventes du jour (nombre + total en OMR)
@@ -199,25 +197,25 @@
 
 ### Google Analytics (GA4)
 - **Tableau de bord Google Analytics** intégré : nombre de visiteurs, pages les plus vues, provenance du trafic, comportement des clientes
-- Tracking automatique de chaque page visitée (compatible navigation SPA)
-- **Gratuit** — nécessite un compte Google Analytics (analytics.google.com)
+- Tracking automatique de chaque page visitée
+- **Gratuit** — nécessite uniquement un compte Google Analytics
 - Le propriétaire peut consulter les statistiques à tout moment depuis son téléphone ou PC
 
 ### Performance & SEO
-- 46 pages pré-rendues pour le référencement Google
+- Pages pré-rendues pour le référencement Google
 - Chargement paresseux des images et des pages (lazy loading)
 - Score Lighthouse optimisé
 - Méta-données SEO sur chaque page
 
 ### Sécurité
-- Authentification sécurisée via Supabase Auth
+- Authentification sécurisée
 - Contrôle d'accès par rôle (admin, cashier, client)
 - Les dashboards admin et caissier sont protégés
 - Redirection automatique après connexion selon le rôle
 
 ### Intégrations
 - **WhatsApp** : bouton flottant + liens directs pour commander
-- **Instagram** : lien vers @chello.om
+- **Instagram** : lien vers le compte de la boutique
 - **Google Maps** : lien vers la localisation du magasin
 
 ---
@@ -239,29 +237,25 @@
 
 ## 8. THEME & IDENTITE VISUELLE
 
-- **Couleur dominante :** Crème / Beige (#faf8f4)
-- **Couleur secondaire :** Noir profond (#18140f)
-- **Couleur accent :** Silver / Argenté (#9e9e9e)
-- **Typographie titre :** Playfair Display + Amiri (serif)
-- **Typographie corps :** Montserrat + Cairo (sans-serif)
-- **Style :** Éditorial luxe, minimaliste, aéré
+- **Couleur dominante :** Crème / Beige
+- **Couleur secondaire :** Noir profond
+- **Couleur accent :** Silver / Argenté
+- **Typographie :** Polices serif élégantes + polices arabes professionnelles
+- **Style :** Éditorial luxe, minimaliste, aéré — inspiré des grandes maisons de mode
 
 ---
 
-## 9. PAIEMENT EN LIGNE (Option à activer)
+## 9. PAIEMENT EN LIGNE (Option)
 
-### Statut actuel
-Le site fonctionne actuellement en **paiement à la livraison (Cash on Delivery)** uniquement.
-Le paiement par carte bancaire est **prêt à être intégré** dès que le propriétaire ouvre un compte marchand.
+### Modes de paiement
+- **Paiement à la livraison** (Cash on Delivery) — inclus par défaut
+- **Paiement par carte bancaire** (Visa / Mastercard) — activable
+- **Apple Pay** — activable
+- **OmanNet** (cartes de débit locales omanaises) — activable
 
-### Ce que ça permettra
-- Paiement par **carte bancaire** (Visa / Mastercard)
-- Paiement via **Apple Pay**
-- Paiement via **OmanNet** (cartes de débit locales omanaises)
-- La commande est marquée **"Payée"** automatiquement dans le dashboard
-- Moins de commandes annulées qu'avec le Cash on Delivery
+### Pour activer le paiement par carte
 
-### Plateformes recommandées
+Le propriétaire doit ouvrir un compte marchand chez un prestataire de paiement agréé en Oman :
 
 | Plateforme | Frais par vente | OmanNet | Licence CBO |
 |------------|----------------|---------|-------------|
@@ -273,20 +267,20 @@ Le paiement par carte bancaire est **prêt à être intégré** dès que le prop
 > L'inscription est **gratuite**, il n'y a **aucun abonnement mensuel**.
 > La TVA Oman (5%) s'applique sur les frais du gateway.
 
-### Documents nécessaires pour ouvrir le compte
+### Documents nécessaires
 1. **Registre commercial** (CR / السجل التجاري) de la boutique
 2. **Pièce d'identité** du propriétaire (carte résidente ou passeport)
 3. **Compte bancaire commercial** de la boutique (IBAN)
 4. **Logo** de la boutique + nom commercial
 
 ### Procédure
-1. Créer un compte marchand sur la plateforme choisie (thawani.om ou paymob.com)
+1. Créer un compte marchand sur la plateforme choisie
 2. Soumettre les documents ci-dessus
 3. Validation : **3 à 7 jours ouvrables**
-4. Le propriétaire reçoit **2 clés API** (codes d'accès)
+4. Le propriétaire reçoit les **clés d'accès**
 5. Le développeur intègre les clés → **le paiement en ligne est activé sur le site**
 
-### Coût total pour le propriétaire
+### Coût du paiement en ligne
 - Ouverture du compte : **Gratuit**
 - Abonnement mensuel : **Aucun**
 - Seul coût : la **commission par transaction** (~2.5 à 3%)
@@ -296,86 +290,137 @@ Le paiement par carte bancaire est **prêt à être intégré** dès que le prop
 
 ## 10. COUTS POUR LE PROPRIETAIRE
 
-### Résumé des coûts
+### Résumé des coûts récurrents
 
 | Poste | Coût | Fréquence | Obligatoire ? |
 |-------|------|-----------|---------------|
 | **Nom de domaine** (.com) | ~10-15 $/an (~4-6 OMR/an) | Annuel | Recommandé |
-| **Nom de domaine** (.om) | ~130-260 $/an (~50-100 OMR/an) | Annuel | Optionnel |
-| **Hébergement** (Vercel) | 0 $ (plan gratuit) | — | Inclus |
-| **Base de données** (Supabase) | 0 $ (plan gratuit) | — | Inclus |
+| **Hébergement** | 0 $ (plan gratuit inclus) | — | Inclus |
+| **Base de données** | 0 $ (plan gratuit inclus) | — | Inclus |
 | **Commission paiement en ligne** | ~2.5-3% par vente carte | Par transaction | Si activé |
 
 ### Détail par poste
 
 #### Nom de domaine (adresse du site)
-Le site fonctionne actuellement sur **chello-nine.vercel.app** (gratuit).
-Pour une adresse professionnelle, le propriétaire peut acheter :
-- **chello.com** ou **chello-store.com** → ~10-15 $/an (~4-6 OMR/an) — le plus abordable
-- **chello.om** (domaine omanais) → ~130-260 $/an (~50-100 OMR/an) — plus cher mais local
-- Achat sur des sites comme Namecheap, GoDaddy ou Gandi
+- Un domaine **.com** est recommandé (ex: chello-store.com)
+- Coût : **~10-15 $/an (~4-6 OMR/an)**
 - La connexion du domaine au site est **gratuite** et se fait en quelques minutes
 
-#### Hébergement du site (Vercel)
-- **Plan actuel : Gratuit (Hobby)**
+#### Hébergement du site
+- **Plan gratuit** inclus
 - Inclut : déploiements illimités, 100 GB de bande passante/mois, CDN mondial
 - **Suffisant pour une boutique** comme Chello tant que le trafic reste modéré
 - Si le site grandit beaucoup : Plan Pro à **20 $/mois** (~8 OMR/mois) avec 1 TB de bande passante
-- **Pour le moment : 0 $/mois**
 
-#### Base de données (Supabase)
-- **Plan actuel : Gratuit**
+#### Base de données
+- **Plan gratuit** inclus
 - Inclut : 500 MB de stockage, 50 000 utilisateurs actifs/mois, API illimitées
 - **Largement suffisant pour démarrer**
 - Si la boutique grandit : Plan Pro à **25 $/mois** (~10 OMR/mois) avec 8 GB de stockage
-- **Pour le moment : 0 $/mois**
 
 #### Commission paiement en ligne
 - Voir section 9 ci-dessus
 - **Uniquement si le propriétaire active le paiement par carte**
 - Pas de frais si on reste en Cash on Delivery (paiement à la livraison)
 
-### Ce que le propriétaire paie aujourd'hui
+### Coût total récurrent estimé
 
 | Poste | Coût |
 |-------|------|
-| Hébergement | **0 OMR** |
-| Base de données | **0 OMR** |
-| Domaine | **0 OMR** (utilise l'adresse gratuite Vercel) |
-| **TOTAL mensuel** | **0 OMR/mois** |
-
-### Ce que le propriétaire pourrait payer (recommandé)
-
-| Poste | Coût |
-|-------|------|
-| Domaine .com (ex: chello-store.com) | **~5 OMR/an** |
-| Hébergement (Vercel gratuit) | **0 OMR/mois** |
-| Base de données (Supabase gratuit) | **0 OMR/mois** |
+| Domaine .com | **~5 OMR/an** |
+| Hébergement | **0 OMR/mois** |
+| Base de données | **0 OMR/mois** |
 | Commission paiement carte (~2.5%) | **~0.25 OMR pour 10 OMR de vente** |
-| **TOTAL fixe** | **~5 OMR/an + commissions** |
+| **TOTAL fixe** | **~5 OMR/an + commissions si paiement carte activé** |
 
-> **En résumé : le site ne coûte quasiment rien à maintenir.** Le seul investissement recommandé est un nom de domaine professionnel (~5 OMR/an). L'hébergement et la base de données sont gratuits pour le niveau d'usage actuel. Le paiement en ligne ne coûte que si on l'active, et c'est une commission par vente (pas un abonnement).
+> **En résumé : le site ne coûte quasiment rien à maintenir.** Le seul coût récurrent est un nom de domaine professionnel (~5 OMR/an). L'hébergement et la base de données sont gratuits. Le paiement en ligne ne coûte que si on l'active, et c'est une commission par vente (pas un abonnement).
 
 ---
 
-## 11. HEBERGEMENT & DEPLOIEMENT
+## 11. COMPARATIF : COMBIEN COUTERAIT TOUT CELA SUR SHOPIFY ?
 
-- **Hébergeur :** Vercel (infrastructure mondiale, CDN rapide)
-- **Base de données :** Supabase (PostgreSQL managé, temps réel)
-- **Domaine actuel :** chello-nine.vercel.app
-- **Domaine personnalisé :** Prêt à être connecté (ex: chello.com ou chello.om)
+Le tableau ci-dessous montre combien coûterait chaque fonctionnalité de ce site si elle était mise en place via **Shopify + applications tierces** (prix officiels 2026).
+
+### Abonnements mensuels obligatoires
+
+| Fonctionnalité | Équivalent Shopify | Coût/mois |
+|---|---|---|
+| Boutique e-commerce (catalogue, panier, checkout) | Shopify Basic Plan | **39 $/mois** |
+| Point de vente caissier (POS) | Shopify POS Pro | **89 $/mois/local** |
+| Programme de fidélité (tampons, récompenses) | Smile.io (Growth) | **99 - 199 $/mois** |
+| Avis clients sur les produits | Judge.me (Awesome) ou Loox | **15 - 50 $/mois** |
+| Bilingue arabe/anglais (traduction) | Langify ou Weglot | **15 - 32 $/mois** |
+| Blog intégré | Inclus dans Shopify | Inclus |
+| **TOTAL abonnements** | | **~257 - 409 $/mois** |
+
+### Frais de transaction Shopify
+
+| Type | Coût |
+|---|---|
+| Commission par vente (carte) | **2.9% + 0.30 $ par transaction** |
+| Si passerelle externe (non-Shopify Payments) | **+ 2% de frais supplémentaires** |
+
+### Coûts annuels sur Shopify
+
+| Poste | Coût/an |
+|---|---|
+| Abonnement Shopify Basic | **468 $/an** |
+| POS Pro (1 boutique) | **1,068 $/an** |
+| App fidélité (Smile.io Growth) | **1,188 - 2,388 $/an** |
+| App avis (Judge.me/Loox) | **180 - 600 $/an** |
+| App traduction bilingue | **180 - 384 $/an** |
+| Domaine | **~15 $/an** |
+| **TOTAL 1ère année** | **~3,099 - 4,923 $/an** |
+| **TOTAL sur 3 ans** | **~9,297 - 14,769 $** |
+
+### Ce que Shopify ne fournit PAS (même avec les abonnements)
+
+- Dashboard admin personnalisé avec statistiques sur mesure
+- Système de tampons fidélité intégré au POS (auto-stamp à la vente)
+- Tamponnage automatique quand une commande est livrée
+- Guide des tailles interactif intégré
+- Variantes couleur avec pastilles visuelles
+- Design éditorial luxe 100% personnalisé (thème sur mesure)
+- Interface caissier simplifiée dédiée
+- Aucun frais de transaction supplémentaire
+- Hébergement et base de données gratuits
+
+### Résumé
+
+| | Shopify + Apps | Ce site |
+|---|---|---|
+| Coût la 1ère année | **~3,099 - 4,923 $** | **Paiement unique** |
+| Coût sur 3 ans | **~9,297 - 14,769 $** | **0 $ supplémentaire** |
+| Abonnement mensuel | **257 - 409 $/mois** | **0 $/mois** |
+| Frais de transaction | 2.9% + 0.30$ + 2% si gateway externe | ~2.5% (gateway uniquement) |
+| POS en boutique | 89 $/mois en plus | **Inclus** |
+| Fidélité + tampons auto | 99-199 $/mois en plus | **Inclus** |
+| Design sur mesure | Thème premium ~180-350$ | **Inclus** |
+| Propriété du code | Non (location) | **Oui, le code vous appartient** |
+
+> **Avec Shopify, vous louez un service. Avec ce site, vous possédez votre plateforme.**
+> En 1 an sur Shopify, vous dépensez entre 3,000 et 5,000 $. En 3 ans, entre 9,000 et 15,000 $.
+> Ce site offre **toutes ces fonctionnalités et plus encore**, sans abonnement mensuel, et le code source vous appartient.
+
+---
+
+## 12. HEBERGEMENT & DEPLOIEMENT
+
+- **Hébergeur :** Infrastructure mondiale avec CDN rapide
+- **Base de données :** Base de données managée avec temps réel
+- **Domaine personnalisé :** Prêt à être connecté (ex: chello-store.com)
 - **Mises à jour :** Déploiement instantané à chaque modification
 
 ---
 
-## 12. RECAPITULATIF DES ACCES
+## 13. RECAPITULATIF DES ACCES
 
-| Rôle | URL | Fonctions |
-|------|-----|-----------|
-| Client | chello-nine.vercel.app | Acheter, suivre commandes, fidélité |
-| Caissier | /caisse | Ventes POS, commandes, fidélité, stock (lecture) |
-| Propriétaire | /admin | Tout gérer : produits, commandes, promos, users, avis, fidélité, alertes |
+| Rôle | Espace | Fonctions |
+|------|--------|-----------|
+| Cliente | Site public | Acheter, suivre commandes, fidélité, favoris |
+| Caissier | Dashboard caisse | Ventes POS, commandes, fidélité, stock (lecture) |
+| Propriétaire | Dashboard admin | Tout gérer : produits, commandes, promos, users, avis, fidélité, alertes |
 
 ---
 
-*Document généré le 25 juin 2026 — Chello Women's Fashion, Al Araimi Boulevard, Muscat, Oman*
+*Chello Women's Fashion — Al Araimi Boulevard, Muscat, Oman*
