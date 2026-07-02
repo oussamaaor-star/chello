@@ -84,7 +84,8 @@ export function HeaderIcons() {
         </IconButton>
       </NavLink>
 
-      <IconButton label={t('headerPanier')} badge={totalItems} bump={bump} onClick={openCart}>
+      {/* id : cible du vol d'image « flyToCart » (utils/microAnimations) */}
+      <IconButton label={t('headerPanier')} badge={totalItems} bump={bump} onClick={openCart} id="header-cart-icon">
         <ShoppingBag className="w-5 h-5" />
       </IconButton>
     </div>

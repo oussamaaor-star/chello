@@ -15,3 +15,31 @@ export function useScroll(threshold = 10) {
 
   return scrolled;
 }
+
+// Header condensé : true quand on DESCEND au-delà du seuil (le header se
+// replie), false dès qu'on remonte ou qu'on revient près du haut (il se
+// redéploie). Throttlé sur requestAnimationFrame (compatible Lenis, qui
+// anime le scroll natif de la fenêtre).
+export function useScrollCondensed(threshold = 140) {
+  const [condensed, setCondensed] = useState(false);
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > threshold && y > lastY + 2) setCondensed(true);
+        else if (y < lastY - 2 || y <= threshold) setCondensed(false);
+        lastY = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [threshold]);
+
+  return condensed;
+}

@@ -217,8 +217,10 @@ export function ProductGallery({ images = [], productName = '' }) {
         {/* ── Main area ── */}
         <div
           ref={galleryRef}
+          id="product-hero-zone"
           className="relative w-full aspect-[4/5] bg-white sm:rounded-3xl rounded-2xl overflow-hidden group flex items-center justify-center cursor-zoom-in"
-          /* Cible de la transition partagée depuis ProductCard (image qui voyage) */
+          /* Cible de la transition partagée depuis ProductCard (image qui voyage)
+             + point de départ du vol vers le panier (flyToCart) */
           style={{ viewTransitionName: 'product-hero' }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}

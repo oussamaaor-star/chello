@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSEO } from '../hooks/useSEO';
 import { supabase } from '../lib/supabase';
 import { Barcode } from '../components/loyalty/Barcode';
+import { CountUp } from '../components/ui/CountUp';
 import { getLoyaltyConfig, getAvailableRewards, getPointsHistory } from '../utils/loyalty';
 
 function formatOMR(v) {
@@ -80,7 +81,8 @@ export default function LoyaltyCard() {
         {/* Points balance */}
         <div className="bg-cream border border-silver/40 rounded-2xl p-6 text-center mb-6">
           <Star size={24} className="text-silver-deep mx-auto mb-2" />
-          <p className="text-4xl font-bold text-ink">{points}</p>
+          {/* Compteur animé : les points « montent » au chargement de la carte */}
+          <p className="text-4xl font-bold text-ink"><CountUp value={points} /></p>
           <p className="text-sm text-ink-soft mt-1">{t('loyaltyPointsLabel')}</p>
         </div>
 

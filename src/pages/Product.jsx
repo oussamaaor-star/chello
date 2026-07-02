@@ -18,6 +18,8 @@ import { ProductGallery } from '../components/product/ProductGallery';
 import { SizeGuideModal } from '../components/product/SizeGuideModal';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { fadeUp, stagger, EASE } from '../lib/motion';
+import { imgUrl } from '../utils/img';
+import { flyToCart } from '../utils/microAnimations';
 import categoriesData from '../data/categories.json';
 
 function waOrderLink(productName, lang) {
@@ -147,7 +149,15 @@ export default function Product() {
     }
     setSizeError(false);
     addToCart(product, selectedSize, 1, selectedColor);
-    open();
+    // L'image vole de la galerie vers l'icône panier, PUIS le drawer s'ouvre
+    // (sinon il recouvrirait le vol). Sans animation (reduced motion,
+    // navigateur ancien) : ouverture immédiate comme avant.
+    const flew = flyToCart(
+      document.getElementById('product-hero-zone'),
+      imgUrl(product.images?.[0], { w: 120, q: 70 }),
+    );
+    if (flew) setTimeout(open, 550);
+    else open();
   };
 
   const categoryData = categoriesData.find((c) => c.slug === product.category);
@@ -158,11 +168,11 @@ export default function Product() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         {/* Breadcrumb */}
         <nav className="text-xs text-ink-soft mb-6 flex items-center gap-1.5 flex-wrap" aria-label="Breadcrumb">
-          <Link to="/" className="hover:text-ink transition-colors">{lang === 'ar' ? 'الرئيسية' : 'Home'}</Link>
+          <Link to="/" viewTransition className="hover:text-ink transition-colors">{lang === 'ar' ? 'الرئيسية' : 'Home'}</Link>
           <span className="text-ink-soft/50">&gt;</span>
           {categoryData ? (
             <>
-              <Link to={`/categorie/${product.category}`} className="hover:text-ink transition-colors">
+              <Link to={`/categorie/${product.category}`} viewTransition className="hover:text-ink transition-colors">
                 {lang === 'ar' ? categoryData.label : categoryData.labelEn}
               </Link>
               <span className="text-ink-soft/50">&gt;</span>
@@ -360,7 +370,7 @@ export default function Product() {
                 </p>
                 <h2 className="font-serif italic text-2xl sm:text-3xl text-ink">{lang === 'ar' ? 'منتجات مشابهة' : 'You May Also Like'}</h2>
               </div>
-              <Link to="/catalogue" className="hidden sm:inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-wider text-ink-soft hover:text-ink transition-colors group">
+              <Link to="/catalogue" viewTransition className="hidden sm:inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-wider text-ink-soft hover:text-ink transition-colors group">
                 {lang === 'ar' ? 'عرض الكل' : 'View all'}
                 <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
               </Link>

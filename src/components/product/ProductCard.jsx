@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, X, Check, Star } from 'lucide-react';
@@ -9,6 +9,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { StarRating } from '../ui/StarRating';
 import { imgUrl } from '../../utils/img';
 import { SHOP_CONFIG } from '../../utils/config';
+import { flyToCart, heartBurst } from '../../utils/microAnimations';
 
 const CUR = SHOP_CONFIG.currency;
 
@@ -69,7 +70,26 @@ export function ProductCard({ product, priority = false }) {
   const imgZoneRef = useRef(null);
   const markForTransition = () => {
     if (imgZoneRef.current) imgZoneRef.current.style.viewTransitionName = 'product-hero';
+    // Mémorise le produit visité : au retour (breadcrumb, « continuer mes
+    // achats »…), SA carte reprendra le nom pour le voyage inverse.
+    try { sessionStorage.setItem('vt-product-return', product.slug); } catch { /* mode privé strict */ }
   };
+
+  // Voyage retour fiche → grille : la carte du produit qu'on vient de quitter
+  // porte le nom au montage, le temps que la transition se joue, puis le REND
+  // via setState (un style DOM direct serait reposé par React au re-render
+  // suivant ; le nom doit rester unique pour les navigations d'après).
+  const [isReturnTarget, setIsReturnTarget] = useState(() => {
+    try { return sessionStorage.getItem('vt-product-return') === product.slug; } catch { return false; }
+  });
+  useEffect(() => {
+    if (!isReturnTarget) return undefined;
+    const timer = setTimeout(() => {
+      try { sessionStorage.removeItem('vt-product-return'); } catch { /* noop */ }
+      setIsReturnTarget(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [isReturnTarget]);
 
   const handleAddToCart = (e, size) => {
     e.preventDefault();
@@ -77,11 +97,13 @@ export function ProductCard({ product, priority = false }) {
     const s = size ?? activeSize;
     addToCart(product, s);
     trackAddToCart(product, 1);
+    flyToCart(imgZoneRef.current, imgUrl(product.images?.[0], { w: 120, q: 70 }));
   };
 
   const handleToggleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isFavorite) heartBurst(e.currentTarget); // éclat uniquement à l'ajout
     toggleWishlist(product);
   };
 
@@ -97,6 +119,7 @@ export function ProductCard({ product, priority = false }) {
     if (isRupture) return;
     addToCart(product, activeSheetSize);
     trackAddToCart(product, 1);
+    flyToCart(imgZoneRef.current, imgUrl(product.images?.[0], { w: 120, q: 70 }));
     setSheetAdded(true);
     setTimeout(() => { setSheetOpen(false); setSheetAdded(false); }, 1000);
   };
@@ -190,7 +213,7 @@ export function ProductCard({ product, priority = false }) {
 
       <Link to={`/produit/${product.slug}`} viewTransition onClick={markForTransition} className="group flex flex-col h-full transition-transform duration-300 ease-out hover:-translate-y-1">
         {/* Image zone */}
-        <div ref={imgZoneRef} className={`relative aspect-[3/4] bg-cream-deep rounded-xl overflow-hidden transition-shadow duration-300 group-hover:shadow-[0_12px_30px_-12px_rgba(24,20,15,0.25)] ${isRupture ? 'grayscale' : ''}`}>
+        <div ref={imgZoneRef} style={isReturnTarget ? { viewTransitionName: 'product-hero' } : undefined} className={`relative aspect-[3/4] bg-cream-deep rounded-xl overflow-hidden transition-shadow duration-300 group-hover:shadow-[0_12px_30px_-12px_rgba(24,20,15,0.25)] ${isRupture ? 'grayscale' : ''}`}>
           <img
             src={imgUrl(product.images?.[0] ?? '/products/placeholder-dresses.svg', { w: 500, q: 70 })}
             srcSet={product.images?.[0] ? [

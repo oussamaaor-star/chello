@@ -7,7 +7,7 @@ import { HeaderIcons } from './HeaderIcons';
 import { MobileMenu } from './MobileMenu';
 import { MenuToggleIcon } from '../ui/MenuToggleIcon';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useScroll } from '../../hooks/useScroll';
+import { useScroll, useScrollCondensed } from '../../hooks/useScroll';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen]     = useState(false);
@@ -17,6 +17,10 @@ export function Header() {
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const heroMode = isHome && !scrolled && !isMobileMenuOpen && !isMobileSearchOpen;
+  // Header condensé en descendant (recherche + nav repliées), redéployé dès
+  // qu'on remonte. Désactivé quand un menu/recherche est ouvert ou en heroMode.
+  const goingDown = useScrollCondensed(140);
+  const condensed = goingDown && !isMobileMenuOpen && !isMobileSearchOpen && !heroMode;
 
   return (
     <>
@@ -46,7 +50,7 @@ export function Header() {
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-between h-20 lg:h-24">
+            <div className={`flex items-center justify-between transition-all duration-300 ${condensed ? 'h-14 lg:h-16' : 'h-20 lg:h-24'}`}>
 
               {/* Mobile — hamburger animé + search */}
               <div className="flex items-center gap-0.5 lg:hidden">
@@ -76,7 +80,7 @@ export function Header() {
               </div>
 
               {/* Desktop search — hidden in hero mode */}
-              <div className={`hidden lg:flex flex-1 justify-center px-4 lg:px-10 transition-opacity duration-500 ${heroMode ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <div className={`hidden lg:flex flex-1 justify-center px-4 lg:px-10 transition-opacity duration-500 ${heroMode || condensed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <SearchBar />
               </div>
 
@@ -96,7 +100,7 @@ export function Header() {
 
           {/* Mobile/tablette — barre de recherche persistante (< lg) — hidden in hero mode */}
           {!isMobileSearchOpen && (
-            <div className={`lg:hidden pb-3 -mt-1 transition-all duration-500 ${heroMode ? 'opacity-0 h-0 pb-0 overflow-hidden' : ''}`}>
+            <div className={`lg:hidden pb-3 -mt-1 transition-all duration-500 ${heroMode || condensed ? 'opacity-0 h-0 pb-0 overflow-hidden' : ''}`}>
               <button
                 onClick={() => setIsMobileSearchOpen(true)}
                 aria-label={t('headerRechercher')}
@@ -110,7 +114,7 @@ export function Header() {
         </div>
 
         {/* Desktop nav — hidden in hero mode */}
-        <div className={`relative hidden lg:block border-t transition-all duration-500 ${heroMode ? 'border-transparent opacity-0 h-0 overflow-hidden' : 'border-ink/10'}`}>
+        <div className={`relative hidden lg:block border-t transition-all duration-500 ${heroMode || condensed ? 'border-transparent opacity-0 h-0 overflow-hidden' : 'border-ink/10'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center py-3">
             <NavLinks />
           </div>
